@@ -75,7 +75,7 @@ ga_domain: abin-z.github.io
 
 # Sidebar settings
 sidebar: true # whether or not using Sidebar.
-sidebar-about-description: "勇敢一点吧 我们不会再比今天更年轻了<br> Programmer @ Abin"
+sidebar-about-description: "勇敢一点吧<br>我们不会再比今天更年轻了<br> Programmer @ Abin"
 sidebar-avatar: https://github.com/Huxpro.png # use absolute URL, seeing it's used in both `/` and `/about/`
 
 # Featured Tags
