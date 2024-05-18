@@ -2,10 +2,10 @@
 title: Abin Blog
 SEOTitle: Abin的博客 | Abin Blog
 header-img: img/home-bg.jpg
-email: abin.z@foxmail.com
-description: "这里是 @Hux黄玄 的个人博客，与你一起发现更大的世界 | 要做一个有 swag 的程序员"
-keyword: "黄玄, Hux黄玄, Hux, 鬼栈, huxpro, @huxpro, 黄玄的博客, Hux Blog, 博客, 个人网站, 互联网, Web, JavaScript, React, React Native, 前端, 设计"
-url: "https://huangxuan.me" # your host, for absolute URL
+email: abin_z@163.com
+description: "这里是 @Abin 的个人博客，与你一起发现更大的世界 | 白日梦想家"
+keyword: "Abin, abin, ABin, ABIN, @Abin, Abin的博客, Abin Blog, 博客, 个人网站, 互联网, C++, STL, MySQL, Git, QT, 后端, 设计模式"
+url: "https://abin-z.github.io" # your host, for absolute URL
 baseurl: "" # for example, '/blog' if your blog hosted on 'host/blog'
 
 # Publish posts or collection documents with a future date.
@@ -13,11 +13,12 @@ future: true
 
 # SNS settings
 RSS: false
-weibo_username: huxpro
-zhihu_username: huxpro
-github_username: huxpro
-twitter_username: huxpro
-#facebook_username:  huxpro
+#weibo_username: abin
+github_username: abin-z
+bilibili_username: Abin-bili
+zhihu_username: abin
+#twitter_username: 
+#facebook_username:  
 #linkedin_username:  firstname-lastname-idxxxx
 
 # Build settings
@@ -70,11 +71,11 @@ netease_comment: false
 
 # Google Analytics
 ga_track_id: "UA-49627206-1" # Format: UA-xxxxxx-xx
-ga_domain: huangxuan.me
+ga_domain: abin-z.github.io
 
 # Sidebar settings
 sidebar: true # whether or not using Sidebar.
-sidebar-about-description: "要做一个有 swag 的程序员 <br> React Team @ Meta"
+sidebar-about-description: "勇敢一点吧 我们不会再比今天更年轻了<br> Programmer @ Abin"
 sidebar-avatar: https://github.com/Huxpro.png # use absolute URL, seeing it's used in both `/` and `/about/`
 
 # Featured Tags
