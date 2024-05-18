@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "每个开发者都应学的 Markdown 轻量级标记语言"
-subtitle: "Markdown文件 轻量级标记语言"
+title: "Markdown 每个开发者都应学的轻量级标记语言"
+subtitle: "Markdown文件 程序员笔记"
 author: "abin"
 header-style: text
 tags:
