@@ -1,14 +1,12 @@
 ---
 layout: post
 title: "Markdown 每个开发者都应学的轻量级标记语言"
-subtitle: "Markdown文件 程序员笔记"
+subtitle: "Markdown文件 程序员记笔记的正确方式"
 author: "abin"
 header-style: text
 tags:
   - Markdown
-  - Web
   - 笔记
-  - HTML
   - Typora
 ---
 
