@@ -3,7 +3,7 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://abin-z.github.io/</loc>
-    <lastmod>2025-04-01T23:37:26+08:00</lastmod>
+    <lastmod>2025-04-02T21:38:50+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
@@ -20,11 +20,8 @@
                 href="https://abin-z.github.io/"
                 />
   </url><url>
-    <loc>https://abin-z.github.io/p/firstblog/</loc>
-    <lastmod>2025-04-01T23:37:26+08:00</lastmod>
-  </url><url>
     <loc>https://abin-z.github.io/post/</loc>
-    <lastmod>2025-04-01T23:37:26+08:00</lastmod>
+    <lastmod>2025-04-02T21:38:50+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
@@ -40,6 +37,12 @@
                 hreflang="en"
                 href="https://abin-z.github.io/post/"
                 />
+  </url><url>
+    <loc>https://abin-z.github.io/p/secondblog/</loc>
+    <lastmod>2025-04-02T21:38:50+08:00</lastmod>
+  </url><url>
+    <loc>https://abin-z.github.io/p/firstblog/</loc>
+    <lastmod>2025-04-01T23:37:26+08:00</lastmod>
   </url><url>
     <loc>https://abin-z.github.io/archives/</loc>
     <lastmod>2019-05-28T00:00:00+00:00</lastmod>
