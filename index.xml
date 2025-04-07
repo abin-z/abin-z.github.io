@@ -6,8 +6,7 @@
         <description>Recent content on Abin Blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
-        <copyright>Abin</copyright>
-        <lastBuildDate>Wed, 02 Apr 2025 21:38:50 +0800</lastBuildDate><atom:link href="https://abin-z.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <copyright>Abin</copyright><atom:link href="https://abin-z.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>SecondBlog</title>
         <link>https://abin-z.github.io/p/secondblog/</link>
         <pubDate>Wed, 02 Apr 2025 21:38:50 +0800</pubDate>
