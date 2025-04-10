@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="中文字符串在msvc编译器下出现异常报错 我在写中文单元测试用例,有以下cpp代码：\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 TEST_CASE(&#34;case insensitive test08&#34;, &#34;[inifile][case_insensitive]&#34;) { ini::case_insensitive_inifile inif; // 添加一些中文的测试 inif[&#34;中文节&#34;][&#34;中文键&#34;] = &#34;中文值&#34;; // 测试中文的大小写不敏感性（实际上中文没有大小写，但测试是否受影响） CHECK(inif.contains(&#34;中文节&#34;) == true); CHECK(inif.contains(&#34;中文节&#34;, &#34;中文键&#34;) == true); CHECK(inif[&#34;中文节&#34;][&#34;中文键&#34;].as&lt;std::string&gt;() == &#34;中文值&#34;); // 修改中文值 inif[&#34;中文节&#34;][&#34;中文键&#34;] = &#34;新的中文值&#34;; CHECK(inif[&#34;中文节&#34;][&#34;中文键&#34;].as&lt;std::string&gt;() == &#34;新的中文值&#34;); // 测试不存在的中文键 CHECK(inif.contains(&#34;中文节&#34;, &#34;不存在的键&#34;) == false); // 测试中文默认值 CHECK(inif.get(&#34;中文节&#34;, &#34;不存在的键&#34;, &#34;默认值&#34;).as&lt;std::string&gt;() == &#34;默认值&#34;); } 遇到的问题: 这段代码本身其实没啥问题, 在linux下使用gcc和clang都可以通过编译, 但是在msvc编译器下就有以下的编译错误:\n">
+<title>msvc下中文字符报错记录</title>
+
+<link rel='canonical' href='https://abin-z.github.io/p/msvc%E4%B8%8B%E4%B8%AD%E6%96%87%E5%AD%97%E7%AC%A6%E6%8A%A5%E9%94%99%E8%AE%B0%E5%BD%95/'>
+
+<link rel="stylesheet" href="/scss/style.min.2392bcd1d39f1183c49de24509ae4b02156a2d65691556512ffe18ecffcd2a0f.css"><meta property='og:title' content="msvc下中文字符报错记录">
+<meta property='og:description' content="中文字符串在msvc编译器下出现异常报错 我在写中文单元测试用例,有以下cpp代码：\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 TEST_CASE(&#34;case insensitive test08&#34;, &#34;[inifile][case_insensitive]&#34;) { ini::case_insensitive_inifile inif; // 添加一些中文的测试 inif[&#34;中文节&#34;][&#34;中文键&#34;] = &#34;中文值&#34;; // 测试中文的大小写不敏感性（实际上中文没有大小写，但测试是否受影响） CHECK(inif.contains(&#34;中文节&#34;) == true); CHECK(inif.contains(&#34;中文节&#34;, &#34;中文键&#34;) == true); CHECK(inif[&#34;中文节&#34;][&#34;中文键&#34;].as&lt;std::string&gt;() == &#34;中文值&#34;); // 修改中文值 inif[&#34;中文节&#34;][&#34;中文键&#34;] = &#34;新的中文值&#34;; CHECK(inif[&#34;中文节&#34;][&#34;中文键&#34;].as&lt;std::string&gt;() == &#34;新的中文值&#34;); // 测试不存在的中文键 CHECK(inif.contains(&#34;中文节&#34;, &#34;不存在的键&#34;) == false); // 测试中文默认值 CHECK(inif.get(&#34;中文节&#34;, &#34;不存在的键&#34;, &#34;默认值&#34;).as&lt;std::string&gt;() == &#34;默认值&#34;); } 遇到的问题: 这段代码本身其实没啥问题, 在linux下使用gcc和clang都可以通过编译, 但是在msvc编译器下就有以下的编译错误:\n">
+<meta property='og:url' content='https://abin-z.github.io/p/msvc%E4%B8%8B%E4%B8%AD%E6%96%87%E5%AD%97%E7%AC%A6%E6%8A%A5%E9%94%99%E8%AE%B0%E5%BD%95/'>
+<meta property='og:site_name' content='Abin Blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-04-10T19:39:24&#43;08:00'/><meta property='article:modified_time' content='2025-04-10T20:44:02&#43;08:00'/>
+<meta name="twitter:title" content="msvc下中文字符报错记录">
+<meta name="twitter:description" content="中文字符串在msvc编译器下出现异常报错 我在写中文单元测试用例,有以下cpp代码：\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 TEST_CASE(&#34;case insensitive test08&#34;, &#34;[inifile][case_insensitive]&#34;) { ini::case_insensitive_inifile inif; // 添加一些中文的测试 inif[&#34;中文节&#34;][&#34;中文键&#34;] = &#34;中文值&#34;; // 测试中文的大小写不敏感性（实际上中文没有大小写，但测试是否受影响） CHECK(inif.contains(&#34;中文节&#34;) == true); CHECK(inif.contains(&#34;中文节&#34;, &#34;中文键&#34;) == true); CHECK(inif[&#34;中文节&#34;][&#34;中文键&#34;].as&lt;std::string&gt;() == &#34;中文值&#34;); // 修改中文值 inif[&#34;中文节&#34;][&#34;中文键&#34;] = &#34;新的中文值&#34;; CHECK(inif[&#34;中文节&#34;][&#34;中文键&#34;].as&lt;std::string&gt;() == &#34;新的中文值&#34;); // 测试不存在的中文键 CHECK(inif.contains(&#34;中文节&#34;, &#34;不存在的键&#34;) == false); // 测试中文默认值 CHECK(inif.get(&#34;中文节&#34;, &#34;不存在的键&#34;, &#34;默认值&#34;).as&lt;std::string&gt;() == &#34;默认值&#34;); } 遇到的问题: 这段代码本身其实没啥问题, 在linux下使用gcc和clang都可以通过编译, 但是在msvc编译器下就有以下的编译错误:\n">
+    <link rel="shortcut icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu_720528bdd1b8d386.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">😉</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Abin Blog</a></h1>
+            <h2 class="site-description">欢迎来到Abin的博客</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://space.bilibili.com/382825871?spm_id_from=333.337.0.0'
+                        target="_blank"
+                        title="Bilibili"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 10a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v6a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4v-6z" /><path d="M8 3l2 3" /><path d="M16 3l-2 3" /><path d="M9 13v-2" /><path d="M15 11v2" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://github.com/abin-z'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.zhihu.com/people/abin122'
+                        target="_blank"
+                        title="知乎"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-zhihu"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 6h6v12h-2l-2 2l-1 -2h-1z" /><path d="M4 12h6.5" /><path d="M10.5 6h-5" /><path d="M6 4c-.5 2.5 -1.5 3.5 -2.5 4.5" /><path d="M8 6v7c0 4.5 -2 5.5 -4 7" /><path d="M11 18l-3 -5" /></svg>
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主 页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关 于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归 档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜 索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>友情链接</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/msvc%E4%B8%8B%E4%B8%AD%E6%96%87%E5%AD%97%E7%AC%A6%E6%8A%A5%E9%94%99%E8%AE%B0%E5%BD%95/">msvc下中文字符报错记录</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2025-04-10</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 3 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="中文字符串在msvc编译器下出现异常报错">中文字符串在msvc编译器下出现异常报错
+</h1><p>我在写<a class="link" href="https://github.com/abin-z/IniFile/blob/main/tests/test_inifile.cpp"  target="_blank" rel="noopener"
+    >中文单元测试用例</a>,有以下cpp代码：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">TEST_CASE</span><span class="p">(</span><span class="s">&#34;case insensitive test08&#34;</span><span class="p">,</span> <span class="s">&#34;[inifile][case_insensitive]&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">ini</span><span class="o">::</span><span class="n">case_insensitive_inifile</span> <span class="n">inif</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// 添加一些中文的测试
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;中文节&#34;</span><span class="p">][</span><span class="s">&#34;中文键&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#34;中文值&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">// 测试中文的大小写不敏感性（实际上中文没有大小写，但测试是否受影响）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">CHECK</span><span class="p">(</span><span class="n">inif</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">&#34;中文节&#34;</span><span class="p">)</span> <span class="o">==</span> <span class="nb">true</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">CHECK</span><span class="p">(</span><span class="n">inif</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">&#34;中文节&#34;</span><span class="p">,</span> <span class="s">&#34;中文键&#34;</span><span class="p">)</span> <span class="o">==</span> <span class="nb">true</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">CHECK</span><span class="p">(</span><span class="n">inif</span><span class="p">[</span><span class="s">&#34;中文节&#34;</span><span class="p">][</span><span class="s">&#34;中文键&#34;</span><span class="p">].</span><span class="n">as</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#34;中文值&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">// 修改中文值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;中文节&#34;</span><span class="p">][</span><span class="s">&#34;中文键&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#34;新的中文值&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">CHECK</span><span class="p">(</span><span class="n">inif</span><span class="p">[</span><span class="s">&#34;中文节&#34;</span><span class="p">][</span><span class="s">&#34;中文键&#34;</span><span class="p">].</span><span class="n">as</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#34;新的中文值&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">// 测试不存在的中文键
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">CHECK</span><span class="p">(</span><span class="n">inif</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">&#34;中文节&#34;</span><span class="p">,</span> <span class="s">&#34;不存在的键&#34;</span><span class="p">)</span> <span class="o">==</span> <span class="nb">false</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">// 测试中文默认值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">CHECK</span><span class="p">(</span><span class="n">inif</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#34;中文节&#34;</span><span class="p">,</span> <span class="s">&#34;不存在的键&#34;</span><span class="p">,</span> <span class="s">&#34;默认值&#34;</span><span class="p">).</span><span class="n">as</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#34;默认值&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="遇到的问题"><strong>遇到的问题:</strong>
+</h2><ul>
+<li>
+<p>这段代码本身其实没啥问题, 在linux下使用gcc和clang都可以通过编译, 但是在msvc编译器下就有以下的编译错误:</p>
+<p><img src="/p/msvc%E4%B8%8B%E4%B8%AD%E6%96%87%E5%AD%97%E7%AC%A6%E6%8A%A5%E9%94%99%E8%AE%B0%E5%BD%95/assets/image-20250410201012634.png"
+	width="1943"
+	height="597"
+	srcset="/p/msvc%E4%B8%8B%E4%B8%AD%E6%96%87%E5%AD%97%E7%AC%A6%E6%8A%A5%E9%94%99%E8%AE%B0%E5%BD%95/assets/image-20250410201012634_hu_8e38c00010d6425a.png 480w, /p/msvc%E4%B8%8B%E4%B8%AD%E6%96%87%E5%AD%97%E7%AC%A6%E6%8A%A5%E9%94%99%E8%AE%B0%E5%BD%95/assets/image-20250410201012634_hu_cefa1ef3b9a49fd.png 1024w"
+	loading="lazy"
+	
+		alt="msvc下中文字符报错"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="325"
+		data-flex-basis="781px"
+	
+></p>
+</li>
+</ul>
+<h2 id="问题原因"><strong>问题原因:</strong>
+</h2><p>问题的根本原因是 <strong>Windows 下的 MSVC 默认使用本地系统代码页（例如 GBK/936）读取源代码文件</strong>，而不是 UTF-8，而你写的源代码中含有中文字符（UTF-8 编码）。MSVC 在不知情的情况下用本地代码页解释 UTF-8 内容，就会：</p>
+<ul>
+<li>错误地将 UTF-8 字节当作 GBK 解析，导致中文乱码</li>
+<li>某些 UTF-8 字节组合不合法，会被当成非法字符或换行符处理</li>
+<li>这些非法字符一旦出现在字符串、宏、甚至标识符中，就会引发各种报错</li>
+</ul>
+<p><strong>为什么 Linux 和 GCC/Clang 没问题？</strong></p>
+<p>GCC 和 Clang 默认就是按 UTF-8 读取源代码文件，尤其是在 UTF-8 环境下（比如大多数 Linux 系统）。所以它们不会把 UTF-8 中的合法字符误解为非法字符或乱码，自然不会出错。</p>
+<h2 id="解决方案"><strong>解决方案</strong>
+</h2><p>核心点: 只需要<strong>让msvc能按正确的encoding读取源文件</strong>即可.</p>
+<p><strong>方式1</strong>: 明确告诉msvc，使用 UTF-8 读取编译源文件, 使用编译参数<code>/utf-8</code>, 比如在cmake中可以添加一下内容:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cmake" data-lang="cmake"><span class="line"><span class="cl"><span class="c"># 如果是 MSVC 编译器，设置源文件为 UTF-8 编码
+</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nb">if</span> <span class="p">(</span><span class="s">MSVC</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>  <span class="nb">add_compile_options</span><span class="p">(</span><span class="s2">&#34;/utf-8&#34;</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">endif</span><span class="p">()</span><span class="err">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>这行代码会为 MSVC 编译器添加 <code>/utf-8</code> 选项，指示 MSVC 使用 UTF-8 编码来读取和处理源文件中的字符。</p>
+<p><strong>方式2</strong>: 将源码文件转为<code>UTF-8 with BOM</code>, vscode和notepad++都可以转换, 转换后就能成功识别并按照utf-8解析源文件.(Windows真是够无语的, 不带BOM的UTF-8不识别)</p>
+<p><strong>最推荐的解决方案：</strong></p>
+<ol>
+<li>确保所有源代码文件保存为 <strong>UTF-8 编码（无 BOM）</strong>。</li>
+<li>在 <code>CMakeLists.txt</code> 中添加 <code>add_compile_options(&quot;/utf-8&quot;)</code>，告诉 MSVC 使用 UTF-8 编码。</li>
+<li>如果你使用 Visual Studio，设置默认保存为 UTF-8。</li>
+</ol>
+<blockquote>
+<p>tips：这个问题困扰我很多年了，所以简单记录下(或许也是我太菜了🙈)</p></blockquote>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>本文采用 <a class="link" href="https://creativecommons.org/licenses/by-nc-sa/4.0/"  target="_blank" rel="noopener"
+    >CC BY-NC-SA 4.0</a> 协议进行许可，转载请注明出处。</span>
+    </section>
+    <section class="article-lastmod">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+        <span>
+            最后更新于 2025-04-10
+        </span>
+    </section></footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <script
+    src="https://giscus.app/client.js"
+    data-repo="abin-z/abin-z.github.io"
+    data-repo-id="R_kgDOOSwugg"
+    data-category="Announcements"
+    data-category-id="DIC_kwDOOSwugs4Co3YT"
+    data-mapping="pathname"
+    data-strict="0"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="top"
+    data-theme="light"
+    data-lang="zh-CN"
+    data-loading=""
+    crossorigin="anonymous"
+    async
+></script>
+<script>
+    function setGiscusTheme(theme) {
+        let giscus = document.querySelector("iframe.giscus-frame");
+        if (giscus) {
+            giscus.contentWindow.postMessage(
+                {
+                    giscus: {
+                        setConfig: {
+                            theme: theme,
+                        },
+                    },
+                },
+                "https://giscus.app"
+            );
+        }
+    }
+
+    (function () {
+        addEventListener("message", (e) => {
+            if (event.origin !== "https://giscus.app") return;
+            handler();
+        });
+        window.addEventListener("onColorSchemeChange", handler);
+
+        function handler() {
+            if (document.documentElement.dataset.scheme === "light") {
+                setGiscusTheme('light');
+            } else {
+                setGiscusTheme('dark_dimmed');
+            }
+        }
+    })();
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2024 - 
+        
+        2025 Abin
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+<style>
+  #backTopBtn {
+    display: none;
+    position: fixed;
+    bottom: 30px;
+    right: 20px;
+    z-index: 99;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    padding: 6px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease, stroke 0.3s ease;
+  }
+
+  #backTopBtn svg {
+    width: 100%;
+    height: 100%;
+    stroke: var(--backtop-icon-color);
+    transition: stroke 0.3s ease;
+  }
+
+  #backTopBtn:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+  }
+
+  :root {
+    --backtop-icon-color: #666;
+  }
+
+  [data-theme="dark"] {
+    --backtop-icon-color: #eee;
+  }
+
+  [data-theme="dark"] #backTopBtn {
+    background-color: rgba(30, 30, 30, 0.5);
+  }
+
+  [data-theme="dark"] #backTopBtn:hover {
+    background-color: rgba(30, 30, 30, 0.8);
+  }
+
+  @media (max-width: 768px) {
+    #backTopBtn {
+      display: none !important;
+    }
+  }
+</style>
+
+
+<script>
+  function initScrollTop() {
+    let rightSideBar = document.querySelector(".right-sidebar");
+    if (!rightSideBar) return;
+
+    
+    let btn = document.createElement("div");
+    btn.id = "backTopBtn";
+    btn.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+        class="icon icon-tabler icon-tabler-square-rounded-arrow-up">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+        <path d="M16 12l-4 -4l-4 4" />
+        <path d="M12 16v-8" />
+        <path d="M12 3c7.2 0 9 1.8 9 9s-1.8 9 -9 9s-9 -1.8 -9 -9s1.8 -9 9 -9z" />
+      </svg>
+    `;
+    btn.onclick = backToTop;
+    rightSideBar.appendChild(btn);
+
+    
+    window.onscroll = function () {
+      if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        btn.style.display = "block";
+      } else {
+        btn.style.display = "none";
+      }
+    };
+  }
+
+  function backToTop() {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  initScrollTop();
+</script>
+
+
+<style>
+    #TableOfContents>ul,
+    ol {
+
+        ul,
+        ol {
+            display: none;
+        }
+
+        .open {
+            display: block;
+        }
+    }
+</style>
+
+<script>
+    function initTocHide() {
+        
+        let toc = document.querySelector(".widget--toc");
+        if (!toc) {
+            return;
+        }
+        
+        window.addEventListener('scroll', function () {
+            
+            let openUl = document.querySelectorAll(".open");
+            if (openUl.length > 0) {
+                openUl.forEach((ul) => {
+                    ul.classList.remove("open")
+                })
+            }
+            
+            let currentLi = document.querySelector(".active-class");
+            if (!currentLi) {
+                return
+            }
+            
+            if (currentLi.children.length > 1) {
+                currentLi.children[1].classList.add("open")
+            }
+            
+            let ul = currentLi.parentElement;
+            do {
+                ul.classList.add("open");
+                ul = ul.parentElement.parentElement
+            } while (ul !== undefined && (ul.localName === 'ul' || ul.localName === 'ol'))
+        });
+    }
+    initTocHide()
+</script>
+    </body>
+</html>
