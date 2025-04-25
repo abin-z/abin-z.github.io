@@ -7,12 +7,12 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Abin</copyright>
-        <lastBuildDate>Fri, 25 Apr 2025 23:15:01 +0800</lastBuildDate><atom:link href="https://abin-z.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
-        <title>Timercpp</title>
-        <link>https://abin-z.github.io/p/timercpp/</link>
+        <lastBuildDate>Fri, 25 Apr 2025 23:25:44 +0800</lastBuildDate><atom:link href="https://abin-z.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>SimpleTimer (基于C&#43;&#43;11的简单定时器)</title>
+        <link>https://abin-z.github.io/p/simpletimer-%E5%9F%BA%E4%BA%8Ec-11%E7%9A%84%E7%AE%80%E5%8D%95%E5%AE%9A%E6%97%B6%E5%99%A8/</link>
         <pubDate>Sun, 13 Apr 2025 01:20:56 +0800</pubDate>
         
-        <guid>https://abin-z.github.io/p/timercpp/</guid>
+        <guid>https://abin-z.github.io/p/simpletimer-%E5%9F%BA%E4%BA%8Ec-11%E7%9A%84%E7%AE%80%E5%8D%95%E5%AE%9A%E6%97%B6%E5%99%A8/</guid>
         <description>&lt;p&gt;&lt;strong&gt;SimpleTimer&lt;/strong&gt; 是一个跨平台的轻量级定时器类，支持在后台线程中定期执行任务，适用于需要定时执行任务的场景。它支持暂停、恢复、修改时间间隔等功能，且不依赖任何第三方库，仅使用 C++11 标准库实现。&lt;/p&gt;
 &lt;h2 id=&#34;特性&#34;&gt;特性
 &lt;/h2&gt;&lt;ul&gt;
