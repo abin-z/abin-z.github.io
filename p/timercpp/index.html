@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="zh-cn" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="简单timer实现:\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 #include &lt;iostream&gt; #include &lt;thread&gt; #include &lt;chrono&gt; #include &lt;mutex&gt; #include &lt;condition_variable&gt; #include &lt;atomic&gt; #include &lt;functional&gt; class Timer { public: Timer(std::chrono::milliseconds interval, bool one_shot = false) : interval_(interval), one_shot_(one_shot), running_(false) {} ~Timer() { stop(); } // 支持无返回值的回调 template &lt;typename Func&gt; void start(Func&amp;&amp; f) { stop(); // 确保旧线程停止 running_ = true; auto task = std::forward&lt;Func&gt;(f); // C++11 不能 lambda 初始化捕获 thread_ = std::thread([this, task]() mutable { std::unique_lock&lt;std::mutex&gt; lock(mutex_); auto next_time = std::chrono::steady_clock::now() + interval_; while (running_) { if (cv_.wait_until(lock, next_time, [this]() { return !running_; })) break; task(); // 调用回调函数 if (one_shot_) { running_ = false; break; } next_time += interval_; } }); } void stop() { { std::lock_guard&lt;std::mutex&gt; lock(mutex_); running_ = false; } cv_.notify_all(); if (thread_.joinable()) { thread_.join(); } } bool isRunning() const { return running_; } private: std::chrono::milliseconds interval_; bool one_shot_; std::atomic&lt;bool&gt; running_; std::thread thread_; std::condition_variable cv_; std::mutex mutex_; }; // 普通函数 void printHello() { std::cout &lt;&lt; &#34;Hello from ordinary function at &#34; &lt;&lt; std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;( std::chrono::steady_clock::now().time_since_epoch() ).count() &lt;&lt; &#34; ms\\n&#34;; } // 类，带有成员函数 class Worker { public: void printMessage() { std::cout &lt;&lt; &#34;Worker::printMessage at &#34; &lt;&lt; std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;( std::chrono::steady_clock::now().time_since_epoch() ).count() &lt;&lt; &#34; ms\\n&#34;; } static long long nowMs() { return std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;( std::chrono::steady_clock::now().time_since_epoch() ).count(); } }; int main() { Timer timer(std::chrono::milliseconds(3000), false); // 每 3 秒触发一次 // 调用普通函数 std::cout &lt;&lt; &#34;Starting timer for ordinary function...\\n&#34;; timer.start(printHello); std::this_thread::sleep_for(std::chrono::seconds(10)); // 主线程等待 10 秒 // 停止定时器 timer.stop(); std::cout &lt;&lt; &#34;Stopped timer for ordinary function\\n\\n&#34;; // 调用成员函数 Worker worker; std::cout &lt;&lt; &#34;Starting timer for member function...\\n&#34;; timer.start([&amp;worker]() { worker.printMessage(); }); std::this_thread::sleep_for(std::chrono::seconds(10)); // 主线程等待 10 秒 // 停止定时器 timer.stop(); std::cout &lt;&lt; &#34;Stopped timer for member function\\n&#34;; return 0; } ">
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="SimpleTimer 是一个跨平台的轻量级定时器类，支持在后台线程中定期执行任务，适用于需要定时执行任务的场景。它支持暂停、恢复、修改时间间隔等功能，且不依赖任何第三方库，仅使用 C++11 标准库实现。\n">
 <title>Timercpp</title>
 
 <link rel='canonical' href='https://abin-z.github.io/p/timercpp/'>
 
 <link rel="stylesheet" href="/scss/style.min.2392bcd1d39f1183c49de24509ae4b02156a2d65691556512ffe18ecffcd2a0f.css"><meta property='og:title' content="Timercpp">
-<meta property='og:description' content="简单timer实现:\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 #include &lt;iostream&gt; #include &lt;thread&gt; #include &lt;chrono&gt; #include &lt;mutex&gt; #include &lt;condition_variable&gt; #include &lt;atomic&gt; #include &lt;functional&gt; class Timer { public: Timer(std::chrono::milliseconds interval, bool one_shot = false) : interval_(interval), one_shot_(one_shot), running_(false) {} ~Timer() { stop(); } // 支持无返回值的回调 template &lt;typename Func&gt; void start(Func&amp;&amp; f) { stop(); // 确保旧线程停止 running_ = true; auto task = std::forward&lt;Func&gt;(f); // C++11 不能 lambda 初始化捕获 thread_ = std::thread([this, task]() mutable { std::unique_lock&lt;std::mutex&gt; lock(mutex_); auto next_time = std::chrono::steady_clock::now() + interval_; while (running_) { if (cv_.wait_until(lock, next_time, [this]() { return !running_; })) break; task(); // 调用回调函数 if (one_shot_) { running_ = false; break; } next_time += interval_; } }); } void stop() { { std::lock_guard&lt;std::mutex&gt; lock(mutex_); running_ = false; } cv_.notify_all(); if (thread_.joinable()) { thread_.join(); } } bool isRunning() const { return running_; } private: std::chrono::milliseconds interval_; bool one_shot_; std::atomic&lt;bool&gt; running_; std::thread thread_; std::condition_variable cv_; std::mutex mutex_; }; // 普通函数 void printHello() { std::cout &lt;&lt; &#34;Hello from ordinary function at &#34; &lt;&lt; std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;( std::chrono::steady_clock::now().time_since_epoch() ).count() &lt;&lt; &#34; ms\\n&#34;; } // 类，带有成员函数 class Worker { public: void printMessage() { std::cout &lt;&lt; &#34;Worker::printMessage at &#34; &lt;&lt; std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;( std::chrono::steady_clock::now().time_since_epoch() ).count() &lt;&lt; &#34; ms\\n&#34;; } static long long nowMs() { return std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;( std::chrono::steady_clock::now().time_since_epoch() ).count(); } }; int main() { Timer timer(std::chrono::milliseconds(3000), false); // 每 3 秒触发一次 // 调用普通函数 std::cout &lt;&lt; &#34;Starting timer for ordinary function...\\n&#34;; timer.start(printHello); std::this_thread::sleep_for(std::chrono::seconds(10)); // 主线程等待 10 秒 // 停止定时器 timer.stop(); std::cout &lt;&lt; &#34;Stopped timer for ordinary function\\n\\n&#34;; // 调用成员函数 Worker worker; std::cout &lt;&lt; &#34;Starting timer for member function...\\n&#34;; timer.start([&amp;worker]() { worker.printMessage(); }); std::this_thread::sleep_for(std::chrono::seconds(10)); // 主线程等待 10 秒 // 停止定时器 timer.stop(); std::cout &lt;&lt; &#34;Stopped timer for member function\\n&#34;; return 0; } ">
+<meta property='og:description' content="SimpleTimer 是一个跨平台的轻量级定时器类，支持在后台线程中定期执行任务，适用于需要定时执行任务的场景。它支持暂停、恢复、修改时间间隔等功能，且不依赖任何第三方库，仅使用 C++11 标准库实现。\n">
 <meta property='og:url' content='https://abin-z.github.io/p/timercpp/'>
 <meta property='og:site_name' content='Abin Blog'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-04-13T01:20:56&#43;08:00'/><meta property='article:modified_time' content='2025-04-13T01:24:40&#43;08:00'/>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-04-13T01:20:56&#43;08:00'/><meta property='article:modified_time' content='2025-04-25T23:15:01&#43;08:00'/>
 <meta name="twitter:title" content="Timercpp">
-<meta name="twitter:description" content="简单timer实现:\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 #include &lt;iostream&gt; #include &lt;thread&gt; #include &lt;chrono&gt; #include &lt;mutex&gt; #include &lt;condition_variable&gt; #include &lt;atomic&gt; #include &lt;functional&gt; class Timer { public: Timer(std::chrono::milliseconds interval, bool one_shot = false) : interval_(interval), one_shot_(one_shot), running_(false) {} ~Timer() { stop(); } // 支持无返回值的回调 template &lt;typename Func&gt; void start(Func&amp;&amp; f) { stop(); // 确保旧线程停止 running_ = true; auto task = std::forward&lt;Func&gt;(f); // C++11 不能 lambda 初始化捕获 thread_ = std::thread([this, task]() mutable { std::unique_lock&lt;std::mutex&gt; lock(mutex_); auto next_time = std::chrono::steady_clock::now() + interval_; while (running_) { if (cv_.wait_until(lock, next_time, [this]() { return !running_; })) break; task(); // 调用回调函数 if (one_shot_) { running_ = false; break; } next_time += interval_; } }); } void stop() { { std::lock_guard&lt;std::mutex&gt; lock(mutex_); running_ = false; } cv_.notify_all(); if (thread_.joinable()) { thread_.join(); } } bool isRunning() const { return running_; } private: std::chrono::milliseconds interval_; bool one_shot_; std::atomic&lt;bool&gt; running_; std::thread thread_; std::condition_variable cv_; std::mutex mutex_; }; // 普通函数 void printHello() { std::cout &lt;&lt; &#34;Hello from ordinary function at &#34; &lt;&lt; std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;( std::chrono::steady_clock::now().time_since_epoch() ).count() &lt;&lt; &#34; ms\\n&#34;; } // 类，带有成员函数 class Worker { public: void printMessage() { std::cout &lt;&lt; &#34;Worker::printMessage at &#34; &lt;&lt; std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;( std::chrono::steady_clock::now().time_since_epoch() ).count() &lt;&lt; &#34; ms\\n&#34;; } static long long nowMs() { return std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;( std::chrono::steady_clock::now().time_since_epoch() ).count(); } }; int main() { Timer timer(std::chrono::milliseconds(3000), false); // 每 3 秒触发一次 // 调用普通函数 std::cout &lt;&lt; &#34;Starting timer for ordinary function...\\n&#34;; timer.start(printHello); std::this_thread::sleep_for(std::chrono::seconds(10)); // 主线程等待 10 秒 // 停止定时器 timer.stop(); std::cout &lt;&lt; &#34;Stopped timer for ordinary function\\n\\n&#34;; // 调用成员函数 Worker worker; std::cout &lt;&lt; &#34;Starting timer for member function...\\n&#34;; timer.start([&amp;worker]() { worker.printMessage(); }); std::this_thread::sleep_for(std::chrono::seconds(10)); // 主线程等待 10 秒 // 停止定时器 timer.stop(); std::cout &lt;&lt; &#34;Stopped timer for member function\\n&#34;; return 0; } ">
+<meta name="twitter:description" content="SimpleTimer 是一个跨平台的轻量级定时器类，支持在后台线程中定期执行任务，适用于需要定时执行任务的场景。它支持暂停、恢复、修改时间间隔等功能，且不依赖任何第三方库，仅使用 C++11 标准库实现。\n">
     <link rel="shortcut icon" href="/favicon.ico" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -256,7 +256,41 @@
     </ol>
 </aside>
 
-    
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#特性">特性</a></li>
+    <li><a href="#使用方式">使用方式</a></li>
+    <li><a href="#示例代码">示例代码</a></li>
+    <li><a href="#代码实现">代码实现:</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
 
             <main class="main full-width">
     <article class="main-article">
@@ -304,7 +338,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 1 分钟
+                    阅读时长: 5 分钟
                 </time>
             </div>
         
@@ -319,8 +353,93 @@
     <section class="article-content">
     
     
-    <p>简单timer实现:</p>
+    <p><strong>SimpleTimer</strong> 是一个跨平台的轻量级定时器类，支持在后台线程中定期执行任务，适用于需要定时执行任务的场景。它支持暂停、恢复、修改时间间隔等功能，且不依赖任何第三方库，仅使用 C++11 标准库实现。</p>
+<h2 id="特性">特性
+</h2><ul>
+<li><strong>跨平台支持</strong>：在多个平台上（如 Windows、Linux、macOS）均可运行，基于 C++11 标准库实现。</li>
+<li><strong>线程安全</strong>：内部使用 <code>std::thread</code> 和 <code>std::condition_variable</code>，保证线程安全。</li>
+<li><strong>灵活的时间间隔</strong>：支持使用 <code>std::chrono::duration</code> 设置任意时间单位（分钟、秒、毫秒等）。</li>
+<li><strong>支持多种执行模式</strong>：包括单次执行（one-shot）和重复执行（周期性）。</li>
+<li><strong>控制功能完善</strong>：支持暂停、恢复、重启定时器，支持动态修改时间间隔。</li>
+<li><strong>时间精度良好</strong>：定时器精度取决于系统时钟，通常为毫秒级别。</li>
+<li><strong>自动资源管理</strong>：<code>SimpleTimer</code> 对象析构时会自动停止定时器，即使忘记调用 <code>stop</code> 也能确保资源正确释放。</li>
+</ul>
+<h2 id="使用方式">使用方式
+</h2><p>将 <a class="link" href="include/simple_timer/simple_timer.h" ><code>simple_timer.h</code></a> 文件复制到你的项目目录中，在源码中引入即可使用:</p>
 <div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;simple_timer.h&#34;</span><span class="cp">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>在 POSIX 系统（如 Linux、macOS）中，<code>std::thread</code> 基于 <code>pthread</code> 实现，因此需要在编译时加上 <code>-lpthread</code> 链接选项。</p></blockquote>
+<h2 id="示例代码">示例代码
+</h2><p>以下是一个完整的示例代码，展示了如何使用 <code>SimpleTimer</code> 类：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;simple_timer.h&#34;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">SimpleTimer</span> <span class="n">timer</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="p">(</span><span class="mi">1</span><span class="p">));</span>  <span class="c1">// 定时器间隔为1秒，重复执行任务
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">    <span class="n">timer</span><span class="p">.</span><span class="n">start</span><span class="p">([]()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;定时器任务执行！&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">});</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="p">(</span><span class="mi">5</span><span class="p">));</span>  <span class="c1">// 等待5秒
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">    <span class="n">timer</span><span class="p">.</span><span class="n">pause</span><span class="p">();</span>  <span class="c1">// 暂停定时器
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;定时器已暂停...&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="p">(</span><span class="mi">3</span><span class="p">));</span>  <span class="c1">// 等待3秒
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">    <span class="n">timer</span><span class="p">.</span><span class="n">resume</span><span class="p">();</span>  <span class="c1">// 恢复定时器
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;定时器已恢复...&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="p">(</span><span class="mi">5</span><span class="p">));</span>  <span class="c1">// 等待5秒
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">    <span class="n">timer</span><span class="p">.</span><span class="n">stop</span><span class="p">();</span>  <span class="c1">// 停止定时器
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;定时器已停止&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="代码实现">代码实现:
+</h2><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">  1
 </span><span class="lnt">  2
@@ -442,129 +561,405 @@
 </span><span class="lnt">118
 </span><span class="lnt">119
 </span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span><span class="lnt">147
+</span><span class="lnt">148
+</span><span class="lnt">149
+</span><span class="lnt">150
+</span><span class="lnt">151
+</span><span class="lnt">152
+</span><span class="lnt">153
+</span><span class="lnt">154
+</span><span class="lnt">155
+</span><span class="lnt">156
+</span><span class="lnt">157
+</span><span class="lnt">158
+</span><span class="lnt">159
+</span><span class="lnt">160
+</span><span class="lnt">161
+</span><span class="lnt">162
+</span><span class="lnt">163
+</span><span class="lnt">164
+</span><span class="lnt">165
+</span><span class="lnt">166
+</span><span class="lnt">167
+</span><span class="lnt">168
+</span><span class="lnt">169
+</span><span class="lnt">170
+</span><span class="lnt">171
+</span><span class="lnt">172
+</span><span class="lnt">173
+</span><span class="lnt">174
+</span><span class="lnt">175
+</span><span class="lnt">176
+</span><span class="lnt">177
+</span><span class="lnt">178
+</span><span class="lnt">179
+</span><span class="lnt">180
+</span><span class="lnt">181
+</span><span class="lnt">182
+</span><span class="lnt">183
+</span><span class="lnt">184
+</span><span class="lnt">185
+</span><span class="lnt">186
+</span><span class="lnt">187
+</span><span class="lnt">188
+</span><span class="lnt">189
+</span><span class="lnt">190
+</span><span class="lnt">191
+</span><span class="lnt">192
+</span><span class="lnt">193
+</span><span class="lnt">194
+</span><span class="lnt">195
+</span><span class="lnt">196
+</span><span class="lnt">197
+</span><span class="lnt">198
+</span><span class="lnt">199
+</span><span class="lnt">200
+</span><span class="lnt">201
+</span><span class="lnt">202
+</span><span class="lnt">203
+</span><span class="lnt">204
+</span><span class="lnt">205
+</span><span class="lnt">206
+</span><span class="lnt">207
+</span><span class="lnt">208
+</span><span class="lnt">209
+</span><span class="lnt">210
+</span><span class="lnt">211
+</span><span class="lnt">212
+</span><span class="lnt">213
+</span><span class="lnt">214
+</span><span class="lnt">215
+</span><span class="lnt">216
+</span><span class="lnt">217
+</span><span class="lnt">218
+</span><span class="lnt">219
+</span><span class="lnt">220
+</span><span class="lnt">221
+</span><span class="lnt">222
+</span><span class="lnt">223
+</span><span class="lnt">224
+</span><span class="lnt">225
+</span><span class="lnt">226
+</span><span class="lnt">227
+</span><span class="lnt">228
+</span><span class="lnt">229
+</span><span class="lnt">230
+</span><span class="lnt">231
+</span><span class="lnt">232
+</span><span class="lnt">233
+</span><span class="lnt">234
+</span><span class="lnt">235
+</span><span class="lnt">236
+</span><span class="lnt">237
+</span><span class="lnt">238
+</span><span class="lnt">239
+</span><span class="lnt">240
+</span><span class="lnt">241
+</span><span class="lnt">242
+</span><span class="lnt">243
+</span><span class="lnt">244
+</span><span class="lnt">245
+</span><span class="lnt">246
+</span><span class="lnt">247
+</span><span class="lnt">248
+</span><span class="lnt">249
+</span><span class="lnt">250
+</span><span class="lnt">251
+</span><span class="lnt">252
+</span><span class="lnt">253
+</span><span class="lnt">254
+</span><span class="lnt">255
+</span><span class="lnt">256
+</span><span class="lnt">257
+</span><span class="lnt">258
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;thread&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;chrono&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;mutex&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;condition_variable&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;atomic&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;functional&gt;</span><span class="cp">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @author: abin
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @date: 2025-04-12
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @license: MIT
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @repository: https://github.com/abin-z/SimpleTimer
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#ifndef SIMPLE_TIMER_H
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define SIMPLE_TIMER_H
 </span></span></span><span class="line"><span class="cl"><span class="cp"></span>
-</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Timer</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl"><span class="k">public</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl">    <span class="n">Timer</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">milliseconds</span> <span class="n">interval</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">one_shot</span> <span class="o">=</span> <span class="nb">false</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="o">:</span> <span class="n">interval_</span><span class="p">(</span><span class="n">interval</span><span class="p">),</span> <span class="n">one_shot_</span><span class="p">(</span><span class="n">one_shot</span><span class="p">),</span> <span class="n">running_</span><span class="p">(</span><span class="nb">false</span><span class="p">)</span> <span class="p">{}</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;atomic&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;chrono&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;condition_variable&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;cstdio&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;mutex&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;thread&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @brief 使用 std::condition_variable 的 wait_until 方法 (也可以使用wait_for方法, 但是会累计误差)
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * 函数原型:
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * cv.wait_until(lock, time_point, predicate);
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * wait_until 的行为:
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * - wait_until 方法的作用是让当前线程在指定的时间点之前等待, 直到条件变量被通知或者超时
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * - 进入等待前会先检查 predicate() 的值.
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * - 如果 predicate() 在进入等待前立即为 true, 则直接返回 true, 不会进入等待状态
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * - 如果 predicate() 为 false, 则进入等待状态, 直到 time_point 到达
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * - 如果在 time_point 到达前 `notify_*` 被调用, 并且此时 predicate() 为 true, 则唤醒并返回 true
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * - 如果在 time_point 到达前 `notify_*` 被调用, 但此时 predicate() 为 false, 则继续等待(可能是虚假唤醒)
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * - 如果直到 time_point 到达时 predicate() 仍为 false, 返回 false(表示超时)
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * 简要来说:
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * - `wait_until` 返回 true 表示条件变量被唤醒并且条件成立
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * - `wait_until` 返回 false 表示已超时, 且条件仍未满足(即超时触发任务)
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="o">~</span><span class="n">Timer</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="n">stop</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">/// @brief A simple timer class
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">class</span> <span class="nc">SimpleTimer</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">using</span> <span class="n">clock</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">steady_clock</span><span class="p">;</span>  <span class="c1">// 单调时钟, 不受系统时间变化影响
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span> <span class="k">public</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief Timer state
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">enum</span> <span class="k">class</span> <span class="nc">State</span> <span class="o">:</span> <span class="kt">unsigned</span> <span class="kt">char</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Stopped</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>  <span class="c1">// 停止
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">Running</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1">// 运行中
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">Paused</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>   <span class="c1">// 暂停
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">};</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="c1">// 支持无返回值的回调
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">Func</span><span class="o">&gt;</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">void</span> <span class="n">start</span><span class="p">(</span><span class="n">Func</span><span class="o">&amp;&amp;</span> <span class="n">f</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="n">stop</span><span class="p">();</span> <span class="c1">// 确保旧线程停止
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
-</span></span><span class="line"><span class="cl">        <span class="n">running_</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="k">auto</span> <span class="n">task</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">Func</span><span class="o">&gt;</span><span class="p">(</span><span class="n">f</span><span class="p">);</span> <span class="c1">// C++11 不能 lambda 初始化捕获
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
-</span></span><span class="line"><span class="cl">        <span class="n">thread_</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="kr">thread</span><span class="p">([</span><span class="k">this</span><span class="p">,</span> <span class="n">task</span><span class="p">]()</span> <span class="k">mutable</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="n">std</span><span class="o">::</span><span class="n">unique_lock</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="n">mutex_</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">            <span class="k">auto</span> <span class="n">next_time</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">steady_clock</span><span class="o">::</span><span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="n">interval_</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief Constructs a SimpleTimer with a given duration
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">/// @tparam Rep Duration representation type (e.g., int, long)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">/// @tparam Period Duration unit type (e.g., seconds, milliseconds)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">/// @param interval The time interval
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">/// @param one_shot If true, the timer will only trigger once
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">Rep</span><span class="p">,</span> <span class="k">typename</span> <span class="n">Period</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">SimpleTimer</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">duration</span><span class="o">&lt;</span><span class="n">Rep</span><span class="p">,</span> <span class="n">Period</span><span class="o">&gt;</span> <span class="n">interval</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">one_shot</span> <span class="o">=</span> <span class="nb">false</span><span class="p">)</span> <span class="o">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">interval_</span><span class="p">(</span><span class="n">interval</span><span class="p">),</span> <span class="n">one_shot_</span><span class="p">(</span><span class="n">one_shot</span><span class="p">),</span> <span class="n">state_</span><span class="p">(</span><span class="n">State</span><span class="o">::</span><span class="n">Stopped</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">            <span class="k">while</span> <span class="p">(</span><span class="n">running_</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="n">cv_</span><span class="p">.</span><span class="n">wait_until</span><span class="p">(</span><span class="n">lock</span><span class="p">,</span> <span class="n">next_time</span><span class="p">,</span> <span class="p">[</span><span class="k">this</span><span class="p">]()</span> <span class="p">{</span> <span class="k">return</span> <span class="o">!</span><span class="n">running_</span><span class="p">;</span> <span class="p">}))</span>
-</span></span><span class="line"><span class="cl">                    <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief Constructs a SimpleTimer with a millisecond interval
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">/// @param milliseconds The time interval in milliseconds
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">/// @param one_shot If true, the timer will only trigger once
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">explicit</span> <span class="nf">SimpleTimer</span><span class="p">(</span><span class="kt">long</span> <span class="kt">long</span> <span class="n">milliseconds</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">one_shot</span> <span class="o">=</span> <span class="nb">false</span><span class="p">)</span> <span class="o">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">SimpleTimer</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">milliseconds</span><span class="p">(</span><span class="n">milliseconds</span><span class="p">),</span> <span class="n">one_shot</span><span class="p">)</span>  <span class="c1">// 代理到主构造函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">                <span class="n">task</span><span class="p">();</span> <span class="c1">// 调用回调函数
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
-</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="n">one_shot_</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                    <span class="n">running_</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">                    <span class="k">break</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief Constructs a SimpleTimer with a default interval of 10 seconds
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">/// @param one_shot If true, the timer will only trigger once
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">SimpleTimer</span><span class="p">(</span><span class="kt">bool</span> <span class="n">one_shot</span> <span class="o">=</span> <span class="nb">false</span><span class="p">)</span> <span class="o">:</span> <span class="n">SimpleTimer</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="n">one_shot</span><span class="p">)</span>  <span class="c1">// 默认间隔为10秒
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">                <span class="n">next_time</span> <span class="o">+=</span> <span class="n">interval_</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="p">});</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief Destructor. Automatically stops the timer to clean up resources.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="o">~</span><span class="n">SimpleTimer</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">stop</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="kt">void</span> <span class="nf">stop</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// Delete copy constructor and copy assignment operator
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">SimpleTimer</span><span class="p">(</span><span class="k">const</span> <span class="n">SimpleTimer</span><span class="o">&amp;</span><span class="p">)</span> <span class="o">=</span> <span class="k">delete</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">SimpleTimer</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">SimpleTimer</span><span class="o">&amp;</span><span class="p">)</span> <span class="o">=</span> <span class="k">delete</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">// Delete move constructor and move assignment operator
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">SimpleTimer</span><span class="p">(</span><span class="n">SimpleTimer</span><span class="o">&amp;&amp;</span><span class="p">)</span> <span class="o">=</span> <span class="k">delete</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">SimpleTimer</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="n">SimpleTimer</span><span class="o">&amp;&amp;</span><span class="p">)</span> <span class="o">=</span> <span class="k">delete</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief Starts the timer
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">/// @tparam Func Callable object type
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">/// @param f A callable object to be executed when the timer expires
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">/// @note The timer task will be executed in a new thread
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">Func</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">void</span> <span class="n">start</span><span class="p">(</span><span class="n">Func</span><span class="o">&amp;&amp;</span> <span class="n">f</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">stop</span><span class="p">();</span>                                        <span class="c1">// 确保没有其他线程在运行(替换旧任务)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">state_</span> <span class="o">=</span> <span class="n">State</span><span class="o">::</span><span class="n">Running</span><span class="p">;</span>                       <span class="c1">// 设置状态为运行中
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">auto</span> <span class="n">task</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">Func</span><span class="o">&gt;</span><span class="p">(</span><span class="n">f</span><span class="p">));</span>  <span class="c1">// 完美转发后再 move, 提高效率
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// 使用 std::thread 创建一个新的线程来执行定时器任务
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">thread_</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="kr">thread</span><span class="p">([</span><span class="k">this</span><span class="p">,</span> <span class="n">task</span><span class="p">]()</span> <span class="k">mutable</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">std</span><span class="o">::</span><span class="n">unique_lock</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="n">mutex_</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="k">auto</span> <span class="n">next_time</span> <span class="o">=</span> <span class="n">clock</span><span class="o">::</span><span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="n">interval_</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">while</span> <span class="p">(</span><span class="nb">true</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">state_</span> <span class="o">==</span> <span class="n">State</span><span class="o">::</span><span class="n">Stopped</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="n">std</span><span class="o">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="n">mutex_</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">            <span class="n">running_</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">          <span class="k">break</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="n">cv_</span><span class="p">.</span><span class="n">notify_all</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">thread_</span><span class="p">.</span><span class="n">joinable</span><span class="p">())</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="n">thread_</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">while</span> <span class="p">(</span><span class="n">state_</span> <span class="o">==</span> <span class="n">State</span><span class="o">::</span><span class="n">Paused</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="n">cv_</span><span class="p">.</span><span class="n">wait</span><span class="p">(</span><span class="n">lock</span><span class="p">,</span> <span class="p">[</span><span class="k">this</span><span class="p">]()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">state_</span> <span class="o">!=</span> <span class="n">State</span><span class="o">::</span><span class="n">Paused</span><span class="p">;</span> <span class="p">});</span>
+</span></span><span class="line"><span class="cl">          <span class="n">next_time</span> <span class="o">=</span> <span class="n">clock</span><span class="o">::</span><span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="n">interval_</span><span class="p">;</span>  <span class="c1">// 重新计算下一次触发时间
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">cv_</span><span class="p">.</span><span class="n">wait_until</span><span class="p">(</span><span class="n">lock</span><span class="p">,</span> <span class="n">next_time</span><span class="p">,</span> <span class="p">[</span><span class="k">this</span><span class="p">]()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">state_</span> <span class="o">!=</span> <span class="n">State</span><span class="o">::</span><span class="n">Running</span> <span class="o">||</span> <span class="n">interval_changed_</span><span class="p">;</span> <span class="p">}))</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="k">if</span> <span class="p">(</span><span class="n">interval_changed_</span><span class="p">)</span>  <span class="c1">// interval_修改后立即使用新间隔
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">next_time</span> <span class="o">=</span> <span class="n">clock</span><span class="o">::</span><span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="n">interval_</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">interval_changed_</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">          <span class="p">}</span>
+</span></span><span class="line"><span class="cl">          <span class="k">continue</span><span class="p">;</span>  <span class="c1">// 若状态不是 Running, 继续循环判断; 若是 interval_ 被修改, 则更新 next_time 并立即跳过等待
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">lock</span><span class="p">.</span><span class="n">unlock</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// Timer 内部处理异常, 执行task遇到异常后直接停止timer
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">try</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="n">task</span><span class="p">();</span>  <span class="c1">// 执行任务
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">catch</span> <span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">exception</span><span class="o">&amp;</span> <span class="n">e</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="n">state_</span> <span class="o">=</span> <span class="n">State</span><span class="o">::</span><span class="n">Stopped</span><span class="p">;</span>  <span class="c1">// 出现异常时停止定时器 (不能调用stop()会死锁)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="n">std</span><span class="o">::</span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;[SimpleTimer] Exception: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">e</span><span class="p">.</span><span class="n">what</span><span class="p">());</span>
 </span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">catch</span> <span class="p">(...)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="n">state_</span> <span class="o">=</span> <span class="n">State</span><span class="o">::</span><span class="n">Stopped</span><span class="p">;</span>  <span class="c1">// 出现异常时停止定时器
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="n">std</span><span class="o">::</span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;[SimpleTimer] Unknown exception occurred.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="n">lock</span><span class="p">.</span><span class="n">lock</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">one_shot_</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="n">state_</span> <span class="o">=</span> <span class="n">State</span><span class="o">::</span><span class="n">Stopped</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">          <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">next_time</span> <span class="o">+=</span> <span class="n">interval_</span><span class="p">;</span>  <span class="c1">// 精确推进时间点, 避免偏差
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">});</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief Restarts the timer
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">/// @tparam Func Callable object type
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">/// @param f A callable object to be executed when the timer expires
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">Func</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">void</span> <span class="n">restart</span><span class="p">(</span><span class="n">Func</span><span class="o">&amp;&amp;</span> <span class="n">f</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">stop</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">start</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">Func</span><span class="o">&gt;</span><span class="p">(</span><span class="n">f</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief Stops the timer; waits for the current task to complete before fully stopping
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">/// @note This method may block until the running task completes.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">void</span> <span class="nf">stop</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">state_</span> <span class="o">=</span> <span class="n">State</span><span class="o">::</span><span class="n">Stopped</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cv_</span><span class="p">.</span><span class="n">notify_all</span><span class="p">();</span>  <span class="c1">// 唤醒等待的线程
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">thread_</span><span class="p">.</span><span class="n">joinable</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">thread_</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>  <span class="c1">// 等待线程结束
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief Pauses the timer
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">void</span> <span class="nf">pause</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">state_</span> <span class="o">==</span> <span class="n">State</span><span class="o">::</span><span class="n">Running</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">state_</span> <span class="o">=</span> <span class="n">State</span><span class="o">::</span><span class="n">Paused</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="kt">bool</span> <span class="nf">isRunning</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">running_</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief Resumes the timer if it was paused
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">void</span> <span class="nf">resume</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">state_</span> <span class="o">==</span> <span class="n">State</span><span class="o">::</span><span class="n">Paused</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">state_</span> <span class="o">=</span> <span class="n">State</span><span class="o">::</span><span class="n">Running</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="n">cv_</span><span class="p">.</span><span class="n">notify_all</span><span class="p">();</span>  <span class="c1">// 唤醒正在等待的线程
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="k">private</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">milliseconds</span> <span class="n">interval_</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">bool</span> <span class="n">one_shot_</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span> <span class="n">running_</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="kr">thread</span> <span class="n">thread_</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">condition_variable</span> <span class="n">cv_</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">mutex</span> <span class="n">mutex_</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief Gets the current timer interval
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">/// @return The interval in milliseconds
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">milliseconds</span> <span class="n">interval</span><span class="p">()</span> <span class="k">const</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">duration_cast</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">milliseconds</span><span class="o">&gt;</span><span class="p">(</span><span class="n">interval_</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// 普通函数
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="nf">printHello</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;Hello from ordinary function at &#34;</span>
-</span></span><span class="line"><span class="cl">              <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">duration_cast</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">milliseconds</span><span class="o">&gt;</span><span class="p">(</span>
-</span></span><span class="line"><span class="cl">                   <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">steady_clock</span><span class="o">::</span><span class="n">now</span><span class="p">().</span><span class="n">time_since_epoch</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl">                 <span class="p">).</span><span class="n">count</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s">&#34; ms</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief Sets a new timer interval, takes effect immediately
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">/// @param new_interval A duration representing the new interval
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">Rep</span><span class="p">,</span> <span class="k">typename</span> <span class="n">Period</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">void</span> <span class="n">set_interval</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">duration</span><span class="o">&lt;</span><span class="n">Rep</span><span class="p">,</span> <span class="n">Period</span><span class="o">&gt;</span> <span class="n">new_interval</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">std</span><span class="o">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="n">mutex_</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="n">interval_</span> <span class="o">=</span> <span class="n">new_interval</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="n">interval_changed_</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>  <span class="c1">// 标记为已改变
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cv_</span><span class="p">.</span><span class="n">notify_all</span><span class="p">();</span>  <span class="c1">// 确保线程能获取到新的时间间隔
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">// 类，带有成员函数
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">class</span> <span class="nc">Worker</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl"><span class="k">public</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">void</span> <span class="n">printMessage</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;Worker::printMessage at &#34;</span>
-</span></span><span class="line"><span class="cl">                  <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">duration_cast</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">milliseconds</span><span class="o">&gt;</span><span class="p">(</span>
-</span></span><span class="line"><span class="cl">                       <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">steady_clock</span><span class="o">::</span><span class="n">now</span><span class="p">().</span><span class="n">time_since_epoch</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl">                     <span class="p">).</span><span class="n">count</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s">&#34; ms</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief Sets a new timer interval, takes effect immediately
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">/// @param milliseconds New interval in milliseconds
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">void</span> <span class="nf">set_interval</span><span class="p">(</span><span class="kt">long</span> <span class="kt">long</span> <span class="n">milliseconds</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">set_interval</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">milliseconds</span><span class="p">(</span><span class="n">milliseconds</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="k">static</span> <span class="kt">long</span> <span class="kt">long</span> <span class="nf">nowMs</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">duration_cast</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">milliseconds</span><span class="o">&gt;</span><span class="p">(</span>
-</span></span><span class="line"><span class="cl">            <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">steady_clock</span><span class="o">::</span><span class="n">now</span><span class="p">().</span><span class="n">time_since_epoch</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl">        <span class="p">).</span><span class="n">count</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief Gets the current state of the timer
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">/// @return The state of the timer
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">State</span> <span class="nf">state</span><span class="p">()</span> <span class="k">const</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">state_</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief Checks if the timer is currently running
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">/// @return true if running, false otherwise
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">bool</span> <span class="nf">is_running</span><span class="p">()</span> <span class="k">const</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">state_</span> <span class="o">==</span> <span class="n">State</span><span class="o">::</span><span class="n">Running</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief Checks if the timer is currently paused
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">/// @return true if paused, false otherwise
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">bool</span> <span class="nf">is_paused</span><span class="p">()</span> <span class="k">const</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">state_</span> <span class="o">==</span> <span class="n">State</span><span class="o">::</span><span class="n">Paused</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief Checks if the timer is currently stopped
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">/// @return true if stopped, false otherwise
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">bool</span> <span class="nf">is_stopped</span><span class="p">()</span> <span class="k">const</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">state_</span> <span class="o">==</span> <span class="n">State</span><span class="o">::</span><span class="n">Stopped</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">Timer</span> <span class="n">timer</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">milliseconds</span><span class="p">(</span><span class="mi">3000</span><span class="p">),</span> <span class="nb">false</span><span class="p">);</span> <span class="c1">// 每 3 秒触发一次
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
-</span></span><span class="line"><span class="cl">    <span class="c1">// 调用普通函数
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;Starting timer for ordinary function...</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">timer</span><span class="p">.</span><span class="n">start</span><span class="p">(</span><span class="n">printHello</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"> <span class="k">private</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// 定时器间隔, 默认10秒
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">clock</span><span class="o">::</span><span class="n">duration</span> <span class="n">interval_</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">bool</span> <span class="n">interval_changed_</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>  <span class="c1">// 时间间隔是否被修改过
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">bool</span> <span class="n">one_shot_</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>          <span class="c1">// 是否只触发一次
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="n">State</span><span class="o">&gt;</span> <span class="n">state_</span><span class="p">;</span>       <span class="c1">// 定时器状态
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="kr">thread</span> <span class="n">thread_</span><span class="p">;</span>             <span class="c1">// 定时器线程
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="n">mutex</span> <span class="n">mutex_</span><span class="p">;</span>               <span class="c1">// 互斥锁, 确保线程安全
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="n">condition_variable</span> <span class="n">cv_</span><span class="p">;</span>     <span class="c1">// 条件变量, 用于暂停和恢复
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">};</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="p">(</span><span class="mi">10</span><span class="p">));</span> <span class="c1">// 主线程等待 10 秒
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
-</span></span><span class="line"><span class="cl">    <span class="c1">// 停止定时器
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">timer</span><span class="p">.</span><span class="n">stop</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;Stopped timer for ordinary function</span><span class="se">\n\n</span><span class="s">&#34;</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="c1">// 调用成员函数
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">Worker</span> <span class="n">worker</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;Starting timer for member function...</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">timer</span><span class="p">.</span><span class="n">start</span><span class="p">([</span><span class="o">&amp;</span><span class="n">worker</span><span class="p">]()</span> <span class="p">{</span> <span class="n">worker</span><span class="p">.</span><span class="n">printMessage</span><span class="p">();</span> <span class="p">});</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="p">(</span><span class="mi">10</span><span class="p">));</span> <span class="c1">// 主线程等待 10 秒
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
-</span></span><span class="line"><span class="cl">    <span class="c1">// 停止定时器
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">timer</span><span class="p">.</span><span class="n">stop</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;Stopped timer for member function</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
+</span></span><span class="line"><span class="cl"><span class="cp">#endif  </span><span class="c1">// SIMPLE_TIMER_H
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div>
 </section>
@@ -596,7 +991,7 @@
 
 
         <span>
-            最后更新于 2025-04-13
+            最后更新于 2025-04-25
         </span>
     </section></footer>
 
