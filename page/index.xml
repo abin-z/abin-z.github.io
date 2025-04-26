@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
-        <title>Pages on Abin Blog</title>
+        <title>Pages on Abin&#39;s Blog</title>
         <link>https://abin-z.github.io/page/</link>
-        <description>Recent content in Pages on Abin Blog</description>
+        <description>Recent content in Pages on Abin&#39;s Blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Abin</copyright>
-        <lastBuildDate>Sat, 26 Apr 2025 22:31:59 +0800</lastBuildDate><atom:link href="https://abin-z.github.io/page/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sat, 26 Apr 2025 22:39:52 +0800</lastBuildDate><atom:link href="https://abin-z.github.io/page/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>关 于</title>
         <link>https://abin-z.github.io/about/</link>
         <pubDate>Wed, 01 Jun 2022 00:00:00 +0000</pubDate>
@@ -26,7 +26,7 @@
 &lt;p&gt;我相信代码应当既简洁又有温度，喜欢把复杂问题拆解成优雅的解决方案。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;生活上，坚信&amp;quot;身体是革命的本钱&amp;quot;；锻炼身体很重要，可以使您的头脑更加活跃、思考速度更快，保持开心和激情。&lt;/p&gt;
+&lt;p&gt;生活上，坚信&amp;quot;身体是革命的本钱&amp;quot;；锻炼身体很重要，可以使您的头脑更加活跃、思维更敏捷，保持开心和激情。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;这个网站是我瞎折腾出来的，既是实验田，也是自留地。 记录一些项目、想法，还有那些怀疑人生的小瞬间。&lt;/p&gt;
