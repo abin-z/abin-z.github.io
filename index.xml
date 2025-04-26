@@ -713,7 +713,7 @@ std::cout &amp;laquo; &amp;ldquo;===All tasks completed.===\n&amp;rdquo;;
 </description>
         </item>
         <item>
-        <title>SimpleTimer (基于C&#43;&#43;11的简单定时器)</title>
+        <title>基于C&#43;&#43;11的简单定时器(SimpleTimer)</title>
         <link>https://abin-z.github.io/p/simpletimer/</link>
         <pubDate>Sun, 13 Apr 2025 01:20:56 +0800</pubDate>
         
