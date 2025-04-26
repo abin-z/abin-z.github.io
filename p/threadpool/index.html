@@ -10,7 +10,7 @@
 <meta property='og:description' content="一个跨平台, 简单易用的Header-only线程池库, 基于Task提交, 支持提交任意参数提交, 支持获取返回值.\nGitHub仓库地址\n">
 <meta property='og:url' content='https://abin-z.github.io/p/threadpool/'>
 <meta property='og:site_name' content='Abin Blog'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-04-26T17:29:58&#43;08:00'/><meta property='article:modified_time' content='2025-04-26T17:46:43&#43;08:00'/>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-04-26T17:29:58&#43;08:00'/><meta property='article:modified_time' content='2025-04-26T17:58:49&#43;08:00'/>
 <meta name="twitter:title" content="C++跨平台轻量级线程池(ThreadPool)">
 <meta name="twitter:description" content="一个跨平台, 简单易用的Header-only线程池库, 基于Task提交, 支持提交任意参数提交, 支持获取返回值.\nGitHub仓库地址\n">
     <link rel="shortcut icon" href="/favicon.ico" />
@@ -286,6 +286,7 @@
         <li><a href="#基础示例代码">基础示例代码</a></li>
       </ol>
     </li>
+    <li><a href="#threadpool源码">ThreadPool源码</a></li>
   </ol>
 </nav>
         </div>
@@ -443,69 +444,169 @@
 </div>
 </div><p><strong>提交任意类型任意参数的可调用对象</strong></p>
 <details>
-<summary>点击展开查看代码</summary>
-```cpp
-#include "thread_pool.h"
-<p>#include <functional>
-#include <future>
-#include <iostream>
-#include <string></p>
-<p>void normal_function(int x)
-{
-std::cout &laquo; &ldquo;normal_function: &quot; &laquo; x &laquo; std::endl;
-}</p>
-<p>struct MyClass
-{
-void member_function(int y)
-{
-std::cout &laquo; &ldquo;MyClass::member_function: &quot; &laquo; y &laquo; std::endl;
-}
-int add(int a, int b)
-{
-return a + b;
-}
-};</p>
-<p>struct Functor
-{
-void operator()(const std::string&amp; msg) const
-{
-std::cout &laquo; &ldquo;Functor called with: &quot; &laquo; msg &laquo; std::endl;
-}
-};</p>
-<p>int main()
-{
-abin::threadpool pool(4);</p>
-<p>// 提交一个普通函数
-pool.submit(normal_function, 42);</p>
-<p>// 提交一个无捕获 lambda
-pool.submit([] { std::cout &laquo; &ldquo;lambda no capture\n&rdquo;; });</p>
-<p>// 提交一个有捕获 lambda
-int value = 99;
-pool.submit([value] { std::cout &laquo; &ldquo;lambda with capture: &quot; &laquo; value &laquo; &ldquo;\n&rdquo;; });</p>
-<p>// 提交成员函数, 使用lambda
-MyClass obj;
-pool.submit([&amp;obj] { obj.member_function(123); });</p>
-<p>// 提交成员函数, 使用 std::mem_fn
-std::future<int> ret = pool.submit(std::mem_fn(&amp;MyClass::add), &amp;obj, 3, 4);
-std::cout &laquo; &ldquo;add result1: &quot; &laquo; ret.get() &laquo; &ldquo;\n&rdquo;;</p>
-<p>// 提交成员函数, 使用 std::bind
-std::future<int> fut_add = pool.submit(std::bind(&amp;MyClass::add, &amp;obj, 2, 3));
-std::cout &laquo; &ldquo;add result2: &quot; &laquo; fut_add.get() &laquo; &ldquo;\n&rdquo;;</p>
-<p>// 提交一个函数对象(仿函数)
-Functor f;
-pool.submit(f, &ldquo;hello functor&rdquo;);</p>
-<p>// 使用 std::bind 提交
-auto bound = std::bind(&amp;MyClass::add, &amp;obj, 5, 6);
-std::future<int> fut_bound = pool.submit(bound);
-std::cout &laquo; &ldquo;bound result: &quot; &laquo; fut_bound.get() &laquo; &ldquo;\n&rdquo;;</p>
-<p>// 提交一个 std::packaged_task(注意: 低版本msvc可能报错)
-std::packaged_task<a class="link" href="std::string%28%29" >std::string()</a> task([] { return std::string(&ldquo;from packaged_task&rdquo;); });
-std::future<a class="link" href="std::string" >std::string</a> fut_str = task.get_future();
-pool.submit(std::move(task));  // 必须 move
-std::cout &laquo; &ldquo;packaged_task result: &quot; &laquo; fut_str.get() &laquo; &ldquo;\n&rdquo;;</p>
-<p>pool.wait_all();  // 等待任务完成
-std::cout &laquo; &ldquo;===All tasks completed.===\n&rdquo;;
-}</p>
+<summary>点击查看代码</summary>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;thread_pool.h&#34;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;functional&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;future&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;string&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">normal_function</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;normal_function: &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">x</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">MyClass</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">void</span> <span class="nf">member_function</span><span class="p">(</span><span class="kt">int</span> <span class="n">y</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;MyClass::member_function: &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">y</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="nf">add</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="n">b</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">Functor</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">void</span> <span class="nf">operator</span><span class="p">()(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">msg</span><span class="p">)</span> <span class="k">const</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;Functor called with: &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">msg</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">abin</span><span class="o">::</span><span class="n">threadpool</span> <span class="n">pool</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">// 提交一个普通函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">pool</span><span class="p">.</span><span class="n">submit</span><span class="p">(</span><span class="n">normal_function</span><span class="p">,</span> <span class="mi">42</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">// 提交一个无捕获 lambda
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">pool</span><span class="p">.</span><span class="n">submit</span><span class="p">([]</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;lambda no capture</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">;</span> <span class="p">});</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">// 提交一个有捕获 lambda
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">int</span> <span class="n">value</span> <span class="o">=</span> <span class="mi">99</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">pool</span><span class="p">.</span><span class="n">submit</span><span class="p">([</span><span class="n">value</span><span class="p">]</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;lambda with capture: &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">value</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">;</span> <span class="p">});</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">// 提交成员函数, 使用lambda
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">MyClass</span> <span class="n">obj</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">pool</span><span class="p">.</span><span class="n">submit</span><span class="p">([</span><span class="o">&amp;</span><span class="n">obj</span><span class="p">]</span> <span class="p">{</span> <span class="n">obj</span><span class="p">.</span><span class="n">member_function</span><span class="p">(</span><span class="mi">123</span><span class="p">);</span> <span class="p">});</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">// 提交成员函数, 使用 std::mem_fn
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">pool</span><span class="p">.</span><span class="n">submit</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">mem_fn</span><span class="p">(</span><span class="o">&amp;</span><span class="n">MyClass</span><span class="o">::</span><span class="n">add</span><span class="p">),</span> <span class="o">&amp;</span><span class="n">obj</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;add result1: &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">ret</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">// 提交成员函数, 使用 std::bind
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">fut_add</span> <span class="o">=</span> <span class="n">pool</span><span class="p">.</span><span class="n">submit</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="o">&amp;</span><span class="n">MyClass</span><span class="o">::</span><span class="n">add</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">obj</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;add result2: &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">fut_add</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">// 提交一个函数对象(仿函数)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">Functor</span> <span class="n">f</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">pool</span><span class="p">.</span><span class="n">submit</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s">&#34;hello functor&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">// 使用 std::bind 提交
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">auto</span> <span class="n">bound</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="o">&amp;</span><span class="n">MyClass</span><span class="o">::</span><span class="n">add</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">obj</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">fut_bound</span> <span class="o">=</span> <span class="n">pool</span><span class="p">.</span><span class="n">submit</span><span class="p">(</span><span class="n">bound</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;bound result: &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">fut_bound</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">// 提交一个 std::packaged_task(注意: 低版本msvc可能报错)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="n">packaged_task</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">()</span><span class="o">&gt;</span> <span class="n">task</span><span class="p">([]</span> <span class="p">{</span> <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="s">&#34;from packaged_task&#34;</span><span class="p">);</span> <span class="p">});</span>
+</span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">fut_str</span> <span class="o">=</span> <span class="n">task</span><span class="p">.</span><span class="n">get_future</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="n">pool</span><span class="p">.</span><span class="n">submit</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">task</span><span class="p">));</span>  <span class="c1">// 必须 move
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;packaged_task result: &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">fut_str</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">pool</span><span class="p">.</span><span class="n">wait_all</span><span class="p">();</span>  <span class="c1">// 等待任务完成
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;===All tasks completed.===</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></details>
+<h2 id="threadpool源码">ThreadPool源码
+</h2><details>
+<summary>点击查看线程池源码</summary>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">  1
@@ -770,267 +871,249 @@ std::cout &laquo; &ldquo;===All tasks completed.===\n&rdquo;;
 </span><span class="lnt">260
 </span><span class="lnt">261
 </span><span class="lnt">262
-</span><span class="lnt">263
-</span><span class="lnt">264
-</span><span class="lnt">265
-</span><span class="lnt">266
-</span><span class="lnt">267
-</span><span class="lnt">268
-</span><span class="lnt">269
-</span><span class="lnt">270
-</span><span class="lnt">271
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="o">&lt;/</span><span class="n">details</span><span class="o">&gt;</span>
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cm">/**************************************************************************************************************
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @file: thread_pool.h
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @version: v0.9.2
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @description: A cross-platform, lightweight, easy-to-use C++11 thread pool that supports submitting tasks with
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *               arbitrary parameters and obtaining return values
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *  - Futures
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *    - Task-based: Supports tasks with arbitrary parameters, and obtains return values ​​through `std::future`.
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *    - Cross-Platform: Works on platforms supporting C++11.
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *    - Thread Safety: Uses `std::mutex`, `std::condition_variable`, and atomic variables for synchronization.
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *    - Flexible Shutdown: Two modes for shutdown: `WaitForAllTasks` and `DiscardPendingTasks`.
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *    - Lightweight &amp; Easy-to-Use: Simple API with minimal setup.
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @author: abin
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @date: 2025-04-20
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @license: MIT
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @repository: https://github.com/abin-z/ThreadPool
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+</span></span></span><span class="line"><span class="cl"><span class="cm"> **************************************************************************************************************/</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">### ThreadPool源码</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="o">&lt;</span><span class="n">details</span><span class="o">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="o">&lt;</span><span class="n">summary</span><span class="o">&gt;</span><span class="err">点击查看线程池源码</span><span class="o">&lt;/</span><span class="n">summary</span><span class="o">&gt;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="err">```</span><span class="n">cpp</span>
-</span></span><span class="line"><span class="cl"><span class="o">/**************************************************************************************************************</span>
-</span></span><span class="line"><span class="cl"> <span class="o">*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
-</span></span><span class="line"><span class="cl"> <span class="o">*</span> <span class="err">@</span><span class="n">file</span><span class="p">:</span> <span class="n">thread_pool</span><span class="o">.</span><span class="n">h</span>
-</span></span><span class="line"><span class="cl"> <span class="o">*</span> <span class="err">@</span><span class="n">version</span><span class="p">:</span> <span class="n">v0</span><span class="o">.</span><span class="mf">9.2</span>
-</span></span><span class="line"><span class="cl"> <span class="o">*</span> <span class="err">@</span><span class="n">description</span><span class="p">:</span> <span class="n">A</span> <span class="n">cross</span><span class="o">-</span><span class="n">platform</span><span class="p">,</span> <span class="n">lightweight</span><span class="p">,</span> <span class="n">easy</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">use</span> <span class="n">C</span><span class="o">++</span><span class="mi">11</span> <span class="n">thread</span> <span class="n">pool</span> <span class="n">that</span> <span class="n">supports</span> <span class="n">submitting</span> <span class="n">tasks</span> <span class="n">with</span>
-</span></span><span class="line"><span class="cl"> <span class="o">*</span>               <span class="n">arbitrary</span> <span class="n">parameters</span> <span class="ow">and</span> <span class="n">obtaining</span> <span class="k">return</span> <span class="n">values</span>
-</span></span><span class="line"><span class="cl"> <span class="o">*</span>  <span class="o">-</span> <span class="n">Futures</span>
-</span></span><span class="line"><span class="cl"> <span class="o">*</span>    <span class="o">-</span> <span class="n">Task</span><span class="o">-</span><span class="n">based</span><span class="p">:</span> <span class="n">Supports</span> <span class="n">tasks</span> <span class="n">with</span> <span class="n">arbitrary</span> <span class="n">parameters</span><span class="p">,</span> <span class="ow">and</span> <span class="n">obtains</span> <span class="k">return</span> <span class="n">values</span> <span class="err">​​</span><span class="n">through</span> <span class="err">`</span><span class="n">std</span><span class="p">::</span><span class="n">future</span><span class="err">`</span><span class="o">.</span>
-</span></span><span class="line"><span class="cl"> <span class="o">*</span>    <span class="o">-</span> <span class="n">Cross</span><span class="o">-</span><span class="n">Platform</span><span class="p">:</span> <span class="n">Works</span> <span class="n">on</span> <span class="n">platforms</span> <span class="n">supporting</span> <span class="n">C</span><span class="o">++</span><span class="mf">11.</span>
-</span></span><span class="line"><span class="cl"> <span class="o">*</span>    <span class="o">-</span> <span class="ne">Thread</span> <span class="n">Safety</span><span class="p">:</span> <span class="n">Uses</span> <span class="err">`</span><span class="n">std</span><span class="p">::</span><span class="n">mutex</span><span class="err">`</span><span class="p">,</span> <span class="err">`</span><span class="n">std</span><span class="p">::</span><span class="n">condition_variable</span><span class="err">`</span><span class="p">,</span> <span class="ow">and</span> <span class="n">atomic</span> <span class="n">variables</span> <span class="k">for</span> <span class="n">synchronization</span><span class="o">.</span>
-</span></span><span class="line"><span class="cl"> <span class="o">*</span>    <span class="o">-</span> <span class="n">Flexible</span> <span class="n">Shutdown</span><span class="p">:</span> <span class="n">Two</span> <span class="n">modes</span> <span class="k">for</span> <span class="n">shutdown</span><span class="p">:</span> <span class="err">`</span><span class="n">WaitForAllTasks</span><span class="err">`</span> <span class="ow">and</span> <span class="err">`</span><span class="n">DiscardPendingTasks</span><span class="err">`</span><span class="o">.</span>
-</span></span><span class="line"><span class="cl"> <span class="o">*</span>    <span class="o">-</span> <span class="n">Lightweight</span> <span class="o">&amp;</span> <span class="n">Easy</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">Use</span><span class="p">:</span> <span class="n">Simple</span> <span class="n">API</span> <span class="n">with</span> <span class="n">minimal</span> <span class="n">setup</span><span class="o">.</span>
-</span></span><span class="line"><span class="cl"> <span class="o">*</span>
-</span></span><span class="line"><span class="cl"> <span class="o">*</span> <span class="err">@</span><span class="n">author</span><span class="p">:</span> <span class="n">abin</span>
-</span></span><span class="line"><span class="cl"> <span class="o">*</span> <span class="err">@</span><span class="n">date</span><span class="p">:</span> <span class="mi">2025</span><span class="o">-</span><span class="mi">04</span><span class="o">-</span><span class="mi">20</span>
-</span></span><span class="line"><span class="cl"> <span class="o">*</span> <span class="err">@</span><span class="n">license</span><span class="p">:</span> <span class="n">MIT</span>
-</span></span><span class="line"><span class="cl"> <span class="o">*</span> <span class="err">@</span><span class="n">repository</span><span class="p">:</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">abin</span><span class="o">-</span><span class="n">z</span><span class="o">/</span><span class="n">ThreadPool</span>
-</span></span><span class="line"><span class="cl"> <span class="o">*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
-</span></span><span class="line"><span class="cl"> <span class="o">**************************************************************************************************************/</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">#ifndef ABIN_THREADPOOL_H</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#define ABIN_THREADPOOL_H</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">#include &lt;atomic&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#include &lt;condition_variable&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#include &lt;functional&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#include &lt;future&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#include &lt;memory&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#include &lt;mutex&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#include &lt;queue&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#include &lt;stdexcept&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#include &lt;thread&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#include &lt;vector&gt;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="n">namespace</span> <span class="n">abin</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#ifndef ABIN_THREADPOOL_H
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define ABIN_THREADPOOL_H
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;atomic&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;condition_variable&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;functional&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;future&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;memory&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;mutex&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;queue&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdexcept&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;thread&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;vector&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="k">namespace</span> <span class="n">abin</span>
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl"><span class="o">///</span> <span class="err">@</span><span class="n">brief</span> <span class="n">C</span><span class="o">++</span><span class="mi">11</span><span class="err">的线程池</span><span class="p">,</span> <span class="err">提交任务支持任意多参数</span><span class="p">,</span> <span class="err">支持获取返回值</span>
-</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="n">threadpool</span>
+</span></span><span class="line"><span class="cl"><span class="c1">/// @brief C++11的线程池, 提交任务支持任意多参数, 支持获取返回值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">class</span> <span class="nc">threadpool</span>
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="n">using</span> <span class="n">task_t</span> <span class="o">=</span> <span class="n">std</span><span class="p">::</span><span class="n">function</span><span class="o">&lt;</span><span class="n">void</span><span class="p">()</span><span class="o">&gt;</span><span class="p">;</span>  <span class="o">//</span> <span class="err">定义任务类型为可调用对象</span>
-</span></span><span class="line"><span class="cl"> <span class="n">public</span><span class="p">:</span>
-</span></span><span class="line"><span class="cl">  <span class="o">///</span> <span class="err">@</span><span class="n">brief</span> <span class="err">线程池当前状态信息结构体</span>
-</span></span><span class="line"><span class="cl">  <span class="n">struct</span> <span class="n">status_info</span>
+</span></span><span class="line"><span class="cl">  <span class="k">using</span> <span class="n">task_t</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">()</span><span class="o">&gt;</span><span class="p">;</span>  <span class="c1">// 定义任务类型为可调用对象
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span> <span class="k">public</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief 线程池当前状态信息结构体
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">struct</span> <span class="nc">status_info</span>
 </span></span><span class="line"><span class="cl">  <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="p">::</span><span class="n">size_t</span> <span class="n">total_threads</span><span class="p">;</span>  <span class="o">//</span> <span class="err">总线程数</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="p">::</span><span class="n">size_t</span> <span class="n">busy_threads</span><span class="p">;</span>   <span class="o">//</span> <span class="err">正在执行任务的线程数</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="p">::</span><span class="n">size_t</span> <span class="n">idle_threads</span><span class="p">;</span>   <span class="o">//</span> <span class="err">空闲线程数</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="p">::</span><span class="n">size_t</span> <span class="n">pending_tasks</span><span class="p">;</span>  <span class="o">//</span> <span class="err">等待中的任务数</span>
-</span></span><span class="line"><span class="cl">    <span class="ne">bool</span> <span class="n">running</span><span class="p">;</span>               <span class="o">//</span> <span class="err">线程池是否在运行</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">size_t</span> <span class="n">total_threads</span><span class="p">;</span>  <span class="c1">// 总线程数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">std</span><span class="o">::</span><span class="n">size_t</span> <span class="n">busy_threads</span><span class="p">;</span>   <span class="c1">// 正在执行任务的线程数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">std</span><span class="o">::</span><span class="n">size_t</span> <span class="n">idle_threads</span><span class="p">;</span>   <span class="c1">// 空闲线程数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">std</span><span class="o">::</span><span class="n">size_t</span> <span class="n">pending_tasks</span><span class="p">;</span>  <span class="c1">// 等待中的任务数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">bool</span> <span class="n">running</span><span class="p">;</span>               <span class="c1">// 线程池是否在运行
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief 关闭线程池的模式
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">enum</span> <span class="k">class</span> <span class="nc">shutdown_mode</span> <span class="o">:</span> <span class="kt">unsigned</span> <span class="kt">char</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">/// @brief 等待所有已提交的任务完成后再关闭线程池
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">/// 在此模式下, 线程池会等待所有任务(包括已开始和未开始的任务)执行完成后再关闭.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">WaitForAllTasks</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">/// @brief 立即关闭线程池, 丢弃尚未开始的任务.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">/// 在此模式下, 线程池会立即停止接收新任务, 丢弃所有尚未开始执行的任务,
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">/// 但已经开始执行的任务会继续执行, 直到它们完成.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">DiscardPendingTasks</span>
 </span></span><span class="line"><span class="cl">  <span class="p">};</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  <span class="o">///</span> <span class="err">@</span><span class="n">brief</span> <span class="err">关闭线程池的模式</span>
-</span></span><span class="line"><span class="cl">  <span class="k">enum</span> <span class="k">class</span> <span class="n">shutdown_mode</span> <span class="p">:</span> <span class="n">unsigned</span> <span class="n">char</span>
+</span></span><span class="line"><span class="cl"> <span class="k">public</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief 构造函数, 初始化线程池并启动指定数量的工作线程
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">/// @param thread_count 要创建的线程数量, 默认为硬件支持的并发线程数(若无法获取则为 4)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">explicit</span> <span class="n">threadpool</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">size_t</span> <span class="n">thread_count</span> <span class="o">=</span> <span class="n">default_thread_count</span><span class="p">())</span>
 </span></span><span class="line"><span class="cl">  <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="o">///</span> <span class="err">@</span><span class="n">brief</span> <span class="err">等待所有已提交的任务完成后再关闭线程池</span>
-</span></span><span class="line"><span class="cl">    <span class="o">///</span> <span class="err">在此模式下</span><span class="p">,</span> <span class="err">线程池会等待所有任务</span><span class="p">(</span><span class="err">包括已开始和未开始的任务</span><span class="p">)</span><span class="err">执行完成后再关闭</span><span class="o">.</span>
-</span></span><span class="line"><span class="cl">    <span class="n">WaitForAllTasks</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">launch_threads</span><span class="p">(</span><span class="n">validate_thread_count</span><span class="p">(</span><span class="n">thread_count</span><span class="p">));</span>  <span class="c1">// 创建线程
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="o">///</span> <span class="err">@</span><span class="n">brief</span> <span class="err">立即关闭线程池</span><span class="p">,</span> <span class="err">丢弃尚未开始的任务</span><span class="o">.</span>
-</span></span><span class="line"><span class="cl">    <span class="o">///</span> <span class="err">在此模式下</span><span class="p">,</span> <span class="err">线程池会立即停止接收新任务</span><span class="p">,</span> <span class="err">丢弃所有尚未开始执行的任务</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="o">///</span> <span class="err">但已经开始执行的任务会继续执行</span><span class="p">,</span> <span class="err">直到它们完成</span><span class="o">.</span>
-</span></span><span class="line"><span class="cl">    <span class="n">DiscardPendingTasks</span>
-</span></span><span class="line"><span class="cl">  <span class="p">};</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"> <span class="n">public</span><span class="p">:</span>
-</span></span><span class="line"><span class="cl">  <span class="o">///</span> <span class="err">@</span><span class="n">brief</span> <span class="err">构造函数</span><span class="p">,</span> <span class="err">初始化线程池并启动指定数量的工作线程</span>
-</span></span><span class="line"><span class="cl">  <span class="o">///</span> <span class="err">@</span><span class="n">param</span> <span class="n">thread_count</span> <span class="err">要创建的线程数量</span><span class="p">,</span> <span class="err">默认为硬件支持的并发线程数</span><span class="p">(</span><span class="err">若无法获取则为</span> <span class="mi">4</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="n">explicit</span> <span class="n">threadpool</span><span class="p">(</span><span class="n">std</span><span class="p">::</span><span class="n">size_t</span> <span class="n">thread_count</span> <span class="o">=</span> <span class="n">default_thread_count</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief 析构函数, 停止所有线程并等待它们完成
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="o">~</span><span class="n">threadpool</span><span class="p">()</span>
 </span></span><span class="line"><span class="cl">  <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">launch_threads</span><span class="p">(</span><span class="n">validate_thread_count</span><span class="p">(</span><span class="n">thread_count</span><span class="p">));</span>  <span class="o">//</span> <span class="err">创建线程</span>
+</span></span><span class="line"><span class="cl">    <span class="n">shutdown</span><span class="p">(</span><span class="n">shutdown_mode</span><span class="o">::</span><span class="n">WaitForAllTasks</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">  <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  <span class="o">///</span> <span class="err">@</span><span class="n">brief</span> <span class="err">析构函数</span><span class="p">,</span> <span class="err">停止所有线程并等待它们完成</span>
-</span></span><span class="line"><span class="cl">  <span class="o">~</span><span class="n">threadpool</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief 提交任务到线程池并返回一个 future 对象, 用户可以通过它获取任务的返回值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">///
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">/// @tparam F 任务类型的可调用对象
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">/// @tparam Args 可调用对象的参数类型
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">/// @param f 需要提交的任务
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">/// @param args 任务的参数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">/// @return std::future&lt;decltype(f(args...))&gt; 返回一个 future 对象, 允许用户获取任务的返回值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">F</span><span class="p">,</span> <span class="k">typename</span><span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">auto</span> <span class="n">submit</span><span class="p">(</span><span class="n">F</span> <span class="o">&amp;&amp;</span><span class="n">f</span><span class="p">,</span> <span class="n">Args</span> <span class="o">&amp;&amp;</span><span class="p">...</span><span class="n">args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">args</span><span class="p">...))</span><span class="o">&gt;</span>
 </span></span><span class="line"><span class="cl">  <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">shutdown</span><span class="p">(</span><span class="n">shutdown_mode</span><span class="p">::</span><span class="n">WaitForAllTasks</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">running_</span><span class="p">)</span> <span class="k">throw</span> <span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span><span class="s">&#34;error: ThreadPool is not running. Cannot submit new tasks.&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">using</span> <span class="n">return_type</span> <span class="o">=</span> <span class="k">decltype</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">args</span><span class="p">...));</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 将 f 包装成 task, task 是一个 shared_ptr 指向 packaged_task
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">auto</span> <span class="n">task</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">packaged_task</span><span class="o">&lt;</span><span class="n">return_type</span><span class="p">()</span><span class="o">&gt;&gt;</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">      <span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">F</span><span class="o">&gt;</span><span class="p">(</span><span class="n">f</span><span class="p">),</span> <span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">Args</span><span class="o">&gt;</span><span class="p">(</span><span class="n">args</span><span class="p">)...)</span>  <span class="c1">// 将函数和参数封装成一个 return_type() 的可调用对象
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">return_type</span><span class="o">&gt;</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">task</span><span class="o">-&gt;</span><span class="n">get_future</span><span class="p">();</span>  <span class="c1">// 获取与 task 相关联的 future
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">std</span><span class="o">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="n">mtx_</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="n">task_queue_</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="n">task</span><span class="p">]</span> <span class="p">{</span> <span class="p">(</span><span class="o">*</span><span class="n">task</span><span class="p">)();</span> <span class="p">});</span>  <span class="c1">// 将任务添加到任务队列中
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cv_</span><span class="p">.</span><span class="n">notify_one</span><span class="p">();</span>  <span class="c1">// 通知一个等待中的工作线程有新的任务可以执行
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">return</span> <span class="n">ret</span><span class="p">;</span>        <span class="c1">// 返回 future 对象
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  <span class="o">///</span> <span class="err">@</span><span class="n">brief</span> <span class="err">提交任务到线程池并返回一个</span> <span class="n">future</span> <span class="err">对象</span><span class="p">,</span> <span class="err">用户可以通过它获取任务的返回值</span>
-</span></span><span class="line"><span class="cl">  <span class="o">///</span>
-</span></span><span class="line"><span class="cl">  <span class="o">///</span> <span class="err">@</span><span class="n">tparam</span> <span class="n">F</span> <span class="err">任务类型的可调用对象</span>
-</span></span><span class="line"><span class="cl">  <span class="o">///</span> <span class="err">@</span><span class="n">tparam</span> <span class="n">Args</span> <span class="err">可调用对象的参数类型</span>
-</span></span><span class="line"><span class="cl">  <span class="o">///</span> <span class="err">@</span><span class="n">param</span> <span class="n">f</span> <span class="err">需要提交的任务</span>
-</span></span><span class="line"><span class="cl">  <span class="o">///</span> <span class="err">@</span><span class="n">param</span> <span class="n">args</span> <span class="err">任务的参数</span>
-</span></span><span class="line"><span class="cl">  <span class="o">///</span> <span class="err">@</span><span class="k">return</span> <span class="n">std</span><span class="p">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">decltype</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">args</span><span class="o">...</span><span class="p">))</span><span class="o">&gt;</span> <span class="err">返回一个</span> <span class="n">future</span> <span class="err">对象</span><span class="p">,</span> <span class="err">允许用户获取任务的返回值</span>
-</span></span><span class="line"><span class="cl">  <span class="n">template</span> <span class="o">&lt;</span><span class="n">typename</span> <span class="n">F</span><span class="p">,</span> <span class="n">typename</span><span class="o">...</span> <span class="n">Args</span><span class="o">&gt;</span>
-</span></span><span class="line"><span class="cl">  <span class="n">auto</span> <span class="n">submit</span><span class="p">(</span><span class="n">F</span> <span class="o">&amp;&amp;</span><span class="n">f</span><span class="p">,</span> <span class="n">Args</span> <span class="o">&amp;&amp;...</span><span class="n">args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">std</span><span class="p">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">decltype</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">args</span><span class="o">...</span><span class="p">))</span><span class="o">&gt;</span>
-</span></span><span class="line"><span class="cl">  <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">running_</span><span class="p">)</span> <span class="n">throw</span> <span class="n">std</span><span class="p">::</span><span class="n">runtime_error</span><span class="p">(</span><span class="s2">&#34;error: ThreadPool is not running. Cannot submit new tasks.&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="n">using</span> <span class="n">return_type</span> <span class="o">=</span> <span class="n">decltype</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">args</span><span class="o">...</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">    <span class="o">//</span> <span class="err">将</span> <span class="n">f</span> <span class="err">包装成</span> <span class="n">task</span><span class="p">,</span> <span class="n">task</span> <span class="err">是一个</span> <span class="n">shared_ptr</span> <span class="err">指向</span> <span class="n">packaged_task</span>
-</span></span><span class="line"><span class="cl">    <span class="n">auto</span> <span class="n">task</span> <span class="o">=</span> <span class="n">std</span><span class="p">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">std</span><span class="p">::</span><span class="n">packaged_task</span><span class="o">&lt;</span><span class="n">return_type</span><span class="p">()</span><span class="o">&gt;&gt;</span><span class="p">(</span>
-</span></span><span class="line"><span class="cl">      <span class="n">std</span><span class="p">::</span><span class="n">bind</span><span class="p">(</span><span class="n">std</span><span class="p">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">F</span><span class="o">&gt;</span><span class="p">(</span><span class="n">f</span><span class="p">),</span> <span class="n">std</span><span class="p">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">Args</span><span class="o">&gt;</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="o">...</span><span class="p">)</span>  <span class="o">//</span> <span class="err">将函数和参数封装成一个</span> <span class="n">return_type</span><span class="p">()</span> <span class="err">的可调用对象</span>
-</span></span><span class="line"><span class="cl">    <span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="p">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">return_type</span><span class="o">&gt;</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">task</span><span class="o">-&gt;</span><span class="n">get_future</span><span class="p">();</span>  <span class="o">//</span> <span class="err">获取与</span> <span class="n">task</span> <span class="err">相关联的</span> <span class="n">future</span>
-</span></span><span class="line"><span class="cl">    <span class="p">{</span>
-</span></span><span class="line"><span class="cl">      <span class="n">std</span><span class="p">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="p">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="n">mtx_</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">      <span class="n">task_queue_</span><span class="o">.</span><span class="n">emplace</span><span class="p">([</span><span class="n">task</span><span class="p">]</span> <span class="p">{</span> <span class="p">(</span><span class="o">*</span><span class="n">task</span><span class="p">)();</span> <span class="p">});</span>  <span class="o">//</span> <span class="err">将任务添加到任务队列中</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="n">cv_</span><span class="o">.</span><span class="n">notify_one</span><span class="p">();</span>  <span class="o">//</span> <span class="err">通知一个等待中的工作线程有新的任务可以执行</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">ret</span><span class="p">;</span>        <span class="o">//</span> <span class="err">返回</span> <span class="n">future</span> <span class="err">对象</span>
-</span></span><span class="line"><span class="cl">  <span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  <span class="o">///</span> <span class="err">@</span><span class="n">brief</span> <span class="err">阻塞直到所有任务完成</span><span class="p">(</span><span class="err">任务队列为空且没有任务在执行</span><span class="p">),</span> <span class="err">若没有任务，立即返回</span>
-</span></span><span class="line"><span class="cl">  <span class="n">void</span> <span class="n">wait_all</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief 阻塞直到所有任务完成(任务队列为空且没有任务在执行), 若没有任务，立即返回
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">void</span> <span class="nf">wait_all</span><span class="p">()</span>
 </span></span><span class="line"><span class="cl">  <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">busy_count_</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">pending_tasks</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="p">::</span><span class="n">unique_lock</span><span class="o">&lt;</span><span class="n">std</span><span class="p">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="n">mtx_done_</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="n">cv_done_</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">lock</span><span class="p">,</span> <span class="p">[</span><span class="n">this</span><span class="p">]</span> <span class="p">{</span> <span class="k">return</span> <span class="n">busy_count_</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">pending_tasks</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span> <span class="p">});</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">unique_lock</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="n">mtx_done_</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cv_done_</span><span class="p">.</span><span class="n">wait</span><span class="p">(</span><span class="n">lock</span><span class="p">,</span> <span class="p">[</span><span class="k">this</span><span class="p">]</span> <span class="p">{</span> <span class="k">return</span> <span class="n">busy_count_</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">pending_tasks</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span> <span class="p">});</span>
 </span></span><span class="line"><span class="cl">  <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  <span class="o">///</span> <span class="err">@</span><span class="n">brief</span> <span class="err">关闭线程池</span>
-</span></span><span class="line"><span class="cl">  <span class="o">///</span> <span class="err">@</span><span class="n">param</span> <span class="n">mode</span> <span class="err">`</span><span class="n">WaitForAllTasks</span><span class="err">`</span> <span class="err">等待所有任务执行完成后再关闭</span><span class="p">;</span> <span class="err">`</span><span class="n">DiscardPendingTasks</span><span class="err">`</span> <span class="err">立即关闭线程池</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">  <span class="o">///</span> <span class="err">抛弃尚未开始的任务</span><span class="o">.</span>
-</span></span><span class="line"><span class="cl">  <span class="n">void</span> <span class="n">shutdown</span><span class="p">(</span><span class="n">shutdown_mode</span> <span class="n">mode</span> <span class="o">=</span> <span class="n">shutdown_mode</span><span class="p">::</span><span class="n">WaitForAllTasks</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief 关闭线程池
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">/// @param mode `WaitForAllTasks` 等待所有任务执行完成后再关闭; `DiscardPendingTasks` 立即关闭线程池,
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">/// 抛弃尚未开始的任务.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">void</span> <span class="nf">shutdown</span><span class="p">(</span><span class="n">shutdown_mode</span> <span class="n">mode</span> <span class="o">=</span> <span class="n">shutdown_mode</span><span class="o">::</span><span class="n">WaitForAllTasks</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">  <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="p">{</span>
-</span></span><span class="line"><span class="cl">      <span class="n">std</span><span class="p">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="p">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="n">mtx_</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">running_</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>  <span class="o">//</span> <span class="err">已经关闭则直接返回</span>
-</span></span><span class="line"><span class="cl">      <span class="n">running_</span> <span class="o">=</span> <span class="bp">false</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="n">mode</span> <span class="o">==</span> <span class="n">shutdown_mode</span><span class="p">::</span><span class="n">DiscardPendingTasks</span><span class="p">)</span>  <span class="o">//</span> <span class="err">放弃任务模式</span>
-</span></span><span class="line"><span class="cl">      <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="n">std</span><span class="p">::</span><span class="n">queue</span><span class="o">&lt;</span><span class="n">task_t</span><span class="o">&gt;</span> <span class="n">empty</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="n">std</span><span class="p">::</span><span class="n">swap</span><span class="p">(</span><span class="n">task_queue_</span><span class="p">,</span> <span class="n">empty</span><span class="p">);</span>  <span class="o">//</span> <span class="err">清空任务队列</span>
-</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="n">std</span><span class="o">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="n">mtx_</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">running_</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>  <span class="c1">// 已经关闭则直接返回
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">running_</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="n">mode</span> <span class="o">==</span> <span class="n">shutdown_mode</span><span class="o">::</span><span class="n">DiscardPendingTasks</span><span class="p">)</span>  <span class="c1">// 放弃任务模式
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">std</span><span class="o">::</span><span class="n">queue</span><span class="o">&lt;</span><span class="n">task_t</span><span class="o">&gt;</span> <span class="n">empty</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">std</span><span class="o">::</span><span class="n">swap</span><span class="p">(</span><span class="n">task_queue_</span><span class="p">,</span> <span class="n">empty</span><span class="p">);</span>  <span class="c1">// 清空任务队列
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="p">}</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="n">cv_</span><span class="o">.</span><span class="n">notify_all</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="n">std</span><span class="p">::</span><span class="n">thread</span> <span class="o">&amp;</span><span class="n">worker</span> <span class="p">:</span> <span class="n">workers_</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cv_</span><span class="p">.</span><span class="n">notify_all</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kr">thread</span> <span class="o">&amp;</span><span class="nl">worker</span> <span class="p">:</span> <span class="n">workers_</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">    <span class="p">{</span>
-</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="n">worker</span><span class="o">.</span><span class="n">joinable</span><span class="p">())</span> <span class="n">worker</span><span class="o">.</span><span class="n">join</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="n">worker</span><span class="p">.</span><span class="n">joinable</span><span class="p">())</span> <span class="n">worker</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="n">workers_</span><span class="o">.</span><span class="n">clear</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">workers_</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
 </span></span><span class="line"><span class="cl">  <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  <span class="o">///</span> <span class="err">@</span><span class="n">brief</span> <span class="err">重启线程池</span><span class="p">,</span> <span class="err">先关闭当前线程池</span><span class="p">(</span><span class="err">等待所有任务完成</span><span class="p">),</span> <span class="err">然后以指定的线程数量重新启动线程池</span><span class="o">.</span>
-</span></span><span class="line"><span class="cl">  <span class="o">///</span> <span class="err">@</span><span class="n">param</span> <span class="n">thread_count</span> <span class="err">要创建的工作线程数量</span>
-</span></span><span class="line"><span class="cl">  <span class="n">void</span> <span class="n">reboot</span><span class="p">(</span><span class="n">std</span><span class="p">::</span><span class="n">size_t</span> <span class="n">thread_count</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief 重启线程池, 先关闭当前线程池(等待所有任务完成), 然后以指定的线程数量重新启动线程池.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">/// @param thread_count 要创建的工作线程数量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">void</span> <span class="nf">reboot</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">size_t</span> <span class="n">thread_count</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">  <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">shutdown</span><span class="p">(</span><span class="n">shutdown_mode</span><span class="p">::</span><span class="n">WaitForAllTasks</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">shutdown</span><span class="p">(</span><span class="n">shutdown_mode</span><span class="o">::</span><span class="n">WaitForAllTasks</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="p">{</span>
-</span></span><span class="line"><span class="cl">      <span class="n">std</span><span class="p">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="p">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="n">mtx_</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="n">running_</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>  <span class="o">//</span> <span class="err">已重启</span><span class="p">,</span> <span class="err">无需再次初始化</span><span class="p">(</span><span class="err">幂等</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">      <span class="n">running_</span> <span class="o">=</span> <span class="bp">true</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="n">std</span><span class="o">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="n">mtx_</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="n">running_</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>  <span class="c1">// 已重启, 无需再次初始化(幂等)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">running_</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">      <span class="n">launch_threads</span><span class="p">(</span><span class="n">validate_thread_count</span><span class="p">(</span><span class="n">thread_count</span><span class="p">));</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">  <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  <span class="o">///</span> <span class="err">@</span><span class="n">brief</span> <span class="err">当前线程池的总线程数量</span>
-</span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="p">::</span><span class="n">size_t</span> <span class="n">total_threads</span><span class="p">()</span> <span class="k">const</span> <span class="n">noexcept</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief 当前线程池的总线程数量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="n">size_t</span> <span class="n">total_threads</span><span class="p">()</span> <span class="k">const</span> <span class="k">noexcept</span>
 </span></span><span class="line"><span class="cl">  <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">workers_</span><span class="o">.</span><span class="n">size</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">workers_</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
 </span></span><span class="line"><span class="cl">  <span class="p">}</span>
-</span></span><span class="line"><span class="cl">  <span class="o">///</span> <span class="err">@</span><span class="n">brief</span> <span class="err">获取当前等待的任务数量</span>
-</span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="p">::</span><span class="n">size_t</span> <span class="n">pending_tasks</span><span class="p">()</span> <span class="k">const</span> <span class="n">noexcept</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief 获取当前等待的任务数量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="n">size_t</span> <span class="n">pending_tasks</span><span class="p">()</span> <span class="k">const</span> <span class="k">noexcept</span>
 </span></span><span class="line"><span class="cl">  <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="p">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="p">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="n">mtx_</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">task_queue_</span><span class="o">.</span><span class="n">size</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="n">mtx_</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">task_queue_</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
 </span></span><span class="line"><span class="cl">  <span class="p">}</span>
-</span></span><span class="line"><span class="cl">  <span class="o">///</span> <span class="err">@</span><span class="n">brief</span> <span class="err">获取繁忙的线程数量</span>
-</span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="p">::</span><span class="n">size_t</span> <span class="n">busy_threads</span><span class="p">()</span> <span class="k">const</span> <span class="n">noexcept</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief 获取繁忙的线程数量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="n">size_t</span> <span class="n">busy_threads</span><span class="p">()</span> <span class="k">const</span> <span class="k">noexcept</span>
 </span></span><span class="line"><span class="cl">  <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">busy_count_</span><span class="o">.</span><span class="n">load</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">busy_count_</span><span class="p">.</span><span class="n">load</span><span class="p">();</span>
 </span></span><span class="line"><span class="cl">  <span class="p">}</span>
-</span></span><span class="line"><span class="cl">  <span class="o">///</span> <span class="err">@</span><span class="n">brief</span> <span class="err">获取空闲线程数量</span>
-</span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="p">::</span><span class="n">size_t</span> <span class="n">idle_threads</span><span class="p">()</span> <span class="k">const</span> <span class="n">noexcept</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief 获取空闲线程数量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="n">size_t</span> <span class="n">idle_threads</span><span class="p">()</span> <span class="k">const</span> <span class="k">noexcept</span>
 </span></span><span class="line"><span class="cl">  <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">workers_</span><span class="o">.</span><span class="n">size</span><span class="p">()</span> <span class="o">-</span> <span class="n">busy_count_</span><span class="o">.</span><span class="n">load</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">workers_</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">-</span> <span class="n">busy_count_</span><span class="p">.</span><span class="n">load</span><span class="p">();</span>
 </span></span><span class="line"><span class="cl">  <span class="p">}</span>
-</span></span><span class="line"><span class="cl">  <span class="o">///</span> <span class="err">@</span><span class="n">brief</span> <span class="err">当前线程池是否正在运行</span><span class="p">(</span><span class="err">未停止</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="ne">bool</span> <span class="n">is_running</span><span class="p">()</span> <span class="k">const</span> <span class="n">noexcept</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief 当前线程池是否正在运行(未停止)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">bool</span> <span class="nf">is_running</span><span class="p">()</span> <span class="k">const</span> <span class="k">noexcept</span>
 </span></span><span class="line"><span class="cl">  <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">running_</span><span class="o">.</span><span class="n">load</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">running_</span><span class="p">.</span><span class="n">load</span><span class="p">();</span>
 </span></span><span class="line"><span class="cl">  <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  <span class="o">///</span> <span class="err">@</span><span class="n">brief</span> <span class="err">获取线程池的当前状态信息</span>
-</span></span><span class="line"><span class="cl">  <span class="n">status_info</span> <span class="n">status</span><span class="p">()</span> <span class="k">const</span> <span class="n">noexcept</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief 获取线程池的当前状态信息
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">status_info</span> <span class="nf">status</span><span class="p">()</span> <span class="k">const</span> <span class="k">noexcept</span>
 </span></span><span class="line"><span class="cl">  <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="p">::</span><span class="n">size_t</span> <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="p">::</span><span class="n">size_t</span> <span class="n">pending</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">size_t</span> <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">size_t</span> <span class="n">pending</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">    <span class="p">{</span>
-</span></span><span class="line"><span class="cl">      <span class="n">std</span><span class="p">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="p">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="n">mtx_</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">      <span class="n">total</span> <span class="o">=</span> <span class="n">workers_</span><span class="o">.</span><span class="n">size</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl">      <span class="n">pending</span> <span class="o">=</span> <span class="n">task_queue_</span><span class="o">.</span><span class="n">size</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">      <span class="n">std</span><span class="o">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="n">mtx_</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="n">total</span> <span class="o">=</span> <span class="n">workers_</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">      <span class="n">pending</span> <span class="o">=</span> <span class="n">task_queue_</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="p">::</span><span class="n">size_t</span> <span class="n">busy</span> <span class="o">=</span> <span class="n">busy_count_</span><span class="o">.</span><span class="n">load</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="p">::</span><span class="n">size_t</span> <span class="n">idle</span> <span class="o">=</span> <span class="n">total</span> <span class="o">-</span> <span class="n">busy</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="p">{</span><span class="n">total</span><span class="p">,</span> <span class="n">busy</span><span class="p">,</span> <span class="n">idle</span><span class="p">,</span> <span class="n">pending</span><span class="p">,</span> <span class="n">running_</span><span class="o">.</span><span class="n">load</span><span class="p">()};</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">size_t</span> <span class="n">busy</span> <span class="o">=</span> <span class="n">busy_count_</span><span class="p">.</span><span class="n">load</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">size_t</span> <span class="n">idle</span> <span class="o">=</span> <span class="n">total</span> <span class="o">-</span> <span class="n">busy</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="p">{</span><span class="n">total</span><span class="p">,</span> <span class="n">busy</span><span class="p">,</span> <span class="n">idle</span><span class="p">,</span> <span class="n">pending</span><span class="p">,</span> <span class="n">running_</span><span class="p">.</span><span class="n">load</span><span class="p">()};</span>
 </span></span><span class="line"><span class="cl">  <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  <span class="o">//</span> <span class="err">禁用拷贝构造函数和拷贝赋值操作符</span>
-</span></span><span class="line"><span class="cl">  <span class="n">threadpool</span><span class="p">(</span><span class="k">const</span> <span class="n">threadpool</span> <span class="o">&amp;</span><span class="p">)</span> <span class="o">=</span> <span class="n">delete</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">  <span class="n">threadpool</span> <span class="o">&amp;</span><span class="n">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">threadpool</span> <span class="o">&amp;</span><span class="p">)</span> <span class="o">=</span> <span class="n">delete</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">  <span class="o">//</span> <span class="err">禁用移动构造函数和移动赋值操作符</span>
-</span></span><span class="line"><span class="cl">  <span class="n">threadpool</span><span class="p">(</span><span class="n">threadpool</span> <span class="o">&amp;&amp;</span><span class="p">)</span> <span class="o">=</span> <span class="n">delete</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">  <span class="n">threadpool</span> <span class="o">&amp;</span><span class="n">operator</span><span class="o">=</span><span class="p">(</span><span class="n">threadpool</span> <span class="o">&amp;&amp;</span><span class="p">)</span> <span class="o">=</span> <span class="n">delete</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// 禁用拷贝构造函数和拷贝赋值操作符
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">threadpool</span><span class="p">(</span><span class="k">const</span> <span class="n">threadpool</span> <span class="o">&amp;</span><span class="p">)</span> <span class="o">=</span> <span class="k">delete</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">threadpool</span> <span class="o">&amp;</span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">threadpool</span> <span class="o">&amp;</span><span class="p">)</span> <span class="o">=</span> <span class="k">delete</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// 禁用移动构造函数和移动赋值操作符
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">threadpool</span><span class="p">(</span><span class="n">threadpool</span> <span class="o">&amp;&amp;</span><span class="p">)</span> <span class="o">=</span> <span class="k">delete</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">threadpool</span> <span class="o">&amp;</span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="n">threadpool</span> <span class="o">&amp;&amp;</span><span class="p">)</span> <span class="o">=</span> <span class="k">delete</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"> <span class="n">private</span><span class="p">:</span>
-</span></span><span class="line"><span class="cl">  <span class="o">///</span> <span class="err">@</span><span class="n">brief</span> <span class="err">默认线程数</span><span class="p">,</span> <span class="err">获取硬件支持的并发线程数</span><span class="p">,</span> <span class="err">若无法获取则默认为</span><span class="mi">4</span>
-</span></span><span class="line"><span class="cl">  <span class="k">static</span> <span class="n">std</span><span class="p">::</span><span class="n">size_t</span> <span class="n">default_thread_count</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"> <span class="k">private</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief 默认线程数, 获取硬件支持的并发线程数, 若无法获取则默认为4
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">size_t</span> <span class="n">default_thread_count</span><span class="p">()</span>
 </span></span><span class="line"><span class="cl">  <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">auto</span> <span class="n">n</span> <span class="o">=</span> <span class="n">std</span><span class="p">::</span><span class="n">thread</span><span class="p">::</span><span class="n">hardware_concurrency</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span> <span class="err">?</span> <span class="mi">4</span> <span class="p">:</span> <span class="n">n</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">auto</span> <span class="n">n</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="kr">thread</span><span class="o">::</span><span class="n">hardware_concurrency</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="mi">4</span> <span class="o">:</span> <span class="n">n</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  <span class="o">///</span> <span class="err">@</span><span class="n">brief</span> <span class="err">验证线程数是否合法</span><span class="p">,</span> <span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">count</span> <span class="o">&lt;=</span> <span class="mi">4096</span>
-</span></span><span class="line"><span class="cl">  <span class="k">static</span> <span class="n">std</span><span class="p">::</span><span class="n">size_t</span> <span class="n">validate_thread_count</span><span class="p">(</span><span class="n">std</span><span class="p">::</span><span class="n">size_t</span> <span class="n">count</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief 验证线程数是否合法, 1 &lt;= count &lt;= 4096
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">size_t</span> <span class="n">validate_thread_count</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">size_t</span> <span class="n">count</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">  <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">count</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="o">||</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="mi">4096</span><span class="p">)</span> <span class="n">throw</span> <span class="n">std</span><span class="p">::</span><span class="n">invalid_argument</span><span class="p">(</span><span class="s2">&#34;invalid thread_count: must be in range [1, 1024]&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">count</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="o">||</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="mi">4096</span><span class="p">)</span> <span class="k">throw</span> <span class="n">std</span><span class="o">::</span><span class="n">invalid_argument</span><span class="p">(</span><span class="s">&#34;invalid thread_count: must be in range [1, 1024]&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">count</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  <span class="o">///</span> <span class="err">@</span><span class="n">brief</span> <span class="err">启动线程池</span><span class="p">,</span> <span class="err">创建指定数量的工作线程</span>
-</span></span><span class="line"><span class="cl">  <span class="o">///</span> <span class="err">@</span><span class="n">param</span> <span class="n">thread_count</span> <span class="err">线程池中线程的数量</span>
-</span></span><span class="line"><span class="cl">  <span class="n">void</span> <span class="n">launch_threads</span><span class="p">(</span><span class="n">std</span><span class="p">::</span><span class="n">size_t</span> <span class="n">thread_count</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">/// @brief 启动线程池, 创建指定数量的工作线程
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">/// @param thread_count 线程池中线程的数量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">void</span> <span class="nf">launch_threads</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">size_t</span> <span class="n">thread_count</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">  <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">workers_</span><span class="o">.</span><span class="n">empty</span><span class="p">())</span> <span class="k">return</span><span class="p">;</span>  <span class="o">//</span> <span class="err">已经初始化过</span>
-</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="n">std</span><span class="p">::</span><span class="n">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">thread_count</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">workers_</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span> <span class="k">return</span><span class="p">;</span>  <span class="c1">// 已经初始化过
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">for</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">thread_count</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">    <span class="p">{</span>
-</span></span><span class="line"><span class="cl">      <span class="o">//</span> <span class="err">创建并启动工作线程</span>
-</span></span><span class="line"><span class="cl">      <span class="n">workers_</span><span class="o">.</span><span class="n">emplace_back</span><span class="p">([</span><span class="n">this</span><span class="p">]</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">while</span> <span class="p">(</span><span class="bp">true</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">// 创建并启动工作线程
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">workers_</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">([</span><span class="k">this</span><span class="p">]</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">while</span> <span class="p">(</span><span class="nb">true</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">        <span class="p">{</span>
 </span></span><span class="line"><span class="cl">          <span class="n">task_t</span> <span class="n">task</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">          <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="n">std</span><span class="p">::</span><span class="n">unique_lock</span><span class="o">&lt;</span><span class="n">std</span><span class="p">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="n">mtx_</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">            <span class="o">//</span> <span class="err">等待直到任务队列中有任务</span><span class="p">,</span> <span class="err">或者线程池已停止</span>
-</span></span><span class="line"><span class="cl">            <span class="n">cv_</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">lock</span><span class="p">,</span> <span class="p">[</span><span class="n">this</span><span class="p">]</span> <span class="p">{</span> <span class="k">return</span> <span class="o">!</span><span class="n">running_</span> <span class="o">||</span> <span class="o">!</span><span class="n">task_queue_</span><span class="o">.</span><span class="n">empty</span><span class="p">();</span> <span class="p">});</span>
-</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">running_</span> <span class="o">&amp;&amp;</span> <span class="n">task_queue_</span><span class="o">.</span><span class="n">empty</span><span class="p">())</span> <span class="k">return</span><span class="p">;</span>  <span class="o">//</span> <span class="err">如果线程池已经停止并且队列为空</span><span class="p">,</span> <span class="err">退出线程</span>
-</span></span><span class="line"><span class="cl">            <span class="n">task</span> <span class="o">=</span> <span class="n">std</span><span class="p">::</span><span class="n">move</span><span class="p">(</span><span class="n">task_queue_</span><span class="o">.</span><span class="n">front</span><span class="p">());</span>         <span class="o">//</span> <span class="err">从队列中取出任务</span>
-</span></span><span class="line"><span class="cl">            <span class="n">task_queue_</span><span class="o">.</span><span class="n">pop</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">            <span class="n">std</span><span class="o">::</span><span class="n">unique_lock</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="n">mtx_</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// 等待直到任务队列中有任务, 或者线程池已停止
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">cv_</span><span class="p">.</span><span class="n">wait</span><span class="p">(</span><span class="n">lock</span><span class="p">,</span> <span class="p">[</span><span class="k">this</span><span class="p">]</span> <span class="p">{</span> <span class="k">return</span> <span class="o">!</span><span class="n">running_</span> <span class="o">||</span> <span class="o">!</span><span class="n">task_queue_</span><span class="p">.</span><span class="n">empty</span><span class="p">();</span> <span class="p">});</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">running_</span> <span class="o">&amp;&amp;</span> <span class="n">task_queue_</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span> <span class="k">return</span><span class="p">;</span>  <span class="c1">// 如果线程池已经停止并且队列为空, 退出线程
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">task</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">task_queue_</span><span class="p">.</span><span class="n">front</span><span class="p">());</span>         <span class="c1">// 从队列中取出任务
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">task_queue_</span><span class="p">.</span><span class="n">pop</span><span class="p">();</span>
 </span></span><span class="line"><span class="cl">          <span class="p">}</span>
 </span></span><span class="line"><span class="cl">          <span class="o">++</span><span class="n">busy_count_</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">          <span class="n">task</span><span class="p">();</span>  <span class="o">//</span> <span class="err">执行任务</span>
-</span></span><span class="line"><span class="cl">          <span class="o">--</span><span class="n">busy_count_</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">          <span class="o">//</span> <span class="err">判断任务是否已全部完成</span>
-</span></span><span class="line"><span class="cl">          <span class="k">if</span> <span class="p">(</span><span class="n">busy_count_</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">task_queue_</span><span class="o">.</span><span class="n">empty</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">          <span class="n">task</span><span class="p">();</span>  <span class="c1">// 执行任务
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="o">--</span><span class="n">busy_count_</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">          <span class="c1">// 判断任务是否已全部完成
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="k">if</span> <span class="p">(</span><span class="n">busy_count_</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">task_queue_</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span>
 </span></span><span class="line"><span class="cl">          <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="n">std</span><span class="p">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="p">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="n">mtx_done_</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">busy_count_</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">pending_tasks</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>  <span class="o">//</span> <span class="err">二次确认</span><span class="p">,</span> <span class="err">避免竞态</span>
-</span></span><span class="line"><span class="cl">            <span class="p">{</span>
-</span></span><span class="line"><span class="cl">              <span class="n">cv_done_</span><span class="o">.</span><span class="n">notify_all</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">            <span class="n">std</span><span class="o">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="n">mtx_done_</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">busy_count_</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">pending_tasks</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1">// 二次确认, 避免竞态
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="p">{</span>
+</span></span><span class="line"><span class="cl">              <span class="n">cv_done_</span><span class="p">.</span><span class="n">notify_all</span><span class="p">();</span>
 </span></span><span class="line"><span class="cl">            <span class="p">}</span>
 </span></span><span class="line"><span class="cl">          <span class="p">}</span>
 </span></span><span class="line"><span class="cl">        <span class="p">}</span>
@@ -1038,21 +1121,21 @@ std::cout &laquo; &ldquo;===All tasks completed.===\n&rdquo;;
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">  <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"> <span class="n">private</span><span class="p">:</span>
-</span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="p">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="p">::</span><span class="n">thread</span><span class="o">&gt;</span> <span class="n">workers_</span><span class="p">;</span>  <span class="o">//</span> <span class="err">工作线程集合，用于并发执行任务</span>
-</span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="p">::</span><span class="n">queue</span><span class="o">&lt;</span><span class="n">task_t</span><span class="o">&gt;</span> <span class="n">task_queue_</span><span class="p">;</span>     <span class="o">//</span> <span class="err">等待执行的任务队列</span>
-</span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="p">::</span><span class="n">condition_variable</span> <span class="n">cv_</span><span class="p">;</span>        <span class="o">//</span> <span class="err">条件变量，用于通知工作线程有新任务到来</span>
-</span></span><span class="line"><span class="cl">  <span class="n">mutable</span> <span class="n">std</span><span class="p">::</span><span class="n">mutex</span> <span class="n">mtx_</span><span class="p">;</span>            <span class="o">//</span> <span class="err">主互斥锁，保护任务队列和与其相关的状态</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="p">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="n">std</span><span class="p">::</span><span class="n">size_t</span><span class="o">&gt;</span> <span class="n">busy_count_</span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>  <span class="o">//</span> <span class="err">正在执行任务的线程数量</span>
-</span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="p">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="ne">bool</span><span class="o">&gt;</span> <span class="n">running_</span><span class="p">{</span><span class="bp">true</span><span class="p">};</span>         <span class="o">//</span> <span class="err">线程池是否处于运行状态</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  <span class="n">mutable</span> <span class="n">std</span><span class="p">::</span><span class="n">mutex</span> <span class="n">mtx_done_</span><span class="p">;</span>      <span class="o">//</span> <span class="err">用于保护完成通知的互斥锁</span><span class="p">(</span><span class="n">wait_all</span> <span class="err">用</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="p">::</span><span class="n">condition_variable</span> <span class="n">cv_done_</span><span class="p">;</span>  <span class="o">//</span> <span class="err">条件变量，用于等待所有任务执行完毕</span><span class="p">(</span><span class="err">配合</span> <span class="n">wait_all</span> <span class="err">使用</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">};</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>  <span class="o">//</span> <span class="n">namespace</span> <span class="n">abin</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#endif  // ABIN_THREADPOOL_H</span>
-</span></span></code></pre></td></tr></table>
+</span></span><span class="line"><span class="cl"> <span class="k">private</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kr">thread</span><span class="o">&gt;</span> <span class="n">workers_</span><span class="p">;</span>  <span class="c1">// 工作线程集合，用于并发执行任务
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="n">queue</span><span class="o">&lt;</span><span class="n">task_t</span><span class="o">&gt;</span> <span class="n">task_queue_</span><span class="p">;</span>     <span class="c1">// 等待执行的任务队列
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="n">condition_variable</span> <span class="n">cv_</span><span class="p">;</span>        <span class="c1">// 条件变量，用于通知工作线程有新任务到来
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">mutable</span> <span class="n">std</span><span class="o">::</span><span class="n">mutex</span> <span class="n">mtx_</span><span class="p">;</span>            <span class="c1">// 主互斥锁，保护任务队列和与其相关的状态
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">size_t</span><span class="o">&gt;</span> <span class="n">busy_count_</span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>  <span class="c1">// 正在执行任务的线程数量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span> <span class="n">running_</span><span class="p">{</span><span class="nb">true</span><span class="p">};</span>         <span class="c1">// 线程池是否处于运行状态
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">  <span class="k">mutable</span> <span class="n">std</span><span class="o">::</span><span class="n">mutex</span> <span class="n">mtx_done_</span><span class="p">;</span>      <span class="c1">// 用于保护完成通知的互斥锁(wait_all 用)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="n">condition_variable</span> <span class="n">cv_done_</span><span class="p">;</span>  <span class="c1">// 条件变量，用于等待所有任务执行完毕(配合 wait_all 使用)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>  <span class="c1">// namespace abin
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">#endif  </span><span class="c1">// ABIN_THREADPOOL_H
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div></details>
 
