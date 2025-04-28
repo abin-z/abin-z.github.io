@@ -7,15 +7,15 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Abin</copyright>
-        <lastBuildDate>Sat, 26 Apr 2025 17:37:28 +0800</lastBuildDate><atom:link href="https://abin-z.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Mon, 28 Apr 2025 22:51:07 +0800</lastBuildDate><atom:link href="https://abin-z.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>C&#43;&#43;跨平台轻量级线程池(ThreadPool)</title>
         <link>https://abin-z.github.io/p/threadpool/</link>
         <pubDate>Sat, 26 Apr 2025 17:29:58 +0800</pubDate>
         
         <guid>https://abin-z.github.io/p/threadpool/</guid>
         <description>&lt;p&gt;&lt;strong&gt;一个跨平台, 简单易用的Header-only线程池库, 基于Task提交, 支持提交任意参数提交, 支持获取返回值.&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/abin-z/ThreadPool&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;GitHub仓库地址&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/abin-z/ThreadPool&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;GitHub仓库地址&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
 &lt;h2 id=&#34;-线程池简介&#34;&gt;📌 线程池简介
 &lt;/h2&gt;&lt;p&gt;&lt;strong&gt;线程池（Thread Pool）是一种基于池化思想&lt;/strong&gt;管理线程的工具，经常出现在多线程编程中。&lt;/p&gt;
 &lt;p&gt;它的核心思想是：&lt;strong&gt;预先创建一定数量的线程放在“池子”里，任务来了就把任务交给空闲的线程来处理，而不是每次都新建线程。&lt;/strong&gt;&lt;/p&gt;
