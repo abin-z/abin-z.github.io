@@ -1122,11 +1122,6 @@
   &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;/details&gt;
-&lt;h3 id=&#34;-贡献指南&#34;&gt;💡 贡献指南
-&lt;/h3&gt;&lt;p&gt;欢迎提交 &lt;strong&gt;Issue&lt;/strong&gt; 和 &lt;strong&gt;Pull request&lt;/strong&gt; 来改进本项目！&lt;/p&gt;
-&lt;h3 id=&#34;-致谢&#34;&gt;🙌 致谢
-&lt;/h3&gt;&lt;p&gt;感谢 &lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/catchorg/Catch2&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;Catch2&lt;/a&gt;&lt;/strong&gt; 提供强大支持，助力本项目的单元测试！&lt;/p&gt;
 &lt;h3 id=&#34;-许可证&#34;&gt;📜 许可证
 &lt;/h3&gt;&lt;p&gt;本项目采用&lt;a class=&#34;link&#34; href=&#34;./LICENSE&#34; &gt; &lt;strong&gt;MIT&lt;/strong&gt; 许可证&lt;/a&gt;。&lt;/p&gt;
 &lt;p&gt;版权所有 © 2025–Present Abin。&lt;/p&gt;
