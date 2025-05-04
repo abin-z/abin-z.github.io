@@ -7,7 +7,7 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Abin</copyright>
-        <lastBuildDate>Sun, 04 May 2025 22:13:56 +0800</lastBuildDate><atom:link href="https://abin-z.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sun, 04 May 2025 22:39:38 +0800</lastBuildDate><atom:link href="https://abin-z.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>轻量级INI配置解析库(IniFile)</title>
         <link>https://abin-z.github.io/p/%E8%BD%BB%E9%87%8F%E7%BA%A7ini%E9%85%8D%E7%BD%AE%E8%A7%A3%E6%9E%90%E5%BA%93inifile/</link>
         <pubDate>Sun, 04 May 2025 22:05:03 +0800</pubDate>
@@ -52,16 +52,6 @@
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;licenseMIT&#34;
-	
-	
-&gt;&lt;/a&gt; &lt;a class=&#34;link&#34; href=&#34;https://github.com/abin-z/IniFile/releases&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;&lt;img src=&#34;https://img.shields.io/badge/version-0.9.5-green&#34;
-	
-	
-	
-	loading=&#34;lazy&#34;
-	
-		alt=&#34;version&#34;
 	
 	
 &gt;&lt;/a&gt;&lt;/p&gt;

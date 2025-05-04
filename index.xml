@@ -53,16 +53,6 @@
 		alt=&#34;licenseMIT&#34;
 	
 	
-&gt;&lt;/a&gt; &lt;a class=&#34;link&#34; href=&#34;https://github.com/abin-z/IniFile/releases&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;&lt;img src=&#34;https://img.shields.io/badge/version-0.9.5-green&#34;
-	
-	
-	
-	loading=&#34;lazy&#34;
-	
-		alt=&#34;version&#34;
-	
-	
 &gt;&lt;/a&gt;&lt;/p&gt;
 &lt;h3 id=&#34;-项目简介&#34;&gt;📌 项目简介
 &lt;/h3&gt;&lt;p&gt;这是一个轻量级、跨平台、高效且 &lt;strong&gt;header-only&lt;/strong&gt; 的 INI 配置解析库，专为 C++ 项目打造。它提供简洁、直观且优雅的 API，支持从文件、&lt;code&gt;std::istream&lt;/code&gt; 或 &lt;code&gt;std::string&lt;/code&gt; 解析、修改并写入 INI 配置信息，并具备行级注释保留功能，确保原始注释不丢失，使配置管理更加轻松高效。&lt;/p&gt;
