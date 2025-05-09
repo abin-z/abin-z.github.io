@@ -1829,7 +1829,7 @@ nnn.txt：忽略根目录下或者根目录下任意子目录下的nnn.txt文件
 	
 	
 &gt;&lt;/p&gt;
-&lt;p&gt;现在切换回master分支上, ==不会出现develop分支上提交的develop.txt文件==&lt;/p&gt;
+&lt;p&gt;现在切换回master分支上, 不会出现develop分支上提交的develop.txt文件&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://my-pic-bed.oss-cn-chengdu.aliyuncs.com/typora_picture/202112032223664.png&#34;
 	
 	
@@ -2525,7 +2525,7 @@ nnn.txt：忽略根目录下或者根目录下任意子目录下的nnn.txt文件
 &lt;h3 id=&#34;4-hotfixbug修复分支&#34;&gt;4. hotfix(BUG修复分支)
 &lt;/h3&gt;&lt;ul&gt;
 &lt;li&gt;从master派生的分支，一般作为线上bug修复使用&lt;/li&gt;
-&lt;li&gt;==修复完成后需要合并到master、test、develop分支==。&lt;/li&gt;
+&lt;li&gt;修复完成后需要合并到master、test、develop分支。&lt;/li&gt;
 &lt;li&gt;BUG修复完成并合并完成后可以删除该分支&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id=&#34;5-test分支测试分支等其他分支&#34;&gt;5. test分支(测试分支)等其他分支
@@ -2767,7 +2767,7 @@ nnn.txt：忽略根目录下或者根目录下任意子目录下的nnn.txt文件
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;&amp;ndash;set-upstream 表示在推送到远端的同时并==建立起本地分支和远端分支==的追踪关系&lt;/p&gt;
+&lt;p&gt;&amp;ndash;set-upstream 表示在推送到远端的同时并&lt;strong&gt;建立起本地分支和远端分支&lt;/strong&gt;的追踪关系&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
@@ -2959,7 +2959,7 @@ nnn.txt：忽略根目录下或者根目录下任意子目录下的nnn.txt文件
 &gt;&lt;/p&gt;
 &lt;h3 id=&#34;7解决合并冲突&#34;&gt;7.解决合并冲突
 &lt;/h3&gt;&lt;p&gt;发送冲突的情况:&lt;/p&gt;
-&lt;p&gt;​		在一段时间，A、B用户修改了同一个文件，且修改了同一行位置的代码，此时会发生合并冲突。A用户在本地修改代码后优先推送到远程仓库，此时B用户在本地修订代码，提交到本地仓库后，==也需要推送到远程仓库，此时B用户晚于A用户，&lt;strong&gt;故需要先拉取远程仓库的提交，经过合并后才能推送到远端分支&lt;/strong&gt;==,如下图所示。&lt;/p&gt;
+&lt;p&gt;​		在一段时间，A、B用户修改了同一个文件，且修改了同一行位置的代码，此时会发生合并冲突。A用户在本地修改代码后优先推送到远程仓库，此时B用户在本地修订代码，提交到本地仓库后，也需要推送到远程仓库，此时B用户晚于A用户，&lt;strong&gt;故需要先拉取远程仓库的提交，经过合并后才能推送到远端分支&lt;/strong&gt;,如下图所示。&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://my-pic-bed.oss-cn-chengdu.aliyuncs.com/typora_picture/202112052336876.png&#34;
 	
 	
@@ -3552,7 +3552,7 @@ nnn.txt：忽略根目录下或者根目录下任意子目录下的nnn.txt文件
 &gt;&lt;/p&gt;
 &lt;h2 id=&#34;3删除远程仓库的分支&#34;&gt;3.删除远程仓库的分支
 &lt;/h2&gt;&lt;p&gt;&lt;strong&gt;git push origin &amp;ndash;delete  [name]&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;仅仅删除==远程仓库==的叫[name]的分支,  ==同名的本地分支不会被删除==, 要删除本地同名的本地分支还需要单独删除&lt;/p&gt;
+&lt;p&gt;仅仅删除远程仓库的叫[name]的分支,  同名的本地分支不会被删除, 要删除本地同名的本地分支还需要单独删除&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
@@ -3604,7 +3604,7 @@ nnn.txt：忽略根目录下或者根目录下任意子目录下的nnn.txt文件
 	
 &gt;&lt;/p&gt;
 &lt;h2 id=&#34;5删除-git-branch--r-列表中的追踪分支&#34;&gt;5.删除 git branch -r 列表中的追踪分支
-&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;git branch -dr  &lt;origin&gt;/&lt;branch-name&gt;&lt;/strong&gt;  ==没有删除远程分支，只是删除 git branch -r 列表中的追踪分支。==&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;git branch -dr  &lt;origin&gt;/&lt;branch-name&gt;&lt;/strong&gt;  没有删除远程分支，只是删除 git branch -r 列表中的追踪分支。&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1

@@ -10,7 +10,7 @@
 <meta property='og:description' content="Git分布式版本控制系统 git原理图解\ngit是一个分布式版本控制系统, 版本控制是一种记录一个或若干文件内容变化，以便将来查阅特定版本修订情况的系统。\n在本书所展示的例子中，我们对保存着软件源代码的文件作版本控制，但实际上，可以对任何类型的文件进行版本控制。\n">
 <meta property='og:url' content='https://abin-z.github.io/p/%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%E8%AE%A9%E4%BD%A0%E7%86%9F%E7%BB%83%E4%BD%BF%E7%94%A8git/'>
 <meta property='og:site_name' content='Abin&#39;s Blog'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-05-09T23:09:05&#43;08:00'/><meta property='article:modified_time' content='2025-05-09T23:19:57&#43;08:00'/>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-05-09T23:09:05&#43;08:00'/><meta property='article:modified_time' content='2025-05-09T23:22:02&#43;08:00'/>
 <meta name="twitter:title" content="一篇文章让你熟练使用Git">
 <meta name="twitter:description" content="Git分布式版本控制系统 git原理图解\ngit是一个分布式版本控制系统, 版本控制是一种记录一个或若干文件内容变化，以便将来查阅特定版本修订情况的系统。\n在本书所展示的例子中，我们对保存着软件源代码的文件作版本控制，但实际上，可以对任何类型的文件进行版本控制。\n">
     <link rel="shortcut icon" href="/favicon.ico" />
@@ -2340,7 +2340,7 @@ nnn.txt：忽略根目录下或者根目录下任意子目录下的nnn.txt文件
 	
 	
 ></p>
-<p>现在切换回master分支上, ==不会出现develop分支上提交的develop.txt文件==</p>
+<p>现在切换回master分支上, 不会出现develop分支上提交的develop.txt文件</p>
 <p><img src="https://my-pic-bed.oss-cn-chengdu.aliyuncs.com/typora_picture/202112032223664.png"
 	
 	
@@ -3036,7 +3036,7 @@ nnn.txt：忽略根目录下或者根目录下任意子目录下的nnn.txt文件
 <h3 id="4-hotfixbug修复分支">4. hotfix(BUG修复分支)
 </h3><ul>
 <li>从master派生的分支，一般作为线上bug修复使用</li>
-<li>==修复完成后需要合并到master、test、develop分支==。</li>
+<li>修复完成后需要合并到master、test、develop分支。</li>
 <li>BUG修复完成并合并完成后可以删除该分支</li>
 </ul>
 <h3 id="5-test分支测试分支等其他分支">5. test分支(测试分支)等其他分支
@@ -3278,7 +3278,7 @@ nnn.txt：忽略根目录下或者根目录下任意子目录下的nnn.txt文件
 </ul>
 </li>
 <li>
-<p>&ndash;set-upstream 表示在推送到远端的同时并==建立起本地分支和远端分支==的追踪关系</p>
+<p>&ndash;set-upstream 表示在推送到远端的同时并<strong>建立起本地分支和远端分支</strong>的追踪关系</p>
 <ul>
 <li>
 <div class="highlight"><div class="chroma">
@@ -3470,7 +3470,7 @@ nnn.txt：忽略根目录下或者根目录下任意子目录下的nnn.txt文件
 ></p>
 <h3 id="7解决合并冲突">7.解决合并冲突
 </h3><p>发送冲突的情况:</p>
-<p>​		在一段时间，A、B用户修改了同一个文件，且修改了同一行位置的代码，此时会发生合并冲突。A用户在本地修改代码后优先推送到远程仓库，此时B用户在本地修订代码，提交到本地仓库后，==也需要推送到远程仓库，此时B用户晚于A用户，<strong>故需要先拉取远程仓库的提交，经过合并后才能推送到远端分支</strong>==,如下图所示。</p>
+<p>​		在一段时间，A、B用户修改了同一个文件，且修改了同一行位置的代码，此时会发生合并冲突。A用户在本地修改代码后优先推送到远程仓库，此时B用户在本地修订代码，提交到本地仓库后，也需要推送到远程仓库，此时B用户晚于A用户，<strong>故需要先拉取远程仓库的提交，经过合并后才能推送到远端分支</strong>,如下图所示。</p>
 <p><img src="https://my-pic-bed.oss-cn-chengdu.aliyuncs.com/typora_picture/202112052336876.png"
 	
 	
@@ -4063,7 +4063,7 @@ nnn.txt：忽略根目录下或者根目录下任意子目录下的nnn.txt文件
 ></p>
 <h2 id="3删除远程仓库的分支">3.删除远程仓库的分支
 </h2><p><strong>git push origin &ndash;delete  [name]</strong></p>
-<p>仅仅删除==远程仓库==的叫[name]的分支,  ==同名的本地分支不会被删除==, 要删除本地同名的本地分支还需要单独删除</p>
+<p>仅仅删除远程仓库的叫[name]的分支,  同名的本地分支不会被删除, 要删除本地同名的本地分支还需要单独删除</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -4115,7 +4115,7 @@ nnn.txt：忽略根目录下或者根目录下任意子目录下的nnn.txt文件
 	
 ></p>
 <h2 id="5删除-git-branch--r-列表中的追踪分支">5.删除 git branch -r 列表中的追踪分支
-</h2><p><strong>git branch -dr  <origin>/<branch-name></strong>  ==没有删除远程分支，只是删除 git branch -r 列表中的追踪分支。==</p>
+</h2><p><strong>git branch -dr  <origin>/<branch-name></strong>  没有删除远程分支，只是删除 git branch -r 列表中的追踪分支。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
