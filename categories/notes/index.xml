@@ -7,7 +7,7 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Abin</copyright>
-        <lastBuildDate>Fri, 09 May 2025 23:28:38 +0800</lastBuildDate><atom:link href="https://abin-z.github.io/categories/notes/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Fri, 09 May 2025 23:44:18 +0800</lastBuildDate><atom:link href="https://abin-z.github.io/categories/notes/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>一篇文章让你熟练使用Git</title>
         <link>https://abin-z.github.io/p/%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%E8%AE%A9%E4%BD%A0%E7%86%9F%E7%BB%83%E4%BD%BF%E7%94%A8git/</link>
         <pubDate>Tue, 09 May 2023 23:09:05 +0800</pubDate>
@@ -2582,7 +2582,8 @@ nnn.txt：忽略根目录下或者根目录下任意子目录下的nnn.txt文件
 &lt;/h2&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.cnblogs.com/Higurashi-kagome/p/18417665&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;GitHub 配置 SSH Key 的步骤及原理解释&lt;/a&gt;
 &lt;strong&gt;ssh key 的配置是针对每台主机的！&lt;strong&gt;比如我在某台主机上操作 git 和我的远程仓库，想要 push 时不输入账号密码，走 ssh 协议，就需要配置 ssh key，放上去的 key 是&lt;/strong&gt;当前主机的 ssh 公钥&lt;/strong&gt;。那么如果我换了一台其他主机，想要实现无密登录，也就需要重新配置。&lt;/p&gt;
-&lt;h3 id=&#34;1创建远程仓库image-20211205220452846&#34;&gt;1.创建远程仓库&lt;img src=&#34;https://my-pic-bed.oss-cn-chengdu.aliyuncs.com/typora_picture/202112052204953.png&#34;
+&lt;h3 id=&#34;1创建远程仓库&#34;&gt;1.创建远程仓库
+&lt;/h3&gt;&lt;p&gt;&lt;img src=&#34;https://my-pic-bed.oss-cn-chengdu.aliyuncs.com/typora_picture/202112052204953.png&#34;
 	
 	
 	
@@ -2591,8 +2592,8 @@ nnn.txt：忽略根目录下或者根目录下任意子目录下的nnn.txt文件
 		alt=&#34;image-20211205220452846&#34;
 	
 	
-&gt;
-&lt;/h3&gt;&lt;h3 id=&#34;2配置ssh公钥&#34;&gt;2.配置SSH公钥
+&gt;&lt;/p&gt;
+&lt;h3 id=&#34;2配置ssh公钥&#34;&gt;2.配置SSH公钥
 &lt;/h3&gt;&lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;生成SSH公钥&lt;/p&gt;
