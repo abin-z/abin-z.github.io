@@ -7,15 +7,7 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Abin</copyright>
-        <lastBuildDate>Fri, 09 May 2025 23:22:02 +0800</lastBuildDate><atom:link href="https://abin-z.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
-        <title>Notes</title>
-        <link>https://abin-z.github.io/categories/notes/</link>
-        <pubDate>Fri, 09 May 2025 23:09:05 +0800</pubDate>
-        
-        <guid>https://abin-z.github.io/categories/notes/</guid>
-        <description></description>
-        </item>
-        <item>
+        <lastBuildDate>Fri, 09 May 2025 23:28:38 +0800</lastBuildDate><atom:link href="https://abin-z.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>OpenSource</title>
         <link>https://abin-z.github.io/categories/opensource/</link>
         <pubDate>Sun, 04 May 2025 22:05:03 +0800</pubDate>
@@ -53,6 +45,22 @@
         <pubDate>Mon, 11 Mar 2024 00:00:00 +0000</pubDate>
         
         <guid>https://abin-z.github.io/categories/themes/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Notes</title>
+        <link>https://abin-z.github.io/categories/notes/</link>
+        <pubDate>Tue, 09 May 2023 23:09:05 +0800</pubDate>
+        
+        <guid>https://abin-z.github.io/categories/notes/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Tools</title>
+        <link>https://abin-z.github.io/categories/tools/</link>
+        <pubDate>Tue, 09 May 2023 23:09:05 +0800</pubDate>
+        
+        <guid>https://abin-z.github.io/categories/tools/</guid>
         <description></description>
         </item>
         <item>
