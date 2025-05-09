@@ -7,12 +7,12 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Abin</copyright>
-        <lastBuildDate>Fri, 09 May 2025 23:13:51 +0800</lastBuildDate><atom:link href="https://abin-z.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
-        <title>Git笔记</title>
-        <link>https://abin-z.github.io/p/git%E7%AC%94%E8%AE%B0/</link>
+        <lastBuildDate>Fri, 09 May 2025 23:19:57 +0800</lastBuildDate><atom:link href="https://abin-z.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>一篇文章让你熟练使用Git</title>
+        <link>https://abin-z.github.io/p/%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%E8%AE%A9%E4%BD%A0%E7%86%9F%E7%BB%83%E4%BD%BF%E7%94%A8git/</link>
         <pubDate>Fri, 09 May 2025 23:09:05 +0800</pubDate>
         
-        <guid>https://abin-z.github.io/p/git%E7%AC%94%E8%AE%B0/</guid>
+        <guid>https://abin-z.github.io/p/%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%E8%AE%A9%E4%BD%A0%E7%86%9F%E7%BB%83%E4%BD%BF%E7%94%A8git/</guid>
         <description>&lt;h1 id=&#34;git分布式版本控制系统&#34;&gt;Git分布式版本控制系统
 &lt;/h1&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.cnblogs.com/cb0327/p/5066685.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;&lt;strong&gt;git原理图解&lt;/strong&gt;&lt;/a&gt;&lt;/p&gt;
@@ -23,10 +23,10 @@
 &lt;h1 id=&#34;git使用铁令&#34;&gt;Git使用铁令
 &lt;/h1&gt;&lt;ul&gt;
 &lt;li&gt;
-&lt;h3 id=&#34;切换分支前先提交本地的修改&#34;&gt;==切换分支前先提交本地的修改==
+&lt;h3 id=&#34;切换分支前先提交本地的修改&#34;&gt;切换分支前先提交本地的修改
 &lt;/h3&gt;&lt;/li&gt;
 &lt;li&gt;
-&lt;h3 id=&#34;代码及时提交-只要提交过了就不会丢&#34;&gt;==代码及时提交, 只要提交过了就不会丢==
+&lt;h3 id=&#34;代码及时提交-只要提交过了就不会丢&#34;&gt;代码及时提交, 只要提交过了就不会丢
 &lt;/h3&gt;&lt;/li&gt;
 &lt;li&gt;
 &lt;h3 id=&#34;切勿删除-git-目录&#34;&gt;切勿删除 .git 目录
@@ -814,7 +814,7 @@
 &lt;ol&gt;
 &lt;li&gt;
 &lt;h4 id=&#34;创建tag标签&#34;&gt;&lt;strong&gt;创建tag标签&lt;/strong&gt;
-&lt;/h4&gt;&lt;p&gt;Git 支持两种标签：==轻量标签（lightweight)==与==附注标签（annotated)==。&lt;/p&gt;
+&lt;/h4&gt;&lt;p&gt;Git 支持两种标签：轻量标签（lightweight)与附注标签（annotated)。&lt;/p&gt;
 &lt;p&gt;轻量标签很像一个不会改变的分支——它只是某个特定提交的引用。&lt;/p&gt;
 &lt;p&gt;而附注标签是存储在 Git 数据库中的一个完整对象， 它们是可以被校验的，其中包含打标签者的名字、电子邮件地址、日期时间， 此外还有一个标签信息，并且可以使用 GNU Privacy Guard （GPG）签名并验证。 通常会建议创建附注标签，这样你可以拥有以上所有信息。但是如果你只是想用一个临时的标签， 或者因为某些原因不想要保存这些信息，那么也可以用轻量标签。&lt;/p&gt;
 &lt;ul&gt;
@@ -1905,7 +1905,7 @@ nnn.txt：忽略根目录下或者根目录下任意子目录下的nnn.txt文件
 &gt;&lt;/p&gt;
 &lt;h3 id=&#34;5-删除分支命令&#34;&gt;5. &lt;strong&gt;删除分支命令：&lt;/strong&gt;
 &lt;/h3&gt;&lt;ul&gt;
-&lt;li&gt;删除分支的时候是==不能删除当前所在的分支的==&lt;/li&gt;
+&lt;li&gt;删除分支的时候是不能删除当前所在的分支的&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -1930,7 +1930,7 @@ nnn.txt：忽略根目录下或者根目录下任意子目录下的nnn.txt文件
 	
 &gt;&lt;/p&gt;
 &lt;h3 id=&#34;6-合并分支冲突&#34;&gt;6. 合并分支冲突
-&lt;/h3&gt;&lt;p&gt;当两个分支都修改&lt;strong&gt;同一个文件的同一部分&lt;/strong&gt;(比如同一行)就会产生冲突,这时候git==需要开发人员决定==要保留哪一部分&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;当两个分支都修改&lt;strong&gt;同一个文件的同一部分&lt;/strong&gt;(比如同一行)就会产生冲突,这时候git&lt;strong&gt;需要开发人员决定&lt;/strong&gt;要保留哪一部分&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;创建一个文件(common.txt)模拟冲突&lt;/li&gt;
 &lt;/ul&gt;
@@ -2909,7 +2909,7 @@ nnn.txt：忽略根目录下或者根目录下任意子目录下的nnn.txt文件
 &gt;&lt;/p&gt;
 &lt;h3 id=&#34;6从远程仓库抓取和拉取&#34;&gt;6.从远程仓库抓取和拉取
 &lt;/h3&gt;&lt;ul&gt;
-&lt;li&gt;==&lt;strong&gt;fetch抓取&lt;/strong&gt;, 将仓库里的更新都抓取到本地,&lt;strong&gt;但是不进行合并&lt;/strong&gt;==
+&lt;li&gt;&lt;strong&gt;fetch抓取&lt;/strong&gt;, 将仓库里的更新都抓取到本地,&lt;strong&gt;但是不进行合并&lt;/strong&gt;
 &lt;ul&gt;
 &lt;li&gt;如果不指定远端名称和分支, 则抓取所有分支修改&lt;/li&gt;
 &lt;/ul&gt;
@@ -2924,7 +2924,7 @@ nnn.txt：忽略根目录下或者根目录下任意子目录下的nnn.txt文件
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;ul&gt;
-&lt;li&gt;==&lt;strong&gt;pull拉取&lt;/strong&gt;, 将远程仓库的修改拉取到本地并&lt;strong&gt;自动进行合并&lt;/strong&gt;,类似于: &lt;strong&gt;pull = fetch + merge&lt;/strong&gt;==
+&lt;li&gt;&lt;strong&gt;pull拉取&lt;/strong&gt;, 将远程仓库的修改拉取到本地并&lt;strong&gt;自动进行合并&lt;/strong&gt;,类似于: &lt;strong&gt;pull = fetch + merge&lt;/strong&gt;
 &lt;ul&gt;
 &lt;li&gt;如果不指定远端名称和分支, 则抓取所有分支修改并自动合并&lt;/li&gt;
 &lt;/ul&gt;
@@ -3432,7 +3432,7 @@ nnn.txt：忽略根目录下或者根目录下任意子目录下的nnn.txt文件
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;h1 id=&#34;八-git其他操作&#34;&gt;八. Git其他操作
-&lt;/h1&gt;&lt;h2 id=&#34;1-恢复暂存区的指定文件到工作区git-checkout&#34;&gt;1. 恢复==暂存区==的指定文件到==工作区==：git checkout
+&lt;/h1&gt;&lt;h2 id=&#34;1-恢复暂存区的指定文件到工作区git-checkout&#34;&gt;1. 恢复暂存区的指定文件到工作区：git checkout
 &lt;/h2&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
