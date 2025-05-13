@@ -10,7 +10,7 @@
 <meta property='og:description' content="Git分布式版本控制系统 git原理图解\ngit是一个分布式版本控制系统, 版本控制是一种记录一个或若干文件内容变化，以便将来查阅特定版本修订情况的系统。\n在本书所展示的例子中，我们对保存着软件源代码的文件作版本控制，但实际上，可以对任何类型的文件进行版本控制。\n">
 <meta property='og:url' content='https://abin-z.github.io/p/%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%E8%AE%A9%E4%BD%A0%E7%86%9F%E7%BB%83%E4%BD%BF%E7%94%A8git/'>
 <meta property='og:site_name' content='Abin&#39;s Blog'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2023-05-09T23:09:05&#43;08:00'/><meta property='article:modified_time' content='2025-05-11T18:56:47&#43;08:00'/>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2023-05-09T23:09:05&#43;08:00'/><meta property='article:modified_time' content='2025-05-13T23:25:15&#43;08:00'/>
 <meta name="twitter:title" content="一篇文章让你熟练使用Git">
 <meta name="twitter:description" content="Git分布式版本控制系统 git原理图解\ngit是一个分布式版本控制系统, 版本控制是一种记录一个或若干文件内容变化，以便将来查阅特定版本修订情况的系统。\n在本书所展示的例子中，我们对保存着软件源代码的文件作版本控制，但实际上，可以对任何类型的文件进行版本控制。\n">
     <link rel="shortcut icon" href="/favicon.ico" />
@@ -683,7 +683,6 @@
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">yiibai@ubuntu:~$ git config user.name
@@ -691,7 +690,6 @@
 </span></span><span class="line"><span class="cl">yiibai@ubuntu:~$ git config user.email
 </span></span><span class="line"><span class="cl">maxsu@yiibai.com
 </span></span><span class="line"><span class="cl">yiibai@ubuntu:~$
-</span></span><span class="line"><span class="cl">Shell
 </span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="4-获取帮助">4. 获取帮助
@@ -701,24 +699,20 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ git <span class="nb">help</span> &lt;verb&gt;
 </span></span><span class="line"><span class="cl">$ git &lt;verb&gt; --help
 </span></span><span class="line"><span class="cl">$ man git-&lt;verb&gt;
-</span></span><span class="line"><span class="cl">Shell
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>例如，要想获得 <code>config</code> 命令的手册，执行</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ git <span class="nb">help</span> config
-</span></span><span class="line"><span class="cl">Shell
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>这些命令很棒，因为随时随地可以使用而无需联网。如果你觉得手册或者本书的内容还不够用，你可以尝试在 Freenode IRC 服务器( <code>irc.freenode.net</code> )的 <code>#git</code> 或 <code>#github</code> 频道寻求帮助。这些频道经常有上百人在线，他们都精通 Git 并且乐于助人。</p>
@@ -4462,7 +4456,7 @@ nnn.txt：忽略根目录下或者根目录下任意子目录下的nnn.txt文件
 
 
         <span>
-            最后更新于 2025-05-11
+            最后更新于 2025-05-13
         </span>
     </section></footer>
 
