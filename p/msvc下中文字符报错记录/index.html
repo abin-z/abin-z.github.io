@@ -6,7 +6,7 @@
 
 <link rel='canonical' href='https://abin-z.github.io/p/msvc%E4%B8%8B%E4%B8%AD%E6%96%87%E5%AD%97%E7%AC%A6%E6%8A%A5%E9%94%99%E8%AE%B0%E5%BD%95/'>
 
-<link rel="stylesheet" href="/scss/style.min.2392bcd1d39f1183c49de24509ae4b02156a2d65691556512ffe18ecffcd2a0f.css"><meta property='og:title' content="msvc下中文字符报错记录">
+<link rel="stylesheet" href="/scss/style.min.e7c3b2fe4f3c1068be323315f6d8c7ef77136d4608ef75caae44c89964e60b3c.css"><meta property='og:title' content="msvc下中文字符报错记录">
 <meta property='og:description' content="中文字符串在msvc编译器下出现异常报错 我在写中文单元测试用例,有以下cpp代码：\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 TEST_CASE(&#34;case insensitive test08&#34;, &#34;[inifile][case_insensitive]&#34;) { ini::case_insensitive_inifile inif; // 添加一些中文的测试 inif[&#34;中文节&#34;][&#34;中文键&#34;] = &#34;中文值&#34;; // 测试中文的大小写不敏感性（实际上中文没有大小写，但测试是否受影响） CHECK(inif.contains(&#34;中文节&#34;) == true); CHECK(inif.contains(&#34;中文节&#34;, &#34;中文键&#34;) == true); CHECK(inif[&#34;中文节&#34;][&#34;中文键&#34;].as&lt;std::string&gt;() == &#34;中文值&#34;); // 修改中文值 inif[&#34;中文节&#34;][&#34;中文键&#34;] = &#34;新的中文值&#34;; CHECK(inif[&#34;中文节&#34;][&#34;中文键&#34;].as&lt;std::string&gt;() == &#34;新的中文值&#34;); // 测试不存在的中文键 CHECK(inif.contains(&#34;中文节&#34;, &#34;不存在的键&#34;) == false); // 测试中文默认值 CHECK(inif.get(&#34;中文节&#34;, &#34;不存在的键&#34;, &#34;默认值&#34;).as&lt;std::string&gt;() == &#34;默认值&#34;); } 遇到的问题: 这段代码本身其实没啥问题, 在linux下使用gcc和clang都可以通过编译, 但是在msvc编译器下就有以下的编译错误:\n">
 <meta property='og:url' content='https://abin-z.github.io/p/msvc%E4%B8%8B%E4%B8%AD%E6%96%87%E5%AD%97%E7%AC%A6%E6%8A%A5%E9%94%99%E8%AE%B0%E5%BD%95/'>
 <meta property='og:site_name' content='Abin&#39;s Blog'>

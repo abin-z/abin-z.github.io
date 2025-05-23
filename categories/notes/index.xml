@@ -7,7 +7,7 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Abin</copyright>
-        <lastBuildDate>Tue, 13 May 2025 23:25:15 +0800</lastBuildDate><atom:link href="https://abin-z.github.io/categories/notes/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Fri, 23 May 2025 23:48:47 +0800</lastBuildDate><atom:link href="https://abin-z.github.io/categories/notes/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>一篇文章让你熟练使用Git</title>
         <link>https://abin-z.github.io/p/%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%E8%AE%A9%E4%BD%A0%E7%86%9F%E7%BB%83%E4%BD%BF%E7%94%A8git/</link>
         <pubDate>Tue, 09 May 2023 23:09:05 +0800</pubDate>
@@ -1740,7 +1740,7 @@ nnn.txt：忽略根目录下或者根目录下任意子目录下的nnn.txt文件
 &lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git branch &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;branchname&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;		&lt;span class=&#34;c1&#34;&gt;#创建分支,但是没有切换过去, 还停留在当前分支&lt;/span&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git branch &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;branchname&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;		&lt;span class=&#34;c1&#34;&gt;#创建分支, 但是没有切换过去, 还停留在当前分支&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;----------------------------------------------------------------------------------
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git checkout -b &amp;lt;name&amp;gt;
