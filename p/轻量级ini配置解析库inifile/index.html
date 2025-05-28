@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="zh-cn" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="🌟 轻量级ini文件解析库 📌 项目简介 这是一个轻量级、跨平台、高效且 header-only 的 INI 配置解析库，专为 C++ 项目打造。它提供简洁、直观且优雅的 API，支持从文件、std::istream 或 std::string 解析、修改并写入 INI 配置信息，并具备行级注释保留功能，确保原始注释不丢失，使配置管理更加轻松高效。\n">
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="🌟 轻量级ini文件解析库 🌍 Languages/语言: English | 简体中文\n📌 项目简介 这是一个轻量级、跨平台、高效且 header-only 的 INI 配置解析库，专为 C++ 项目打造。它提供简洁、直观且优雅的 API，支持从文件、std::istream 或 std::string 解析、修改并写入 INI 配置信息，并具备行级注释保留功能，确保原始注释不丢失，使配置管理更加轻松高效。\n">
 <title>轻量级INI配置解析库(IniFile)</title>
 
 <link rel='canonical' href='https://abin-z.github.io/p/%E8%BD%BB%E9%87%8F%E7%BA%A7ini%E9%85%8D%E7%BD%AE%E8%A7%A3%E6%9E%90%E5%BA%93inifile/'>
 
 <link rel="stylesheet" href="/scss/style.min.e7c3b2fe4f3c1068be323315f6d8c7ef77136d4608ef75caae44c89964e60b3c.css"><meta property='og:title' content="轻量级INI配置解析库(IniFile)">
-<meta property='og:description' content="🌟 轻量级ini文件解析库 📌 项目简介 这是一个轻量级、跨平台、高效且 header-only 的 INI 配置解析库，专为 C++ 项目打造。它提供简洁、直观且优雅的 API，支持从文件、std::istream 或 std::string 解析、修改并写入 INI 配置信息，并具备行级注释保留功能，确保原始注释不丢失，使配置管理更加轻松高效。\n">
+<meta property='og:description' content="🌟 轻量级ini文件解析库 🌍 Languages/语言: English | 简体中文\n📌 项目简介 这是一个轻量级、跨平台、高效且 header-only 的 INI 配置解析库，专为 C++ 项目打造。它提供简洁、直观且优雅的 API，支持从文件、std::istream 或 std::string 解析、修改并写入 INI 配置信息，并具备行级注释保留功能，确保原始注释不丢失，使配置管理更加轻松高效。\n">
 <meta property='og:url' content='https://abin-z.github.io/p/%E8%BD%BB%E9%87%8F%E7%BA%A7ini%E9%85%8D%E7%BD%AE%E8%A7%A3%E6%9E%90%E5%BA%93inifile/'>
 <meta property='og:site_name' content='Abin&#39;s Blog'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-05-04T22:05:03&#43;08:00'/><meta property='article:modified_time' content='2025-05-05T16:28:23&#43;08:00'/>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-05-04T22:05:03&#43;08:00'/><meta property='article:modified_time' content='2025-05-28T09:55:53&#43;08:00'/>
 <meta name="twitter:title" content="轻量级INI配置解析库(IniFile)">
-<meta name="twitter:description" content="🌟 轻量级ini文件解析库 📌 项目简介 这是一个轻量级、跨平台、高效且 header-only 的 INI 配置解析库，专为 C++ 项目打造。它提供简洁、直观且优雅的 API，支持从文件、std::istream 或 std::string 解析、修改并写入 INI 配置信息，并具备行级注释保留功能，确保原始注释不丢失，使配置管理更加轻松高效。\n">
+<meta name="twitter:description" content="🌟 轻量级ini文件解析库 🌍 Languages/语言: English | 简体中文\n📌 项目简介 这是一个轻量级、跨平台、高效且 header-only 的 INI 配置解析库，专为 C++ 项目打造。它提供简洁、直观且优雅的 API，支持从文件、std::istream 或 std::string 解析、修改并写入 INI 配置信息，并具备行级注释保留功能，确保原始注释不丢失，使配置管理更加轻松高效。\n">
     <link rel="shortcut icon" href="/favicon.ico" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -296,11 +296,13 @@
             <li><a href="#关于自动类型转换">关于自动类型转换</a></li>
             <li><a href="#自定义类型转换">自定义类型转换</a></li>
             <li><a href="#其他工具函数">其他工具函数</a></li>
+            <li><a href="#案例列表">案例列表</a></li>
           </ol>
         </li>
         <li><a href="#-常用api说明">📄 常用API说明</a>
           <ol>
             <li><a href="#class-类型说明">class 类型说明</a></li>
+            <li><a href="#inicomment类api说明">ini::comment类API说明</a></li>
             <li><a href="#inifield类api说明">ini::field类API说明</a></li>
             <li><a href="#inisection类api说明">ini::section类API说明</a></li>
             <li><a href="#iniinifile类api说明">ini::inifile类API说明</a></li>
@@ -372,7 +374,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 11 分钟
+                    阅读时长: 12 分钟
                 </time>
             </div>
         
@@ -428,11 +430,20 @@
 		alt="licenseMIT"
 	
 	
+></a> <a class="link" href="https://github.com/abin-z/IniFile/releases"  target="_blank" rel="noopener"
+    ><img src="https://img.shields.io/badge/version-0.9.9-green"
+	
+	
+	
+	loading="lazy"
+	
+		alt="version"
+	
+	
 ></a></p>
+<p>🌍 Languages/语言:  <a class="link" href="README.md" >English</a>  |  <a class="link" href="README.zh-CN.md" >简体中文</a></p>
 <h3 id="-项目简介">📌 项目简介
 </h3><p>这是一个轻量级、跨平台、高效且 <strong>header-only</strong> 的 INI 配置解析库，专为 C++ 项目打造。它提供简洁、直观且优雅的 API，支持从文件、<code>std::istream</code> 或 <code>std::string</code> 解析、修改并写入 INI 配置信息，并具备行级注释保留功能，确保原始注释不丢失，使配置管理更加轻松高效。</p>
-<p><strong>仓库地址: <a class="link" href="https://github.com/abin-z/IniFile"  target="_blank" rel="noopener"
-    >https://github.com/abin-z/IniFile</a></strong></p>
 <h3 id="-特性">🚀 特性
 </h3><ul>
 <li><strong>轻量级 &amp; 无依赖</strong>：仅依赖 C++11 标准库，无需额外依赖项</li>
@@ -444,6 +455,9 @@
 <li><strong>支持注释功能</strong>:  支持ini行注释(<code>;</code>或者<code>#</code>), 可以为<code>[section]</code>和<code>key=value</code>添加行注释(不支持行尾注释)</li>
 <li><strong>自定义类型转换</strong>: 可以自定义类型转换, inifile将根据你写的定义进行自动转换(减少重复)</li>
 <li><strong>支持大小写不敏感功能</strong>: 提供可选的大小写不敏感功能(针对<code>section</code>和<code>key</code>)</li>
+<li><strong>全面测试与内存安全</strong>：已通过 <a class="link" href="https://github.com/catchorg/Catch2"  target="_blank" rel="noopener"
+    >Catch2</a> 单元测试框架验证功能正确性，并使用 <a class="link" href="https://valgrind.org/"  target="_blank" rel="noopener"
+    >Valgrind</a> 确保内存管理无泄漏</li>
 </ul>
 <p>适用于对 INI 配置有 <strong>解析、编辑、存储</strong> 需求的 C++ 项目。以下是基础的ini格式:</p>
 <div class="highlight"><div class="chroma">
@@ -538,6 +552,11 @@
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;inifile.h&#34;</span><span class="cp">
@@ -550,6 +569,11 @@
 </span></span><span class="line"><span class="cl">  <span class="kt">bool</span>        <span class="n">b</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key0&#34;</span><span class="p">];</span>
 </span></span><span class="line"><span class="cl">  <span class="kt">double</span>      <span class="n">d</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key1&#34;</span><span class="p">];</span>
 </span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">s</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key2&#34;</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">// Explicit type conversion via as function
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">bool</span>        <span class="n">bb</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key0&#34;</span><span class="p">].</span><span class="n">as</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">double</span>      <span class="n">dd</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key1&#34;</span><span class="p">].</span><span class="n">as</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">ss</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key2&#34;</span><span class="p">].</span><span class="n">as</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">();</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
@@ -718,30 +742,69 @@
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;inifile.h&#34;</span><span class="cp">
 </span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="n">ini</span><span class="o">::</span><span class="n">inifile</span> <span class="n">inif</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    
-</span></span><span class="line"><span class="cl">  <span class="c1">/// automatic type conversion
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">s0</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key1&#34;</span><span class="p">];</span>
-</span></span><span class="line"><span class="cl">  <span class="kt">bool</span> <span class="n">isok</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key2&#34;</span><span class="p">];</span>
-</span></span><span class="line"><span class="cl">    
-</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">ii0</span> <span class="o">=</span> <span class="n">inif</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#34;section&#34;</span><span class="p">,</span> <span class="s">&#34;key3&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">ii2</span> <span class="o">=</span> <span class="n">inif</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#34;section&#34;</span><span class="p">,</span> <span class="s">&#34;key3&#34;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">);</span> <span class="c1">// Specify default values
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    
-</span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">ss2</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">].</span><span class="n">get</span><span class="p">(</span><span class="s">&#34;key4&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">ss3</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">].</span><span class="n">get</span><span class="p">(</span><span class="s">&#34;key5&#34;</span><span class="p">,</span> <span class="s">&#34;default&#34;</span><span class="p">);</span> <span class="c1">// Specify default values
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    
-</span></span><span class="line"><span class="cl">  <span class="kt">double</span> <span class="n">dd0</span> <span class="o">=</span> <span class="n">inif</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&#34;section&#34;</span><span class="p">).</span><span class="n">at</span><span class="p">(</span><span class="s">&#34;key&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;section-key:&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key&#34;</span><span class="p">].</span><span class="n">as</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">try</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">/// automatic type conversion
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">s0</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key1&#34;</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">bool</span> <span class="n">isok</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key2&#34;</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">ii0</span> <span class="o">=</span> <span class="n">inif</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#34;section&#34;</span><span class="p">,</span> <span class="s">&#34;key3&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">ii2</span> <span class="o">=</span> <span class="n">inif</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#34;section&#34;</span><span class="p">,</span> <span class="s">&#34;key3&#34;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">);</span> <span class="c1">// Specify default values
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">ss2</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">].</span><span class="n">get</span><span class="p">(</span><span class="s">&#34;key4&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">ss3</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">].</span><span class="n">get</span><span class="p">(</span><span class="s">&#34;key5&#34;</span><span class="p">,</span> <span class="s">&#34;default&#34;</span><span class="p">);</span> <span class="c1">// Specify default values
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">    <span class="kt">double</span> <span class="n">dd0</span> <span class="o">=</span> <span class="n">inif</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&#34;section&#34;</span><span class="p">).</span><span class="n">at</span><span class="p">(</span><span class="s">&#34;key&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;section-key:&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key&#34;</span><span class="p">].</span><span class="n">as</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">catch</span> <span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">exception</span> <span class="o">&amp;</span><span class="n">e</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">e</span><span class="p">.</span><span class="n">what</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><h4 id="注释功能">注释功能
-</h4><p>本库支持设置<code>[section]</code>和<code>key=value</code>的行级注释(不支持行尾注释), 注释符号可选<code>;</code>和<code>#</code>两种; 也能从数据源中保留注释内容.</p>
+</h4><p>本库支持设置<code>[section]</code>和<code>key=value</code>的行级注释(不支持行尾注释), 注释符号可选<code>;</code>和<code>#</code>两种; 也能从数据源中保留注释内容. <a class="link" href="./examples/inifile_comment.cpp" >查看案例</a></p>
+<p>以下方法是<strong>功能完全等价</strong>的，选择哪一种主要取决于你的风格偏好：</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>简写形式</th>
+          <th>完整形式</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>f.set_comment(...)</code></td>
+          <td><code>f.comment().set(...)</code></td>
+          <td>设置注释, 覆盖原有的注释（支持单行或多行）</td>
+      </tr>
+      <tr>
+          <td><code>f.add_comment(...)</code></td>
+          <td><code>f.comment().add(...)</code></td>
+          <td>追加注释（支持单行或多行）</td>
+      </tr>
+      <tr>
+          <td><code>f.clear_comment()</code></td>
+          <td><code>f.comment().clear()</code></td>
+          <td>清除所有注释</td>
+      </tr>
+  </tbody>
+</table></div>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -763,6 +826,15 @@
 </span><span class="lnt">17
 </span><span class="lnt">18
 </span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;inifile.h&#34;</span><span class="cp">
@@ -774,13 +846,22 @@
 </span></span><span class="line"><span class="cl">  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key1&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">3.141592</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key2&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#34;value&#34;</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  <span class="c1">// Add comments if necessary
+</span></span><span class="line"><span class="cl">  <span class="c1">// Set comments if necessary
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">].</span><span class="n">set_comment</span><span class="p">(</span><span class="s">&#34;This is a section comment.&#34;</span><span class="p">);</span>                     <span class="c1">// set section comment, Overwrite Mode
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key1&#34;</span><span class="p">].</span><span class="n">set_comment</span><span class="p">(</span><span class="s">&#34;This is a key-value pairs comment&#34;</span><span class="p">,</span> <span class="sc">&#39;#&#39;</span><span class="p">);</span> <span class="c1">// set key=value pairs comment
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
-</span></span><span class="line"><span class="cl">  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">].</span><span class="n">clear_comment</span><span class="p">();</span>                                     <span class="c1">// clear section comments
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	
+</span></span><span class="line"><span class="cl">  <span class="c1">// Clear section comment
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">].</span><span class="n">clear_comment</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">  <span class="c1">// Add section comment
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">].</span><span class="n">add_comment</span><span class="p">(</span><span class="s">&#34;section comment01&#34;</span><span class="p">);</span>                    <span class="c1">// add section comment, Append Mode
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">].</span><span class="n">add_comment</span><span class="p">(</span><span class="s">&#34;section comment02</span><span class="se">\n</span><span class="s">section comment03&#34;</span><span class="p">);</span> <span class="c1">// Multi-line comments are allowed, lines separated by `\n`
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  
+</span></span><span class="line"><span class="cl">  <span class="c1">// Get the comment object reference
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">ini</span><span class="o">::</span><span class="n">comment</span> <span class="o">&amp;</span><span class="n">cmt</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key&#34;</span><span class="p">].</span><span class="n">comment</span><span class="p">();</span>  <span class="c1">// get reference to comment
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  
+</span></span><span class="line"><span class="cl">  <span class="c1">// Read comment content
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">view</span> <span class="o">=</span> <span class="n">cmt</span><span class="p">.</span><span class="n">view</span><span class="p">();</span>  <span class="c1">// view (non-owning)
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>  
 </span></span><span class="line"><span class="cl">  <span class="kt">bool</span> <span class="n">isok</span> <span class="o">=</span> <span class="n">inif</span><span class="p">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#34;config.ini&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
@@ -810,7 +891,7 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div><h4 id="大小写不敏感功能">大小写不敏感功能
-</h4><p>本库支持<code>section</code>和<code>key</code>的大小写不敏感功能, 使用<code>ini::case_insensitive_inifile</code>即可, 具体案例请<a class="link" href="./examples/inifile_case_insensitive.cpp" >点击查看</a></p>
+</h4><p>本库支持<code>section</code>和<code>key</code>的大小写不敏感功能, 使用<code>ini::case_insensitive_inifile</code>即可, <a class="link" href="./examples/inifile_case_insensitive.cpp" >查看案例</a></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -966,10 +1047,10 @@
 <p>使用<code>INIFILE_TYPE_CONVERTER</code>宏<strong>特化</strong>自定义的类型(必须提供默认构造函数);</p>
 </li>
 <li>
-<p><strong>定义<code>encode</code>函数</strong>, 作用是定义如何将自定义类型转为ini存储字符串(存储字符串不能包含换行符);</p>
+<p><strong>定义<code>static void encode</code>函数</strong>, 作用是定义如何将自定义类型转为ini存储字符串(存储字符串不能包含换行符);</p>
 </li>
 <li>
-<p><strong>定义<code>decode</code>函数</strong>, 作用是定义如何将ini存储字符串转为自定义类型;</p>
+<p><strong>定义<code>static void decode</code>函数</strong>, 作用是定义如何将ini存储字符串转为自定义类型;</p>
 </li>
 </ol>
 <div class="highlight"><div class="chroma">
@@ -993,12 +1074,12 @@
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">template</span> <span class="o">&lt;&gt;</span>
 </span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">INIFILE_TYPE_CONVERTER</span><span class="o">&lt;</span><span class="n">CustomClass</span><span class="o">&gt;</span>  <span class="c1">// User-defined type `CustomClass`
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="kt">void</span> <span class="nf">encode</span><span class="p">(</span><span class="k">const</span> <span class="n">CustomClass</span> <span class="o">&amp;</span><span class="n">obj</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">value</span><span class="p">)</span>  <span class="c1">// pass by reference
+</span></span><span class="line"><span class="cl">  <span class="k">static</span> <span class="kt">void</span> <span class="nf">encode</span><span class="p">(</span><span class="k">const</span> <span class="n">CustomClass</span> <span class="o">&amp;</span><span class="n">obj</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">value</span><span class="p">)</span>  <span class="c1">// pass by reference
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="c1">// Convert the CustomClass object `obj` to ini storage string `value`
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">}</span>
-</span></span><span class="line"><span class="cl">  <span class="kt">void</span> <span class="nf">decode</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">value</span><span class="p">,</span> <span class="n">CustomClass</span> <span class="o">&amp;</span><span class="n">obj</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">static</span> <span class="kt">void</span> <span class="nf">decode</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">value</span><span class="p">,</span> <span class="n">CustomClass</span> <span class="o">&amp;</span><span class="n">obj</span><span class="p">)</span>  <span class="c1">// must be static
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="c1">// Convert the ini storage string `value` to a CustomClass object `obj`
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">}</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
@@ -1006,7 +1087,7 @@
 </div>
 </div><blockquote>
 <p>为了方便编写 <code>encode</code> 和 <code>decode</code> 函数, 本库提供了 <code>ini::join</code>, <code>ini::split()</code> 和 <code>ini::trim()</code> 工具函数</p></blockquote>
-<p><strong>案例1</strong>: 下面是将一个用户自定义类<code>Person</code>对象转为ini字段案例. <a class="link" href="./examples/inifile_custom.cpp" >点击查看详情</a></p>
+<p><strong>案例1</strong>: 下面是将一个用户自定义类<code>Person</code>对象转为ini字段案例. <a class="link" href="./examples/inifile_custom.cpp" >查看案例</a></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -1067,7 +1148,7 @@
 </span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">INIFILE_TYPE_CONVERTER</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span>
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="c1">// &#34;Encode&#34; the Person object into a value string
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">void</span> <span class="nf">encode</span><span class="p">(</span><span class="k">const</span> <span class="n">Person</span> <span class="o">&amp;</span><span class="n">obj</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">value</span><span class="p">)</span>
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">static</span> <span class="kt">void</span> <span class="nf">encode</span><span class="p">(</span><span class="k">const</span> <span class="n">Person</span> <span class="o">&amp;</span><span class="n">obj</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">value</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">  <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="k">const</span> <span class="kt">char</span> <span class="n">delimiter</span> <span class="o">=</span> <span class="sc">&#39;,&#39;</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">    <span class="c1">// Format: id,age,name; Note: Please do not include line breaks in the value string
@@ -1075,7 +1156,7 @@
 </span></span><span class="line"><span class="cl">  <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">  <span class="c1">// &#34;Decode&#34; the value string into a Person object
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">void</span> <span class="nf">decode</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">value</span><span class="p">,</span> <span class="n">Person</span> <span class="o">&amp;</span><span class="n">obj</span><span class="p">)</span>
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">static</span> <span class="kt">void</span> <span class="nf">decode</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">value</span><span class="p">,</span> <span class="n">Person</span> <span class="o">&amp;</span><span class="n">obj</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">  <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="k">const</span> <span class="kt">char</span> <span class="n">delimiter</span> <span class="o">=</span> <span class="sc">&#39;,&#39;</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">info</span> <span class="o">=</span> <span class="n">ini</span><span class="o">::</span><span class="n">split</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">);</span>
@@ -1179,7 +1260,58 @@
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h3 id="-常用api说明">📄 常用API说明
+</div><h4 id="案例列表">案例列表
+</h4><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>案例说明</th>
+          <th>案例链接</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>inifile</code>的基本使用案例</td>
+          <td><a class="link" href="./examples/inifile_basic.cpp" >inifile_basic.cpp</a></td>
+      </tr>
+      <tr>
+          <td><code>inifile</code>大小写不敏感案例</td>
+          <td><a class="link" href="./examples/inifile_case_insensitive.cpp" >inifile_case_insensitive.cpp</a></td>
+      </tr>
+      <tr>
+          <td><code>inifile</code>保存ini文件案例</td>
+          <td><a class="link" href="./examples/inifile_save.cpp" >inifile_save.cpp</a></td>
+      </tr>
+      <tr>
+          <td><code>inifile</code>加载ini文件案例</td>
+          <td><a class="link" href="./examples/inifile_load.cpp" >inifile_load.cpp</a></td>
+      </tr>
+      <tr>
+          <td><code>inifile</code>读取流中的ini配置</td>
+          <td><a class="link" href="./examples/inifile_read.cpp" >inifile_read.cpp</a></td>
+      </tr>
+      <tr>
+          <td><code>inifile</code>写入ini配置到流中</td>
+          <td><a class="link" href="./examples/inifile_write.cpp" >inifile_write</a></td>
+      </tr>
+      <tr>
+          <td><code>inifile</code>注释功能案例</td>
+          <td><a class="link" href="./examples/inifile_comment.cpp" >inifile_comment.cpp</a></td>
+      </tr>
+      <tr>
+          <td><code>inifile</code>读写用户自定义类型</td>
+          <td><a class="link" href="./examples/inifile_custom.cpp" >inifile_custom.cpp</a></td>
+      </tr>
+      <tr>
+          <td><code>inifile</code>读写用户自定义类型2</td>
+          <td><a class="link" href="./examples/inifile_custom2.cpp" >inifile_custom2.cpp</a></td>
+      </tr>
+      <tr>
+          <td><code>ini</code>工具函数的使用</td>
+          <td><a class="link" href="./examples/inifile_utility.cpp" >inifile_utility.cpp</a></td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="-常用api说明">📄 常用API说明
 </h3><h4 id="class-类型说明">class 类型说明
 </h4><div class="table-wrapper"><table>
   <thead>
@@ -1209,8 +1341,77 @@
           <td>ini::field</td>
           <td>对应ini文件中的 value 字段, 支持多种数据类型,  支持自动类型转换</td>
       </tr>
+      <tr>
+          <td>ini::comment</td>
+          <td>ini文件中注释类, 管理section和key-value的注释</td>
+      </tr>
   </tbody>
 </table></div>
+<h4 id="inicomment类api说明">ini::comment类API说明
+</h4><details>
+  <summary>点击展开</summary>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>函数名</th>
+          <th>函数签名</th>
+          <th>功能描述</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>comment</td>
+          <td><code>comment(const std::string &amp;str, char symbol = ';')</code></td>
+          <td>构造函数</td>
+      </tr>
+      <tr>
+          <td>comment</td>
+          <td><code>comment(const std::vector&lt;std::string&gt; &amp;vec, char symbol = ';')</code></td>
+          <td>构造函数</td>
+      </tr>
+      <tr>
+          <td>comment</td>
+          <td><code>comment(std::initializer_list&lt;std::string&gt; list, char symbol = ';')</code></td>
+          <td>构造函数</td>
+      </tr>
+      <tr>
+          <td>swap</td>
+          <td><code>void swap(comment &amp;other) noexcept</code></td>
+          <td>交换函数</td>
+      </tr>
+      <tr>
+          <td>empty</td>
+          <td><code>bool empty() const noexcept</code></td>
+          <td>是否为空</td>
+      </tr>
+      <tr>
+          <td>clear</td>
+          <td><code>void clear() noexcept</code></td>
+          <td>清空注释</td>
+      </tr>
+      <tr>
+          <td>set</td>
+          <td><code>void set(const std::string &amp;str, char symbol = ';')</code></td>
+          <td>设置注释(覆盖模式)</td>
+      </tr>
+      <tr>
+          <td>add</td>
+          <td><code>void add(const std::string &amp;str, char symbol = ';')</code></td>
+          <td>添加注释(追加模式)</td>
+      </tr>
+      <tr>
+          <td>view</td>
+          <td><code>const std::vector&lt;std::string&gt; &amp;view() const</code></td>
+          <td>返回注释容器常引用</td>
+      </tr>
+      <tr>
+          <td>to_vector</td>
+          <td><code>std::vector&lt;std::string&gt; to_vector() const</code></td>
+          <td>返回注释容器的拷贝</td>
+      </tr>
+  </tbody>
+</table></div>
+</details>
 <h4 id="inifield类api说明">ini::field类API说明
 </h4><details>
   <summary>点击展开</summary>
@@ -1250,6 +1451,11 @@
           <td>将field类型转为T类型</td>
       </tr>
       <tr>
+          <td>swap</td>
+          <td><code>void swap(field &amp;other) noexcept</code></td>
+          <td>交换函数</td>
+      </tr>
+      <tr>
           <td>set_comment</td>
           <td><code>void set_comment(const std::string &amp;str, char symbol = ';')</code></td>
           <td>设置key-value的注释, 覆盖模式</td>
@@ -1263,6 +1469,11 @@
           <td>clear_comment</td>
           <td><code>void clear_comment()</code></td>
           <td>清除key-value的注释</td>
+      </tr>
+      <tr>
+          <td>comment</td>
+          <td><code>ini::comment &amp;comment()</code></td>
+          <td>获取key-value的注释内容(引用)</td>
       </tr>
   </tbody>
 </table></div>
@@ -1300,6 +1511,11 @@
           <td>返回指定key键的元素的字段值的引用。如果元素不存则抛 std::out_of_range异常</td>
       </tr>
       <tr>
+          <td>swap</td>
+          <td><code>void swap(basic_section &amp;other) noexcept</code></td>
+          <td>交换函数</td>
+      </tr>
+      <tr>
           <td>get</td>
           <td><code>field get(std::string key, field default_value = field{}) const</code></td>
           <td>获取key对应的值(副本), 若key不存在则返回default_value默认值</td>
@@ -1328,6 +1544,21 @@
           <td>clear</td>
           <td><code>void clear() noexcept</code></td>
           <td>清除所有key - value键值对</td>
+      </tr>
+      <tr>
+          <td>keys</td>
+          <td><code>std::vector&lt;key_type&gt; keys() const</code></td>
+          <td>获取所有的keys</td>
+      </tr>
+      <tr>
+          <td>values</td>
+          <td><code>std::vector&lt;ini::filed&gt; values() const</code></td>
+          <td>获取所有的values, 类型为ini::filed</td>
+      </tr>
+      <tr>
+          <td>items</td>
+          <td><code>std::vector&lt;value_type&gt; items() const</code></td>
+          <td>获取所有的key-value键值对</td>
       </tr>
       <tr>
           <td>size</td>
@@ -1363,6 +1594,11 @@
           <td>clear_comment</td>
           <td><code>void clear_comment()</code></td>
           <td>清除section的注释</td>
+      </tr>
+      <tr>
+          <td>comment</td>
+          <td><code>ini::comment &amp;comment()</code></td>
+          <td>获取section的注释内容(引用)</td>
       </tr>
   </tbody>
 </table></div>
@@ -1405,6 +1641,11 @@
           <td>返回指定section的引用。如果不存在这样的元素，则会抛出 std::out_of_range 类型的异常</td>
       </tr>
       <tr>
+          <td>swap</td>
+          <td><code>void swap(inifile &amp;other) noexcept</code></td>
+          <td>交换函数</td>
+      </tr>
+      <tr>
           <td>get</td>
           <td><code>field get(std::string sec, std::string key, field default_value = field{}) const</code></td>
           <td>返回指定section的指定key键的字段值, 若section或key不存在则返回默认值default_value</td>
@@ -1438,6 +1679,11 @@
           <td>size</td>
           <td><code>size_type size() const noexcept</code></td>
           <td>返回有多少section</td>
+      </tr>
+      <tr>
+          <td>sections</td>
+          <td><code>std::vector&lt;key_type&gt; sections() const</code></td>
+          <td>获取ini文件的所有section</td>
       </tr>
       <tr>
           <td>count</td>
@@ -1517,7 +1763,7 @@
 
 
         <span>
-            最后更新于 2025-05-05
+            最后更新于 2025-05-28
         </span>
     </section></footer>
 
