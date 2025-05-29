@@ -67,6 +67,8 @@
 &lt;p&gt;🌍 Languages/语言:  &lt;a class=&#34;link&#34; href=&#34;README.md&#34; &gt;English&lt;/a&gt;  |  &lt;a class=&#34;link&#34; href=&#34;README.zh-CN.md&#34; &gt;简体中文&lt;/a&gt;&lt;/p&gt;
 &lt;h3 id=&#34;-项目简介&#34;&gt;📌 项目简介
 &lt;/h3&gt;&lt;p&gt;这是一个轻量级、跨平台、高效且 &lt;strong&gt;header-only&lt;/strong&gt; 的 INI 配置解析库，专为 C++ 项目打造。它提供简洁、直观且优雅的 API，支持从文件、&lt;code&gt;std::istream&lt;/code&gt; 或 &lt;code&gt;std::string&lt;/code&gt; 解析、修改并写入 INI 配置信息，并具备行级注释保留功能，确保原始注释不丢失，使配置管理更加轻松高效。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;项目仓库地址: &lt;a class=&#34;link&#34; href=&#34;https://github.com/abin-z/IniFile&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://github.com/abin-z/IniFile&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
 &lt;h3 id=&#34;-特性&#34;&gt;🚀 特性
 &lt;/h3&gt;&lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;轻量级 &amp;amp; 无依赖&lt;/strong&gt;：仅依赖 C++11 标准库，无需额外依赖项&lt;/li&gt;
