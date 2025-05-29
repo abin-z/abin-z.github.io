@@ -7,7 +7,7 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Abin</copyright>
-        <lastBuildDate>Thu, 29 May 2025 23:05:03 +0800</lastBuildDate><atom:link href="https://abin-z.github.io/categories/opensource/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Thu, 29 May 2025 23:11:31 +0800</lastBuildDate><atom:link href="https://abin-z.github.io/categories/opensource/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>轻量级INI配置解析库(IniFile)</title>
         <link>https://abin-z.github.io/p/%E8%BD%BB%E9%87%8F%E7%BA%A7ini%E9%85%8D%E7%BD%AE%E8%A7%A3%E6%9E%90%E5%BA%93inifile/</link>
         <pubDate>Sun, 04 May 2025 22:05:03 +0800</pubDate>
@@ -104,7 +104,8 @@
 &lt;/h3&gt;&lt;p&gt;&lt;strong&gt;方式1: Header-only&lt;/strong&gt;&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;
-&lt;p&gt;直接将&lt;a class=&#34;link&#34; href=&#34;./include/inifile/inifile.h&#34; &gt;&lt;code&gt;inifile.h&lt;/code&gt;&lt;/a&gt;头文件复制到您的项目文件夹中&lt;/p&gt;
+&lt;p&gt;直接将&lt;a class=&#34;link&#34; href=&#34;https://github.com/abin-z/IniFile/blob/main/include/inifile/inifile.h&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;code&gt;inifile.h&lt;/code&gt;&lt;/a&gt;头文件复制到您的项目文件夹中&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;然后在源代码文件中直接&lt;code&gt;#include &amp;quot;inifile.h&amp;quot;&lt;/code&gt;即可使用&lt;/p&gt;
@@ -116,7 +117,8 @@
 &lt;p&gt;在项目中创建一个&lt;code&gt;inifile&lt;/code&gt;文件夹(名称随意)&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;将本项目的&lt;a class=&#34;link&#34; href=&#34;./include/&#34; &gt;&lt;code&gt;include&lt;/code&gt;&lt;/a&gt;文件夹中的所有内容复制到刚才步骤1创建的&lt;code&gt;inifile&lt;/code&gt;文件夹内&lt;/p&gt;
+&lt;p&gt;将本项目的&lt;a class=&#34;link&#34; href=&#34;https://github.com/abin-z/IniFile/tree/main/include&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;code&gt;include&lt;/code&gt;&lt;/a&gt;文件夹中的所有内容复制到刚才步骤1创建的&lt;code&gt;inifile&lt;/code&gt;文件夹内&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;然后在您的主&lt;code&gt;CMakeLists.txt&lt;/code&gt;中添加以下内容&lt;/p&gt;
@@ -134,7 +136,8 @@
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;h3 id=&#34;-基础使用案例&#34;&gt;🛠️ 基础使用案例
-&lt;/h3&gt;&lt;p&gt;下面提供简单的使用案例, 更多详细的案例请查看&lt;a class=&#34;link&#34; href=&#34;./examples/&#34; &gt;&lt;code&gt;./examples/&lt;/code&gt;&lt;/a&gt;文件夹下的案例&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;下面提供简单的使用案例, 更多详细的案例请查看&lt;a class=&#34;link&#34; href=&#34;https://github.com/abin-z/IniFile/tree/main/examples&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;code&gt;./examples/&lt;/code&gt;&lt;/a&gt;文件夹下的案例&lt;/p&gt;
 &lt;h4 id=&#34;创建并保存ini文件&#34;&gt;创建并保存ini文件
 &lt;/h4&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
