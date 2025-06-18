@@ -7,7 +7,7 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Abin</copyright>
-        <lastBuildDate>Fri, 30 May 2025 21:57:14 +0800</lastBuildDate><atom:link href="https://abin-z.github.io/categories/opensource/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Wed, 18 Jun 2025 23:04:56 +0800</lastBuildDate><atom:link href="https://abin-z.github.io/categories/opensource/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>轻量级INI配置解析库(IniFile)</title>
         <link>https://abin-z.github.io/p/%E8%BD%BB%E9%87%8F%E7%BA%A7ini%E9%85%8D%E7%BD%AE%E8%A7%A3%E6%9E%90%E5%BA%93inifile/</link>
         <pubDate>Sun, 04 May 2025 22:05:03 +0800</pubDate>
@@ -70,6 +70,14 @@
 &lt;/h3&gt;&lt;p&gt;这是一个轻量级、跨平台、高效且 &lt;strong&gt;header-only&lt;/strong&gt; 的 INI 配置解析库，专为 C++ 项目打造。它提供简洁、直观且优雅的 API，支持从文件、&lt;code&gt;std::istream&lt;/code&gt; 或 &lt;code&gt;std::string&lt;/code&gt; 解析、修改并写入 INI 配置信息，并具备行级注释保留功能，确保原始注释不丢失，使配置管理更加轻松高效。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;项目仓库地址: &lt;a class=&#34;link&#34; href=&#34;https://github.com/abin-z/IniFile&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;https://github.com/abin-z/IniFile&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;h3 id=&#34;设计理念&#34;&gt;🎯设计理念
+&lt;/h3&gt;&lt;p&gt;INI 解析库数不胜数，每个库甚至都有自己存在的理由。我们的设计理念是:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;极致简洁，开箱即用&lt;/strong&gt;：Header-only，零依赖，仅需 C++11，轻松集成任意项目。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;专注体验，贴近实用&lt;/strong&gt;：支持注释保留、自动类型转换、自定义解析，专注提升开发者日常使用体验。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;跨平台、可维护、可信赖&lt;/strong&gt;：兼容主流平台，结合单元测试与内存检查，保障长期稳定运行。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如果您正在寻找一个&lt;strong&gt;简单、实用、优雅、稳定&lt;/strong&gt;的现代 C++ 解决方案，那么该库就是您的不二之选。如果你知道如何使用&lt;code&gt;std::map&lt;/code&gt;，你就已经准备好了。&lt;/p&gt;
 &lt;h3 id=&#34;-特性&#34;&gt;🚀 特性
 &lt;/h3&gt;&lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;轻量级 &amp;amp; 无依赖&lt;/strong&gt;：仅依赖 C++11 标准库，无需额外依赖项&lt;/li&gt;
