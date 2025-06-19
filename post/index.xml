@@ -7,7 +7,7 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Abin</copyright>
-        <lastBuildDate>Thu, 19 Jun 2025 23:58:26 +0800</lastBuildDate><atom:link href="https://abin-z.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Thu, 19 Jun 2025 23:59:34 +0800</lastBuildDate><atom:link href="https://abin-z.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>轻量级INI配置解析库(IniFile)</title>
         <link>https://abin-z.github.io/p/%E8%BD%BB%E9%87%8F%E7%BA%A7ini%E9%85%8D%E7%BD%AE%E8%A7%A3%E6%9E%90%E5%BA%93inifile/</link>
         <pubDate>Sun, 04 May 2025 22:05:03 +0800</pubDate>
@@ -1213,31 +1213,132 @@
 &lt;h4 id=&#34;iniinifile类api说明&#34;&gt;ini::inifile类API说明
 &lt;/h4&gt;&lt;details&gt;
   &lt;summary&gt;点击展开&lt;/summary&gt;
-| 函数名      | 函数签名                                                     | 功能描述                                                     |
-| ----------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| operator[]  | `section &amp;operator[](std::string sec)`                       | 返回ini::section引用, 不存在则插入空ini::section             |
-| set         | `field &amp;set(std::string sec, std::string key, T &amp;&amp;value)`    | 设置section key-value                                        |
-| contains    | `bool contains(std::string section) const`                   | 判断指定的section是否存在                                    |
-| contains    | `bool contains(std::string section, std::string key) const`  | 判断指定section下指定的key是否存在                           |
-| at          | `section &amp;at(std::string section)`                           | 返回指定section的引用。如果不存在这样的元素，则会抛出 std::out_of_range 类型的异常 |
-| swap        | `void swap(inifile &amp;other) noexcept`                         | 交换函数                                                     |
-| get         | `field get(std::string sec, std::string key, field default_value = field{}) const` | 返回指定section的指定key键的字段值, 若section或key不存在则返回默认值default_value |
-| find        | `iterator find(key_type key)`                                | 查找指定section的迭代器, 不存在返回end迭代器                 |
-| erase       | `iterator erase(iterator pos)`                               | 删除指定迭代器的section(包括其所有元素)                      |
-| remove      | `bool remove(std::string sec)`                               | 删除指定的section(包括其所有元素)                            |
-| empty       | `bool empty() const noexcept`                                | 判断是否没有section, 没有section空返回true                   |
-| clear       | `void clear() noexcept`                                      | 清空所有的section                                            |
-| size        | `size_type size() const noexcept`                            | 返回有多少section                                            |
-| sections    | `std::vector&lt;key_type&gt; sections() const`                     | 获取ini文件的所有section                                     |
-| count       | `size_type count(key_type key) const`                        | 返回有多少指定section-name的section                          |
-| begin       | `iterator begin() noexcept`                                  | 返回起始迭代器                                               |
-| end         | `iterator end() noexcept`                                    | 返回末尾迭代器                                               |
-| read        | `void read(std::istream &amp;is)`                                | 从istream中读取ini信息                                       |
-| write       | `void write(std::ostream &amp;os) const`                         | 向ostream中写入ini信息                                       |
-| from_string | `void from_string(const std::string &amp;str)`                   | 从string中读取ini信息                                        |
-| to_string   | `std::string to_string() const`                              | 将inifile对象转为对应字符串                                  |
-| load        | `bool load(const std::string &amp;filename)`                     | 从ini文件中加载ini信息, 返回是否成功                         |
-| save        | `bool save(const std::string &amp;filename)`                     | 将ini信息保存到ini文件, 返回是否成功                         |
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;函数名&lt;/th&gt;
+          &lt;th&gt;函数签名&lt;/th&gt;
+          &lt;th&gt;功能描述&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;operator[]&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;section &amp;amp;operator[](std::string sec)&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;返回ini::section引用, 不存在则插入空ini::section&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;set&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;field &amp;amp;set(std::string sec, std::string key, T &amp;amp;&amp;amp;value)&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;设置section key-value&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;contains&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;bool contains(std::string section) const&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;判断指定的section是否存在&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;contains&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;bool contains(std::string section, std::string key) const&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;判断指定section下指定的key是否存在&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;at&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;section &amp;amp;at(std::string section)&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;返回指定section的引用。如果不存在这样的元素，则会抛出 std::out_of_range 类型的异常&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;swap&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;void swap(inifile &amp;amp;other) noexcept&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;交换函数&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;get&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;field get(std::string sec, std::string key, field default_value = field{}) const&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;返回指定section的指定key键的字段值, 若section或key不存在则返回默认值default_value&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;find&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;iterator find(key_type key)&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;查找指定section的迭代器, 不存在返回end迭代器&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;erase&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;iterator erase(iterator pos)&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;删除指定迭代器的section(包括其所有元素)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;remove&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;bool remove(std::string sec)&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;删除指定的section(包括其所有元素)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;empty&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;bool empty() const noexcept&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;判断是否没有section, 没有section空返回true&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;clear&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;void clear() noexcept&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;清空所有的section&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;size&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;size_type size() const noexcept&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;返回有多少section&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;sections&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;std::vector&amp;lt;key_type&amp;gt; sections() const&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;获取ini文件的所有section&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;count&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;size_type count(key_type key) const&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;返回有多少指定section-name的section&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;begin&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;iterator begin() noexcept&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;返回起始迭代器&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;end&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;iterator end() noexcept&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;返回末尾迭代器&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;read&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;void read(std::istream &amp;amp;is)&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;从istream中读取ini信息&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;write&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;void write(std::ostream &amp;amp;os) const&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;向ostream中写入ini信息&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;from_string&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;void from_string(const std::string &amp;amp;str)&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;从string中读取ini信息&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;to_string&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;std::string to_string() const&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;将inifile对象转为对应字符串&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;load&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;bool load(const std::string &amp;amp;filename)&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;从ini文件中加载ini信息, 返回是否成功&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;save&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;bool save(const std::string &amp;amp;filename)&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;将ini信息保存到ini文件, 返回是否成功&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
 &lt;/details&gt;
 </description>
         </item>
