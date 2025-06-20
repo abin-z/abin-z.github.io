@@ -7,7 +7,7 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Abin</copyright>
-        <lastBuildDate>Thu, 19 Jun 2025 23:59:34 +0800</lastBuildDate><atom:link href="https://abin-z.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Fri, 20 Jun 2025 23:56:22 +0800</lastBuildDate><atom:link href="https://abin-z.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>轻量级INI配置解析库(IniFile)</title>
         <link>https://abin-z.github.io/p/%E8%BD%BB%E9%87%8F%E7%BA%A7ini%E9%85%8D%E7%BD%AE%E8%A7%A3%E6%9E%90%E5%BA%93inifile/</link>
         <pubDate>Sun, 04 May 2025 22:05:03 +0800</pubDate>
@@ -3322,9 +3322,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;添加了自动部署功能&lt;/p&gt;
-&lt;p&gt;测试部署功能&lt;/p&gt;
-</description>
+&lt;/div&gt;</description>
         </item>
         <item>
         <title>Markdown Syntax Guide</title>
