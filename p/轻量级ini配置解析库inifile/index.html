@@ -10,7 +10,7 @@
 <meta property='og:description' content="🌟 轻量级ini文件解析库 🌍 Languages/语言: English | 简体中文\n📌 项目简介 这是一个轻量级、跨平台、高效且 header-only 的 INI 配置解析库，专为 C++ 项目打造。它提供简洁、直观且优雅的 API，支持从文件、std::istream 或 std::string 解析、修改并写入 INI 配置信息，并具备行级注释保留功能，确保原始注释不丢失，使配置管理更加轻松高效。\n">
 <meta property='og:url' content='https://abin-z.github.io/p/%E8%BD%BB%E9%87%8F%E7%BA%A7ini%E9%85%8D%E7%BD%AE%E8%A7%A3%E6%9E%90%E5%BA%93inifile/'>
 <meta property='og:site_name' content='Abin&#39;s Blog'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-05-04T22:05:03&#43;08:00'/><meta property='article:modified_time' content='2025-06-19T23:59:34&#43;08:00'/>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-05-04T22:05:03&#43;08:00'/><meta property='article:modified_time' content='2025-06-23T23:41:21&#43;08:00'/>
 <meta name="twitter:title" content="轻量级INI配置解析库(IniFile)">
 <meta name="twitter:description" content="🌟 轻量级ini文件解析库 🌍 Languages/语言: English | 简体中文\n📌 项目简介 这是一个轻量级、跨平台、高效且 header-only 的 INI 配置解析库，专为 C++ 项目打造。它提供简洁、直观且优雅的 API，支持从文件、std::istream 或 std::string 解析、修改并写入 INI 配置信息，并具备行级注释保留功能，确保原始注释不丢失，使配置管理更加轻松高效。\n">
     <link rel="shortcut icon" href="/favicon.ico" />
@@ -1390,6 +1390,18 @@
 | add       | `void add(const std::string &str, char symbol = ';')`        | 添加注释(追加模式) |
 | view      | `const std::vector<std::string> &view() const`               | 返回注释容器常引用 |
 | to_vector | `std::vector<std::string> to_vector() const`                 | 返回注释容器的拷贝 |
+| 函数名    | 函数签名                                                 | 功能描述           |
+| --------- | -------------------------------------------------------- | ------------------ |
+| comment   | `comment(const std::string &str, char symbol = ';')`     | 构造函数           |
+| comment   | `comment(const std::vector &vec, char symbol = ';')`     | 构造函数           |
+| comment   | `comment(std::initializer_list list, char symbol = ';')` | 构造函数           |
+| swap      | `void swap(comment &other) noexcept`                     | 交换函数           |
+| empty     | `bool empty() const noexcept`                            | 是否为空           |
+| clear     | `void clear() noexcept`                                  | 清空注释           |
+| set       | `void set(const std::string &str, char symbol = ';')`    | 设置注释(覆盖模式) |
+| add       | `void add(const std::string &str, char symbol = ';')`    | 添加注释(追加模式) |
+| view      | `const std::vector &view() const`                        | 返回注释容器常引用 |
+| to_vector | `std::vector to_vector() const`                          | 返回注释容器的拷贝 |
 </details>
 <h4 id="inifield类api说明">ini::field类API说明
 </h4><details>
@@ -1747,7 +1759,7 @@
 
 
         <span>
-            最后更新于 2025-06-19
+            最后更新于 2025-06-23
         </span>
     </section></footer>
 

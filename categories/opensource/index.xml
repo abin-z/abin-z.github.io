@@ -7,7 +7,7 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Abin</copyright>
-        <lastBuildDate>Thu, 19 Jun 2025 23:59:34 +0800</lastBuildDate><atom:link href="https://abin-z.github.io/categories/opensource/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Mon, 23 Jun 2025 23:41:21 +0800</lastBuildDate><atom:link href="https://abin-z.github.io/categories/opensource/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>轻量级INI配置解析库(IniFile)</title>
         <link>https://abin-z.github.io/p/%E8%BD%BB%E9%87%8F%E7%BA%A7ini%E9%85%8D%E7%BD%AE%E8%A7%A3%E6%9E%90%E5%BA%93inifile/</link>
         <pubDate>Sun, 04 May 2025 22:05:03 +0800</pubDate>
@@ -1013,6 +1013,18 @@
 | add       | `void add(const std::string &amp;str, char symbol = &#39;;&#39;)`        | 添加注释(追加模式) |
 | view      | `const std::vector&lt;std::string&gt; &amp;view() const`               | 返回注释容器常引用 |
 | to_vector | `std::vector&lt;std::string&gt; to_vector() const`                 | 返回注释容器的拷贝 |
+| 函数名    | 函数签名                                                 | 功能描述           |
+| --------- | -------------------------------------------------------- | ------------------ |
+| comment   | `comment(const std::string &amp;str, char symbol = &#39;;&#39;)`     | 构造函数           |
+| comment   | `comment(const std::vector &amp;vec, char symbol = &#39;;&#39;)`     | 构造函数           |
+| comment   | `comment(std::initializer_list list, char symbol = &#39;;&#39;)` | 构造函数           |
+| swap      | `void swap(comment &amp;other) noexcept`                     | 交换函数           |
+| empty     | `bool empty() const noexcept`                            | 是否为空           |
+| clear     | `void clear() noexcept`                                  | 清空注释           |
+| set       | `void set(const std::string &amp;str, char symbol = &#39;;&#39;)`    | 设置注释(覆盖模式) |
+| add       | `void add(const std::string &amp;str, char symbol = &#39;;&#39;)`    | 添加注释(追加模式) |
+| view      | `const std::vector &amp;view() const`                        | 返回注释容器常引用 |
+| to_vector | `std::vector to_vector() const`                          | 返回注释容器的拷贝 |
 &lt;/details&gt;
 &lt;h4 id=&#34;inifield类api说明&#34;&gt;ini::field类API说明
 &lt;/h4&gt;&lt;details&gt;
