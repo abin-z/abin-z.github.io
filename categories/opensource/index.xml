@@ -7,7 +7,7 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Abin</copyright>
-        <lastBuildDate>Mon, 23 Jun 2025 23:41:21 +0800</lastBuildDate><atom:link href="https://abin-z.github.io/categories/opensource/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Tue, 24 Jun 2025 11:00:38 +0800</lastBuildDate><atom:link href="https://abin-z.github.io/categories/opensource/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>轻量级INI配置解析库(IniFile)</title>
         <link>https://abin-z.github.io/p/%E8%BD%BB%E9%87%8F%E7%BA%A7ini%E9%85%8D%E7%BD%AE%E8%A7%A3%E6%9E%90%E5%BA%93inifile/</link>
         <pubDate>Sun, 04 May 2025 22:05:03 +0800</pubDate>
@@ -1001,35 +1001,132 @@
 &lt;h4 id=&#34;inicomment类api说明&#34;&gt;ini::comment类API说明
 &lt;/h4&gt;&lt;details&gt;
   &lt;summary&gt;点击展开&lt;/summary&gt;
-| 函数名    | 函数签名                                                     | 功能描述           |
-| --------- | ------------------------------------------------------------ | ------------------ |
-| comment   | `comment(const std::string &amp;str, char symbol = &#39;;&#39;)`         | 构造函数           |
-| comment   | `comment(const std::vector&lt;std::string&gt; &amp;vec, char symbol = &#39;;&#39;)` | 构造函数           |
-| comment   | `comment(std::initializer_list&lt;std::string&gt; list, char symbol = &#39;;&#39;)` | 构造函数           |
-| swap      | `void swap(comment &amp;other) noexcept`                         | 交换函数           |
-| empty     | `bool empty() const noexcept`                                | 是否为空           |
-| clear     | `void clear() noexcept`                                      | 清空注释           |
-| set       | `void set(const std::string &amp;str, char symbol = &#39;;&#39;)`        | 设置注释(覆盖模式) |
-| add       | `void add(const std::string &amp;str, char symbol = &#39;;&#39;)`        | 添加注释(追加模式) |
-| view      | `const std::vector&lt;std::string&gt; &amp;view() const`               | 返回注释容器常引用 |
-| to_vector | `std::vector&lt;std::string&gt; to_vector() const`                 | 返回注释容器的拷贝 |
-| 函数名    | 函数签名                                                 | 功能描述           |
-| --------- | -------------------------------------------------------- | ------------------ |
-| comment   | `comment(const std::string &amp;str, char symbol = &#39;;&#39;)`     | 构造函数           |
-| comment   | `comment(const std::vector &amp;vec, char symbol = &#39;;&#39;)`     | 构造函数           |
-| comment   | `comment(std::initializer_list list, char symbol = &#39;;&#39;)` | 构造函数           |
-| swap      | `void swap(comment &amp;other) noexcept`                     | 交换函数           |
-| empty     | `bool empty() const noexcept`                            | 是否为空           |
-| clear     | `void clear() noexcept`                                  | 清空注释           |
-| set       | `void set(const std::string &amp;str, char symbol = &#39;;&#39;)`    | 设置注释(覆盖模式) |
-| add       | `void add(const std::string &amp;str, char symbol = &#39;;&#39;)`    | 添加注释(追加模式) |
-| view      | `const std::vector &amp;view() const`                        | 返回注释容器常引用 |
-| to_vector | `std::vector to_vector() const`                          | 返回注释容器的拷贝 |
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;函数名&lt;/th&gt;
+          &lt;th&gt;函数签名&lt;/th&gt;
+          &lt;th&gt;功能描述&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;comment&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;comment(const std::string &amp;amp;str, char symbol = &#39;;&#39;)&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;构造函数&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;comment&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;comment(const std::vector &amp;amp;vec, char symbol = &#39;;&#39;)&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;构造函数&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;comment&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;comment(std::initializer_list list, char symbol = &#39;;&#39;)&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;构造函数&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;swap&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;void swap(comment &amp;amp;other) noexcept&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;交换函数&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;empty&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;bool empty() const noexcept&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;是否为空&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;clear&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;void clear() noexcept&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;清空注释&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;set&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;void set(const std::string &amp;amp;str, char symbol = &#39;;&#39;)&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;设置注释(覆盖模式)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;add&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;void add(const std::string &amp;amp;str, char symbol = &#39;;&#39;)&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;添加注释(追加模式)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;view&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;const std::vector &amp;amp;view() const&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;返回注释容器常引用&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;to_vector&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;std::vector to_vector() const&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;返回注释容器的拷贝&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;函数名&lt;/td&gt;
+          &lt;td&gt;函数签名&lt;/td&gt;
+          &lt;td&gt;功能描述&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&amp;mdash;&amp;mdash;&amp;mdash;&lt;/td&gt;
+          &lt;td&gt;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;ndash;&lt;/td&gt;
+          &lt;td&gt;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;comment&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;comment(const std::string &amp;amp;str, char symbol = &#39;;&#39;)&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;构造函数&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;comment&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;comment(const std::vector &amp;amp;vec, char symbol = &#39;;&#39;)&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;构造函数&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;comment&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;comment(std::initializer_list list, char symbol = &#39;;&#39;)&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;构造函数&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;swap&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;void swap(comment &amp;amp;other) noexcept&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;交换函数&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;empty&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;bool empty() const noexcept&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;是否为空&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;clear&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;void clear() noexcept&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;清空注释&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;set&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;void set(const std::string &amp;amp;str, char symbol = &#39;;&#39;)&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;设置注释(覆盖模式)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;add&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;void add(const std::string &amp;amp;str, char symbol = &#39;;&#39;)&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;添加注释(追加模式)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;view&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;const std::vector &amp;amp;view() const&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;返回注释容器常引用&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;to_vector&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;std::vector to_vector() const&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;返回注释容器的拷贝&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
 &lt;/details&gt;
 &lt;h4 id=&#34;inifield类api说明&#34;&gt;ini::field类API说明
 &lt;/h4&gt;&lt;details&gt;
   &lt;summary&gt;点击展开&lt;/summary&gt;
-以下函数类型转换失败或者值溢出将抛异常
+&lt;p&gt;以下函数类型转换失败或者值溢出将抛异常&lt;/p&gt;
 &lt;table&gt;
   &lt;thead&gt;
       &lt;tr&gt;
