@@ -7,7 +7,7 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Abin</copyright>
-        <lastBuildDate>Mon, 05 May 2025 16:28:23 +0800</lastBuildDate><atom:link href="https://abin-z.github.io/categories/%E8%B8%A9%E5%9D%91%E6%97%A5%E8%AE%B0/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Mon, 04 Aug 2025 23:55:22 +0800</lastBuildDate><atom:link href="https://abin-z.github.io/categories/%E8%B8%A9%E5%9D%91%E6%97%A5%E8%AE%B0/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>msvc下中文字符报错记录</title>
         <link>https://abin-z.github.io/p/msvc%E4%B8%8B%E4%B8%AD%E6%96%87%E5%AD%97%E7%AC%A6%E6%8A%A5%E9%94%99%E8%AE%B0%E5%BD%95/</link>
         <pubDate>Thu, 10 Apr 2025 19:39:24 +0800</pubDate>
@@ -100,7 +100,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;这行代码会为 MSVC 编译器添加 &lt;code&gt;/utf-8&lt;/code&gt; 选项，指示 MSVC 使用 UTF-8 编码来读取和处理源文件中的字符。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;方式2&lt;/strong&gt;: 将源码文件转为&lt;code&gt;UTF-8 with BOM&lt;/code&gt;, vscode和notepad++都可以转换, 转换后就能成功识别并按照utf-8解析源文件.(Windows真是够无语的, 不带BOM的UTF-8不识别)&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;方式2&lt;/strong&gt;: 将源码文件转为&lt;code&gt;UTF-8 with BOM&lt;/code&gt;, vscode和notepad++都可以转换, 转换后就能成功识别并按照utf-8解析源文件。(Windows真是够无语的, 不带BOM的UTF-8不识别)&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;最推荐的解决方案：&lt;/strong&gt;&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;确保所有源代码文件保存为 &lt;strong&gt;UTF-8 编码（无 BOM）&lt;/strong&gt;。&lt;/li&gt;
