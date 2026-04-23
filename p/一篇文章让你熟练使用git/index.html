@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="zh-cn" dir="ltr">
+<html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Git分布式版本控制系统 git原理图解\ngit是一个分布式版本控制系统, 版本控制是一种记录一个或若干文件内容变化，以便将来查阅特定版本修订情况的系统。\n在本书所展示的例子中，我们对保存着软件源代码的文件作版本控制，但实际上，可以对任何类型的文件进行版本控制。\n">
 <title>一篇文章让你熟练使用Git</title>
 
 <link rel='canonical' href='https://abin-z.github.io/p/%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%E8%AE%A9%E4%BD%A0%E7%86%9F%E7%BB%83%E4%BD%BF%E7%94%A8git/'>
 
-<link rel="stylesheet" href="/scss/style.min.e7c3b2fe4f3c1068be323315f6d8c7ef77136d4608ef75caae44c89964e60b3c.css"><meta property='og:title' content="一篇文章让你熟练使用Git">
+<link rel="stylesheet" href="/scss/style.min.12fc052805396d66a21db6ecd8dea6988a3b10146a729f6dd87f05db302b1bb6.css"><meta property='og:title' content="一篇文章让你熟练使用Git">
 <meta property='og:description' content="Git分布式版本控制系统 git原理图解\ngit是一个分布式版本控制系统, 版本控制是一种记录一个或若干文件内容变化，以便将来查阅特定版本修订情况的系统。\n在本书所展示的例子中，我们对保存着软件源代码的文件作版本控制，但实际上，可以对任何类型的文件进行版本控制。\n">
 <meta property='og:url' content='https://abin-z.github.io/p/%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%E8%AE%A9%E4%BD%A0%E7%86%9F%E7%BB%83%E4%BD%BF%E7%94%A8git/'>
 <meta property='og:site_name' content='Abin&#39;s Blog'>
@@ -61,7 +61,7 @@
                     
                     
                         
-                        <img src="/img/avatar_hu_720528bdd1b8d386.png" width="300"
+                        <img src="/img/avatar_hu_1a875ce71d40e700.png" width="300"
                             height="300" class="site-logo" loading="lazy" alt="Avatar">
                     
                 
@@ -2810,7 +2810,8 @@ nnn.txt：忽略根目录下或者根目录下任意子目录下的nnn.txt文件
 <h3 id="10-git-stash-暂存">10. git stash (暂存)
 </h3><p>git stash：将本地没提交的内容进行缓存并从当前分支移除。缓存的数据结构为堆栈，先进后出。</p>
 <blockquote>
-<p><strong>注意</strong>：git commit的内容不会被缓存， 但git add的内容会被缓存。<strong>stash 只会操作被git追踪的文件</strong>，也就是说，如果有新增的文件，需要进行git add [文件名]让git追踪该文件，再进行stash就可以了。</p></blockquote>
+<p><strong>注意</strong>：git commit的内容不会被缓存， 但git add的内容会被缓存。<strong>stash 只会操作被git追踪的文件</strong>，也就是说，如果有新增的文件，需要进行git add [文件名]让git追踪该文件，再进行stash就可以了。</p>
+</blockquote>
 <div class="table-wrapper"><table>
   <thead>
       <tr>
@@ -2855,7 +2856,8 @@ nnn.txt：忽略根目录下或者根目录下任意子目录下的nnn.txt文件
 <li>我们经常会遇到这样的情况：</li>
 </ul>
 <blockquote>
-<p>正在dev分支开发新功能，做到一半时有人过来反馈一个bug，让马上解决，但是新功能做到了一半你又不想提交，这时就可以使用git stash命令先把当前进度保存起来，然后切换到另一个分支去修改bug，修改完提交后，再切回dev分支，使用git stash pop来恢复之前的进度继续开发新功能。</p></blockquote>
+<p>正在dev分支开发新功能，做到一半时有人过来反馈一个bug，让马上解决，但是新功能做到了一半你又不想提交，这时就可以使用git stash命令先把当前进度保存起来，然后切换到另一个分支去修改bug，修改完提交后，再切回dev分支，使用git stash pop来恢复之前的进度继续开发新功能。</p>
+</blockquote>
 <p>分支有改变时不提交又不能切换分支，如下：</p>
 <p><img src="https://my-pic-bed.oss-cn-chengdu.aliyuncs.com/typora_picture/image-20240524220548423.png"
 	
@@ -2883,7 +2885,8 @@ nnn.txt：忽略根目录下或者根目录下任意子目录下的nnn.txt文件
 <ol>
 <li><code>git stash</code> 是本地的，不会上传到服务器上；</li>
 <li>可以通过使用<code>git stash save 'message...'</code>可以添加一些注释。</li>
-</ol></blockquote>
+</ol>
+</blockquote>
 <p>下面是使用 <code>git stash</code> 时要遵循的顺序：</p>
 <ol>
 <li>将修改保存到分支 A。</li>
@@ -3073,7 +3076,8 @@ nnn.txt：忽略根目录下或者根目录下任意子目录下的nnn.txt文件
 </ul>
 <p>另外有一些观点是我们应该尽量避免重写提交历史：</p>
 <blockquote>
-<p>有一种观点认为，仓库的提交历史即是 记录实际发生过什么。 它是针对历史的文档，本身就有价值，不能乱改。 从这个角度看来，改变提交历史是一种亵渎，你使用 谎言 掩盖了实际发生过的事情。 如果由合并产生的提交历史是一团糟怎么办？ 既然事实就是如此，那么这些痕迹就应该被保留下来，让后人能够查阅。</p></blockquote>
+<p>有一种观点认为，仓库的提交历史即是 记录实际发生过什么。 它是针对历史的文档，本身就有价值，不能乱改。 从这个角度看来，改变提交历史是一种亵渎，你使用 谎言 掩盖了实际发生过的事情。 如果由合并产生的提交历史是一团糟怎么办？ 既然事实就是如此，那么这些痕迹就应该被保留下来，让后人能够查阅。</p>
+</blockquote>
 <p>以及频繁的使用 <code>rebase</code> 可能会使从历史提交中定位 bug 变得更加困难，详见 <a class="link" href="https://medium.com/@fredrikmorken/why-you-should-stop-using-git-rebase-5552bee4fed1"  target="_blank" rel="noopener"
     >Why you should stop using Git rebase</a>。</p>
 <p><a class="link" href="https://waynerv.com/posts/git-rebase-intro/"  target="_blank" rel="noopener"
@@ -4489,7 +4493,8 @@ nnn.txt：忽略根目录下或者根目录下任意子目录下的nnn.txt文件
 </div>
 </div><p>然后再使用<code>git pull</code></p>
 <blockquote>
-<p>这里需要注意的是，使用<code>git pull</code>的时候，和第一种方法是一样的，也要加上 <code>--allow-unrelated-histories</code> 参数</p></blockquote>
+<p>这里需要注意的是，使用<code>git pull</code>的时候，和第一种方法是一样的，也要加上 <code>--allow-unrelated-histories</code> 参数</p>
+</blockquote>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -4611,7 +4616,7 @@ nnn.txt：忽略根目录下或者根目录下任意子目录下的nnn.txt文件
         
             2024 - 
         
-        2025 Abin
+        2026 Abin
     </section>
     
     <section class="powerby">

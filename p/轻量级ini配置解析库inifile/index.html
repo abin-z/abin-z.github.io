@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="zh-cn" dir="ltr">
+<html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="🌟 轻量级ini文件解析库 🌍 Languages/语言: English | 简体中文\n📌 项目简介 这是一个轻量级、跨平台、高效且 header-only 的 INI 配置解析库，专为 C++ 项目打造。它提供简洁、直观且优雅的 API，支持从文件、std::istream 或 std::string 解析、修改并写入 INI 配置信息，并具备行级注释保留功能，确保原始注释不丢失，使配置管理更加轻松高效。\n">
 <title>轻量级INI配置解析库(IniFile)</title>
 
 <link rel='canonical' href='https://abin-z.github.io/p/%E8%BD%BB%E9%87%8F%E7%BA%A7ini%E9%85%8D%E7%BD%AE%E8%A7%A3%E6%9E%90%E5%BA%93inifile/'>
 
-<link rel="stylesheet" href="/scss/style.min.e7c3b2fe4f3c1068be323315f6d8c7ef77136d4608ef75caae44c89964e60b3c.css"><meta property='og:title' content="轻量级INI配置解析库(IniFile)">
+<link rel="stylesheet" href="/scss/style.min.12fc052805396d66a21db6ecd8dea6988a3b10146a729f6dd87f05db302b1bb6.css"><meta property='og:title' content="轻量级INI配置解析库(IniFile)">
 <meta property='og:description' content="🌟 轻量级ini文件解析库 🌍 Languages/语言: English | 简体中文\n📌 项目简介 这是一个轻量级、跨平台、高效且 header-only 的 INI 配置解析库，专为 C++ 项目打造。它提供简洁、直观且优雅的 API，支持从文件、std::istream 或 std::string 解析、修改并写入 INI 配置信息，并具备行级注释保留功能，确保原始注释不丢失，使配置管理更加轻松高效。\n">
 <meta property='og:url' content='https://abin-z.github.io/p/%E8%BD%BB%E9%87%8F%E7%BA%A7ini%E9%85%8D%E7%BD%AE%E8%A7%A3%E6%9E%90%E5%BA%93inifile/'>
 <meta property='og:site_name' content='Abin&#39;s Blog'>
@@ -61,7 +61,7 @@
                     
                     
                         
-                        <img src="/img/avatar_hu_720528bdd1b8d386.png" width="300"
+                        <img src="/img/avatar_hu_1a875ce71d40e700.png" width="300"
                             height="300" class="site-logo" loading="lazy" alt="Avatar">
                     
                 
@@ -484,7 +484,8 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div><blockquote>
-<p>注: 本库内部使用<code>std::string</code>类型封装filed值, 可以很好的和 <code>UTF-8</code> 编码兼容, 但其他编码具体情况可能会有所不同.</p></blockquote>
+<p>注: 本库内部使用<code>std::string</code>类型封装filed值, 可以很好的和 <code>UTF-8</code> 编码兼容, 但其他编码具体情况可能会有所不同.</p>
+</blockquote>
 <h3 id="-使用方式">📦 使用方式
 </h3><p><strong>方式1: Header-only</strong></p>
 <ol>
@@ -540,7 +541,7 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;inifile.h&#34;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span></span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="k">constexpr</span> <span class="kt">char</span> <span class="n">path</span><span class="p">[]</span> <span class="o">=</span> <span class="s">&#34;path/to/ini/file&#34;</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="n">ini</span><span class="o">::</span><span class="n">inifile</span> <span class="n">inif</span><span class="p">;</span>
@@ -548,7 +549,7 @@
 </span></span><span class="line"><span class="cl">  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key1&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">3.14159</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key2&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#34;value&#34;</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="c1">// Save the ini file, returns whether the save was successful or not.
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">bool</span> <span class="n">isok</span> <span class="o">=</span> <span class="n">inif</span><span class="p">.</span><span class="n">save</span><span class="p">(</span><span class="n">path</span><span class="p">);</span>
+</span></span></span><span class="line"><span class="cl">  <span class="kt">bool</span> <span class="n">isok</span> <span class="o">=</span> <span class="n">inif</span><span class="p">.</span><span class="n">save</span><span class="p">(</span><span class="n">path</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
@@ -581,18 +582,18 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;inifile.h&#34;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span></span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="k">constexpr</span> <span class="kt">char</span> <span class="n">path</span><span class="p">[]</span> <span class="o">=</span> <span class="s">&#34;path/to/ini/file&#34;</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="n">ini</span><span class="o">::</span><span class="n">inifile</span> <span class="n">inif</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="c1">// Load the ini file, return whether the loading was successful or not.
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">bool</span> <span class="n">isok</span> <span class="o">=</span> <span class="n">inif</span><span class="p">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">);</span>
+</span></span></span><span class="line"><span class="cl">  <span class="kt">bool</span> <span class="n">isok</span> <span class="o">=</span> <span class="n">inif</span><span class="p">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">  <span class="kt">bool</span>        <span class="n">b</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key0&#34;</span><span class="p">];</span>
 </span></span><span class="line"><span class="cl">  <span class="kt">double</span>      <span class="n">d</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key1&#34;</span><span class="p">];</span>
 </span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">s</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key2&#34;</span><span class="p">];</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">  <span class="c1">// Explicit type conversion via as function
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">bool</span>        <span class="n">bb</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key0&#34;</span><span class="p">].</span><span class="n">as</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">();</span>
+</span></span></span><span class="line"><span class="cl">  <span class="kt">bool</span>        <span class="n">bb</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key0&#34;</span><span class="p">].</span><span class="n">as</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">();</span>
 </span></span><span class="line"><span class="cl">  <span class="kt">double</span>      <span class="n">dd</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key1&#34;</span><span class="p">].</span><span class="n">as</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">();</span>
 </span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">ss</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key2&#34;</span><span class="p">].</span><span class="n">as</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">();</span>
 </span></span><span class="line"><span class="cl">  
@@ -600,9 +601,9 @@
 </span></span><span class="line"><span class="cl">  <span class="kt">double</span> <span class="n">ddd</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">sss</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key0&#34;</span><span class="p">].</span><span class="n">as_to</span><span class="p">(</span><span class="n">bbb</span><span class="p">);</span>  <span class="c1">// Explicit type conversion
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key1&#34;</span><span class="p">].</span><span class="n">as_to</span><span class="p">(</span><span class="n">ddd</span><span class="p">);</span>  <span class="c1">// Explicit type conversion
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key2&#34;</span><span class="p">].</span><span class="n">as_to</span><span class="p">(</span><span class="n">sss</span><span class="p">);</span>  <span class="c1">// Explicit type conversion
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></span><span class="line"><span class="cl">  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key1&#34;</span><span class="p">].</span><span class="n">as_to</span><span class="p">(</span><span class="n">ddd</span><span class="p">);</span>  <span class="c1">// Explicit type conversion
+</span></span></span><span class="line"><span class="cl">  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key2&#34;</span><span class="p">].</span><span class="n">as_to</span><span class="p">(</span><span class="n">sss</span><span class="p">);</span>  <span class="c1">// Explicit type conversion
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><h4 id="stream流中读写ini信息"><code>stream</code>流中读/写ini信息
@@ -619,10 +620,10 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;inifile.h&#34;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span></span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="c1">// create istream object &#34;is&#34; ...
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">ini</span><span class="o">::</span><span class="n">inifile</span> <span class="n">inif</span><span class="p">;</span>
+</span></span></span><span class="line"><span class="cl">  <span class="n">ini</span><span class="o">::</span><span class="n">inifile</span> <span class="n">inif</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="n">inif</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="n">is</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
@@ -639,10 +640,10 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;inifile.h&#34;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span></span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="c1">// create ostream object &#34;os&#34; ...
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">ini</span><span class="o">::</span><span class="n">inifile</span> <span class="n">inif</span><span class="p">;</span>
+</span></span></span><span class="line"><span class="cl">  <span class="n">ini</span><span class="o">::</span><span class="n">inifile</span> <span class="n">inif</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="n">inif</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">os</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
@@ -661,10 +662,10 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;inifile.h&#34;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span></span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="c1">// create string object &#34;s&#34; ...
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">ini</span><span class="o">::</span><span class="n">inifile</span> <span class="n">inif</span><span class="p">;</span>
+</span></span></span><span class="line"><span class="cl">  <span class="n">ini</span><span class="o">::</span><span class="n">inifile</span> <span class="n">inif</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="n">inif</span><span class="p">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
@@ -681,7 +682,7 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;inifile.h&#34;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span></span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="n">ini</span><span class="o">::</span><span class="n">inifile</span> <span class="n">inif</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#34;value&#34;</span><span class="p">;</span>
@@ -714,18 +715,18 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;inifile.h&#34;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span></span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="n">ini</span><span class="o">::</span><span class="n">inifile</span> <span class="n">inif</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">    
 </span></span><span class="line"><span class="cl">  <span class="c1">/// Setting a single value
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key1&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#34;value&#34;</span><span class="p">;</span>
+</span></span></span><span class="line"><span class="cl">  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key1&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#34;value&#34;</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key2&#34;</span><span class="p">].</span><span class="n">set</span><span class="p">(</span><span class="s">&#34;hello&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">  <span class="n">inif</span><span class="p">.</span><span class="n">set</span><span class="p">(</span><span class="s">&#34;section&#34;</span><span class="p">,</span> <span class="s">&#34;key3&#34;</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">].</span><span class="n">set</span><span class="p">(</span><span class="s">&#34;key4&#34;</span><span class="p">,</span> <span class="mf">3.14159</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    
 </span></span><span class="line"><span class="cl">  <span class="c1">/// Setting multiple values for the same section, supporting different types
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section2&#34;</span><span class="p">].</span><span class="n">set</span><span class="p">({{</span><span class="s">&#34;bool&#34;</span><span class="p">,</span> <span class="nb">false</span><span class="p">},</span>
+</span></span></span><span class="line"><span class="cl">  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section2&#34;</span><span class="p">].</span><span class="n">set</span><span class="p">({{</span><span class="s">&#34;bool&#34;</span><span class="p">,</span> <span class="nb">false</span><span class="p">},</span>
 </span></span><span class="line"><span class="cl">                        <span class="p">{</span><span class="s">&#34;int&#34;</span><span class="p">,</span> <span class="mi">123</span><span class="p">},</span>
 </span></span><span class="line"><span class="cl">                        <span class="p">{</span><span class="s">&#34;double&#34;</span><span class="p">,</span> <span class="mf">999.888</span><span class="p">},</span>
 </span></span><span class="line"><span class="cl">                        <span class="p">{</span><span class="s">&#34;string&#34;</span><span class="p">,</span> <span class="s">&#34;ABC&#34;</span><span class="p">},</span>
@@ -779,21 +780,21 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;inifile.h&#34;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span></span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="n">ini</span><span class="o">::</span><span class="n">inifile</span> <span class="n">inif</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="k">try</span>
 </span></span><span class="line"><span class="cl">  <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="c1">/// automatic type conversion
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">s0</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key1&#34;</span><span class="p">];</span>
+</span></span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">s0</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key1&#34;</span><span class="p">];</span>
 </span></span><span class="line"><span class="cl">    <span class="kt">bool</span> <span class="n">isok</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key2&#34;</span><span class="p">];</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">ii0</span> <span class="o">=</span> <span class="n">inif</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#34;section&#34;</span><span class="p">,</span> <span class="s">&#34;key3&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">ii2</span> <span class="o">=</span> <span class="n">inif</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#34;section&#34;</span><span class="p">,</span> <span class="s">&#34;key3&#34;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">);</span> <span class="c1">// Specify default values
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">ss2</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">].</span><span class="n">get</span><span class="p">(</span><span class="s">&#34;key4&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">ss3</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">].</span><span class="n">get</span><span class="p">(</span><span class="s">&#34;key5&#34;</span><span class="p">,</span> <span class="s">&#34;default&#34;</span><span class="p">);</span> <span class="c1">// Specify default values
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">    <span class="kt">double</span> <span class="n">dd0</span> <span class="o">=</span> <span class="n">inif</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&#34;section&#34;</span><span class="p">).</span><span class="n">at</span><span class="p">(</span><span class="s">&#34;key&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;section-key:&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key&#34;</span><span class="p">].</span><span class="n">as</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="p">}</span>
@@ -866,31 +867,31 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;inifile.h&#34;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span></span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="n">ini</span><span class="o">::</span><span class="n">inifile</span> <span class="n">inif</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="c1">// Set value
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key0&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+</span></span></span><span class="line"><span class="cl">  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key0&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key1&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">3.141592</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key2&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#34;value&#34;</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">  <span class="c1">// Set comments if necessary
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">].</span><span class="n">set_comment</span><span class="p">(</span><span class="s">&#34;This is a section comment.&#34;</span><span class="p">);</span>                     <span class="c1">// set section comment, Overwrite Mode
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key1&#34;</span><span class="p">].</span><span class="n">set_comment</span><span class="p">(</span><span class="s">&#34;This is a key-value pairs comment&#34;</span><span class="p">,</span> <span class="sc">&#39;#&#39;</span><span class="p">);</span> <span class="c1">// set key=value pairs comment
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	
+</span></span></span><span class="line"><span class="cl">  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">].</span><span class="n">set_comment</span><span class="p">(</span><span class="s">&#34;This is a section comment.&#34;</span><span class="p">);</span>                     <span class="c1">// set section comment, Overwrite Mode
+</span></span></span><span class="line"><span class="cl">  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key1&#34;</span><span class="p">].</span><span class="n">set_comment</span><span class="p">(</span><span class="s">&#34;This is a key-value pairs comment&#34;</span><span class="p">,</span> <span class="sc">&#39;#&#39;</span><span class="p">);</span> <span class="c1">// set key=value pairs comment
+</span></span></span><span class="line"><span class="cl">	
 </span></span><span class="line"><span class="cl">  <span class="c1">// Clear section comment
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">].</span><span class="n">clear_comment</span><span class="p">();</span>
+</span></span></span><span class="line"><span class="cl">  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">].</span><span class="n">clear_comment</span><span class="p">();</span>
 </span></span><span class="line"><span class="cl">  
 </span></span><span class="line"><span class="cl">  <span class="c1">// Add section comment
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">].</span><span class="n">add_comment</span><span class="p">(</span><span class="s">&#34;section comment01&#34;</span><span class="p">);</span>                    <span class="c1">// add section comment, Append Mode
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">].</span><span class="n">add_comment</span><span class="p">(</span><span class="s">&#34;section comment02</span><span class="se">\n</span><span class="s">section comment03&#34;</span><span class="p">);</span> <span class="c1">// Multi-line comments are allowed, lines separated by `\n`
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  
+</span></span></span><span class="line"><span class="cl">  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">].</span><span class="n">add_comment</span><span class="p">(</span><span class="s">&#34;section comment01&#34;</span><span class="p">);</span>                    <span class="c1">// add section comment, Append Mode
+</span></span></span><span class="line"><span class="cl">  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">].</span><span class="n">add_comment</span><span class="p">(</span><span class="s">&#34;section comment02</span><span class="se">\n</span><span class="s">section comment03&#34;</span><span class="p">);</span> <span class="c1">// Multi-line comments are allowed, lines separated by `\n`
+</span></span></span><span class="line"><span class="cl">  
 </span></span><span class="line"><span class="cl">  <span class="c1">// Get the comment object reference
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">ini</span><span class="o">::</span><span class="n">comment</span> <span class="o">&amp;</span><span class="n">cmt</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key&#34;</span><span class="p">].</span><span class="n">comment</span><span class="p">();</span>  <span class="c1">// get reference to comment
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  
+</span></span></span><span class="line"><span class="cl">  <span class="n">ini</span><span class="o">::</span><span class="n">comment</span> <span class="o">&amp;</span><span class="n">cmt</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key&#34;</span><span class="p">].</span><span class="n">comment</span><span class="p">();</span>  <span class="c1">// get reference to comment
+</span></span></span><span class="line"><span class="cl">  
 </span></span><span class="line"><span class="cl">  <span class="c1">// Read comment content
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">view</span> <span class="o">=</span> <span class="n">cmt</span><span class="p">.</span><span class="n">view</span><span class="p">();</span>  <span class="c1">// view (non-owning)
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  
+</span></span></span><span class="line"><span class="cl">  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">view</span> <span class="o">=</span> <span class="n">cmt</span><span class="p">.</span><span class="n">view</span><span class="p">();</span>  <span class="c1">// view (non-owning)
+</span></span></span><span class="line"><span class="cl">  
 </span></span><span class="line"><span class="cl">  <span class="kt">bool</span> <span class="n">isok</span> <span class="o">=</span> <span class="n">inif</span><span class="p">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#34;config.ini&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
@@ -950,7 +951,7 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;inifile.h&#34;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span></span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">str</span> <span class="o">=</span> <span class="n">R</span><span class="s">&#34;(</span>
 </span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="n">Section</span><span class="p">]</span>
@@ -960,13 +961,13 @@
 </span></span><span class="line"><span class="cl">  <span class="p">)</span><span class="s">&#34;;</span>
 </span></span><span class="line"><span class="cl">  
 </span></span><span class="line"><span class="cl">  <span class="n">ini</span><span class="o">::</span><span class="n">case_insensitive_inifile</span> <span class="n">inif</span><span class="p">;</span>  <span class="c1">// Create a case-insensitive INI file object
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">inif</span><span class="p">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">str</span><span class="p">);</span>               <span class="c1">// Read INI data from string
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span></span><span class="line"><span class="cl">  <span class="n">inif</span><span class="p">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">str</span><span class="p">);</span>               <span class="c1">// Read INI data from string
+</span></span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">  <span class="c1">// Test case-insensitive section and key access
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;inif.contains(</span><span class="se">\&#34;</span><span class="s">Section</span><span class="se">\&#34;</span><span class="s">) = &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">inif</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">&#34;Section&#34;</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>  <span class="c1">// true
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;inif.contains(</span><span class="se">\&#34;</span><span class="s">SECTION</span><span class="se">\&#34;</span><span class="s">) = &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">inif</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">&#34;SECTION&#34;</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>  <span class="c1">// true
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;inif.contains(</span><span class="se">\&#34;</span><span class="s">SeCtIoN</span><span class="se">\&#34;</span><span class="s">) = &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">inif</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">&#34;SeCtIoN&#34;</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>  <span class="c1">// true
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;inif.contains(</span><span class="se">\&#34;</span><span class="s">Section</span><span class="se">\&#34;</span><span class="s">) = &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">inif</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">&#34;Section&#34;</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>  <span class="c1">// true
+</span></span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;inif.contains(</span><span class="se">\&#34;</span><span class="s">SECTION</span><span class="se">\&#34;</span><span class="s">) = &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">inif</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">&#34;SECTION&#34;</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>  <span class="c1">// true
+</span></span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;inif.contains(</span><span class="se">\&#34;</span><span class="s">SeCtIoN</span><span class="se">\&#34;</span><span class="s">) = &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">inif</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">&#34;SeCtIoN&#34;</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>  <span class="c1">// true
+</span></span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;inif.at(</span><span class="se">\&#34;</span><span class="s">section</span><span class="se">\&#34;</span><span class="s">).contains(</span><span class="se">\&#34;</span><span class="s">key</span><span class="se">\&#34;</span><span class="s">) = &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">inif</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&#34;section&#34;</span><span class="p">).</span><span class="n">contains</span><span class="p">(</span><span class="s">&#34;key&#34;</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;inif.at(</span><span class="se">\&#34;</span><span class="s">section</span><span class="se">\&#34;</span><span class="s">).contains(</span><span class="se">\&#34;</span><span class="s">Key</span><span class="se">\&#34;</span><span class="s">) = &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">inif</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&#34;section&#34;</span><span class="p">).</span><span class="n">contains</span><span class="p">(</span><span class="s">&#34;Key&#34;</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;inif.at(</span><span class="se">\&#34;</span><span class="s">SECTION</span><span class="se">\&#34;</span><span class="s">).contains(</span><span class="se">\&#34;</span><span class="s">KEY</span><span class="se">\&#34;</span><span class="s">) = &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">inif</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&#34;SECTION&#34;</span><span class="p">).</span><span class="n">contains</span><span class="p">(</span><span class="s">&#34;KEY&#34;</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
@@ -1016,17 +1017,17 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;inifile.h&#34;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span></span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="c1">/// other type -&gt; ini::field
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">ini</span><span class="o">::</span><span class="n">field</span> <span class="n">f</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span>
+</span></span></span><span class="line"><span class="cl">  <span class="n">ini</span><span class="o">::</span><span class="n">field</span> <span class="n">f</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">  <span class="n">ini</span><span class="o">::</span><span class="n">field</span> <span class="n">f1</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">  <span class="n">ini</span><span class="o">::</span><span class="n">field</span> <span class="n">f2</span> <span class="o">=</span> <span class="mf">3.14</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="n">ini</span><span class="o">::</span><span class="n">field</span> <span class="n">f3</span> <span class="o">=</span> <span class="sc">&#39;c&#39;</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="n">ini</span><span class="o">::</span><span class="n">field</span> <span class="n">f4</span> <span class="o">=</span> <span class="s">&#34;abc&#34;</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  
 </span></span><span class="line"><span class="cl">  <span class="c1">/// ini::field -&gt; other type
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">bool</span>        <span class="n">b</span> <span class="o">=</span> <span class="n">f</span><span class="p">;</span>
+</span></span></span><span class="line"><span class="cl">  <span class="kt">bool</span>        <span class="n">b</span> <span class="o">=</span> <span class="n">f</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="kt">int</span>         <span class="n">i</span> <span class="o">=</span> <span class="n">f1</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="kt">double</span>      <span class="n">d</span> <span class="o">=</span> <span class="n">f2</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="kt">char</span>        <span class="n">c</span> <span class="o">=</span> <span class="n">f3</span><span class="p">;</span>
@@ -1034,20 +1035,20 @@
 </span></span><span class="line"><span class="cl">  
 </span></span><span class="line"><span class="cl">  <span class="n">ini</span><span class="o">::</span><span class="n">inifile</span> <span class="n">inif</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span> <span class="c1">// bool -&gt; ini::field
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  
+</span></span></span><span class="line"><span class="cl">  
 </span></span><span class="line"><span class="cl">  <span class="c1">/// Get direct type(ini::field)
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">auto</span> <span class="n">val</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key&#34;</span><span class="p">];</span> <span class="c1">// val type is ini::field
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">ini</span><span class="o">::</span><span class="n">field</span> <span class="n">val2</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key&#34;</span><span class="p">];</span> 
+</span></span></span><span class="line"><span class="cl">  <span class="k">auto</span> <span class="n">val</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key&#34;</span><span class="p">];</span> <span class="c1">// val type is ini::field
+</span></span></span><span class="line"><span class="cl">  <span class="n">ini</span><span class="o">::</span><span class="n">field</span> <span class="n">val2</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key&#34;</span><span class="p">];</span> 
 </span></span><span class="line"><span class="cl">  
 </span></span><span class="line"><span class="cl">  <span class="c1">/// explicit type conversion
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">bool</span> <span class="n">bb</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key&#34;</span><span class="p">].</span><span class="n">as</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">();</span>
+</span></span></span><span class="line"><span class="cl">  <span class="kt">bool</span> <span class="n">bb</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key&#34;</span><span class="p">].</span><span class="n">as</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">();</span>
 </span></span><span class="line"><span class="cl">    
 </span></span><span class="line"><span class="cl">  <span class="c1">/// automatic type conversion
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">bool</span> <span class="n">bb2</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key&#34;</span><span class="p">];</span>
+</span></span></span><span class="line"><span class="cl">  <span class="kt">bool</span> <span class="n">bb2</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key&#34;</span><span class="p">];</span>
 </span></span><span class="line"><span class="cl">  
 </span></span><span class="line"><span class="cl">  <span class="c1">/// Type conversion failure throws an exception
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">double</span> <span class="n">n</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key&#34;</span><span class="p">];</span> <span class="c1">// error: Converting true to double is not allowed.
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></span><span class="line"><span class="cl">  <span class="kt">double</span> <span class="n">n</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key&#34;</span><span class="p">];</span> <span class="c1">// error: Converting true to double is not allowed.
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>支持自动转换的类型包括:</p>
@@ -1068,7 +1069,8 @@
 <h4 id="自定义类型转换">自定义类型转换
 </h4><blockquote>
 <p>Q: 用户自定义类型可以像上面提到的基本数据类型一样自动转换吗?</p>
-<p>A: 也是可以的, 只需要按以下规则自定义类型转换就能让inifile自动处理用户自定义类型.</p></blockquote>
+<p>A: 也是可以的, 只需要按以下规则自定义类型转换就能让inifile自动处理用户自定义类型.</p>
+</blockquote>
 <p>你可以为用户自定义类型提供自动类型转换的特化模板类, 它能让inifile库根据你定义的规则进行自动转换, 使其可以将自定义类存储在ini字段中, 这样可以大幅减少代码的重复. 以下是自定义规则和模板:</p>
 <ol>
 <li>
@@ -1099,22 +1101,23 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="c1">/// Specialized type conversion template
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">template</span> <span class="o">&lt;&gt;</span>
+</span></span></span><span class="line"><span class="cl"><span class="k">template</span> <span class="o">&lt;&gt;</span>
 </span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">INIFILE_TYPE_CONVERTER</span><span class="o">&lt;</span><span class="n">CustomClass</span><span class="o">&gt;</span>  <span class="c1">// User-defined type `CustomClass`
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">{</span>
+</span></span></span><span class="line"><span class="cl"><span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="k">static</span> <span class="kt">void</span> <span class="nf">encode</span><span class="p">(</span><span class="k">const</span> <span class="n">CustomClass</span> <span class="o">&amp;</span><span class="n">obj</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">value</span><span class="p">)</span>  <span class="c1">// pass by reference
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">{</span>
+</span></span></span><span class="line"><span class="cl">  <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="c1">// Convert the CustomClass object `obj` to ini storage string `value`
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">}</span>
+</span></span></span><span class="line"><span class="cl">  <span class="p">}</span>
 </span></span><span class="line"><span class="cl">  <span class="k">static</span> <span class="kt">void</span> <span class="nf">decode</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">value</span><span class="p">,</span> <span class="n">CustomClass</span> <span class="o">&amp;</span><span class="n">obj</span><span class="p">)</span>  <span class="c1">// must be static
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">{</span>
+</span></span></span><span class="line"><span class="cl">  <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="c1">// Convert the ini storage string `value` to a CustomClass object `obj`
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">}</span>
+</span></span></span><span class="line"><span class="cl">  <span class="p">}</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><blockquote>
-<p>为了方便编写 <code>encode</code> 和 <code>decode</code> 函数, 本库提供了 <code>ini::join</code>, <code>ini::split()</code> 和 <code>ini::trim()</code> 工具函数</p></blockquote>
+<p>为了方便编写 <code>encode</code> 和 <code>decode</code> 函数, 本库提供了 <code>ini::join</code>, <code>ini::split()</code> 和 <code>ini::trim()</code> 工具函数</p>
+</blockquote>
 <p><strong>案例1</strong>: 下面是将一个用户自定义类<code>Person</code>对象转为ini字段案例. <a class="link" href="./examples/inifile_custom.cpp" >查看案例</a></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -1162,34 +1165,34 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="c1">/// @brief User-defined classes
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">struct</span> <span class="nc">Person</span>
+</span></span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">Person</span>
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="n">Person</span><span class="p">()</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span>  <span class="c1">// Must have a default constructor
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">Person</span><span class="p">(</span><span class="kt">int</span> <span class="n">id</span><span class="p">,</span> <span class="kt">int</span> <span class="n">age</span><span class="p">,</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">name</span><span class="p">)</span> <span class="o">:</span> <span class="n">id</span><span class="p">(</span><span class="n">id</span><span class="p">),</span> <span class="n">age</span><span class="p">(</span><span class="n">age</span><span class="p">),</span> <span class="n">name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="p">{}</span>
+</span></span></span><span class="line"><span class="cl">  <span class="n">Person</span><span class="p">(</span><span class="kt">int</span> <span class="n">id</span><span class="p">,</span> <span class="kt">int</span> <span class="n">age</span><span class="p">,</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">name</span><span class="p">)</span> <span class="o">:</span> <span class="n">id</span><span class="p">(</span><span class="n">id</span><span class="p">),</span> <span class="n">age</span><span class="p">(</span><span class="n">age</span><span class="p">),</span> <span class="n">name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="p">{}</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">id</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">age</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">name</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">};</span>
 </span></span><span class="line"><span class="cl"><span class="c1">/// @brief Custom type conversion (Use INIFILE_TYPE_CONVERTER to specialize Person)
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">template</span> <span class="o">&lt;&gt;</span>
+</span></span></span><span class="line"><span class="cl"><span class="k">template</span> <span class="o">&lt;&gt;</span>
 </span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">INIFILE_TYPE_CONVERTER</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span>
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="c1">// &#34;Encode&#34; the Person object into a value string
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">static</span> <span class="kt">void</span> <span class="nf">encode</span><span class="p">(</span><span class="k">const</span> <span class="n">Person</span> <span class="o">&amp;</span><span class="n">obj</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">value</span><span class="p">)</span>
+</span></span></span><span class="line"><span class="cl">  <span class="k">static</span> <span class="kt">void</span> <span class="nf">encode</span><span class="p">(</span><span class="k">const</span> <span class="n">Person</span> <span class="o">&amp;</span><span class="n">obj</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">value</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">  <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="k">const</span> <span class="kt">char</span> <span class="n">delimiter</span> <span class="o">=</span> <span class="sc">&#39;,&#39;</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">    <span class="c1">// Format: id,age,name; Note: Please do not include line breaks in the value string
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">value</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">obj</span><span class="p">.</span><span class="n">id</span><span class="p">)</span> <span class="o">+</span> <span class="n">delimiter</span> <span class="o">+</span> <span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">obj</span><span class="p">.</span><span class="n">age</span><span class="p">)</span> <span class="o">+</span> <span class="n">delimiter</span> <span class="o">+</span> <span class="n">obj</span><span class="p">.</span><span class="n">name</span><span class="p">;</span>
+</span></span></span><span class="line"><span class="cl">    <span class="n">value</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">obj</span><span class="p">.</span><span class="n">id</span><span class="p">)</span> <span class="o">+</span> <span class="n">delimiter</span> <span class="o">+</span> <span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">obj</span><span class="p">.</span><span class="n">age</span><span class="p">)</span> <span class="o">+</span> <span class="n">delimiter</span> <span class="o">+</span> <span class="n">obj</span><span class="p">.</span><span class="n">name</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">  <span class="c1">// &#34;Decode&#34; the value string into a Person object
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">static</span> <span class="kt">void</span> <span class="nf">decode</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">value</span><span class="p">,</span> <span class="n">Person</span> <span class="o">&amp;</span><span class="n">obj</span><span class="p">)</span>
+</span></span></span><span class="line"><span class="cl">  <span class="k">static</span> <span class="kt">void</span> <span class="nf">decode</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">value</span><span class="p">,</span> <span class="n">Person</span> <span class="o">&amp;</span><span class="n">obj</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">  <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="k">const</span> <span class="kt">char</span> <span class="n">delimiter</span> <span class="o">=</span> <span class="sc">&#39;,&#39;</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">info</span> <span class="o">=</span> <span class="n">ini</span><span class="o">::</span><span class="n">split</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="c1">// Exception handling can be added
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">obj</span><span class="p">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">stoi</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span></span></span><span class="line"><span class="cl">    <span class="n">obj</span><span class="p">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">stoi</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
 </span></span><span class="line"><span class="cl">    <span class="n">obj</span><span class="p">.</span><span class="n">age</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">stoi</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
 </span></span><span class="line"><span class="cl">    <span class="n">obj</span><span class="p">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
 </span></span><span class="line"><span class="cl">  <span class="p">}</span>
@@ -1200,8 +1203,8 @@
 </span></span><span class="line"><span class="cl">  <span class="n">ini</span><span class="o">::</span><span class="n">inifile</span> <span class="n">inif</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="n">Person</span> <span class="n">p</span> <span class="o">=</span> <span class="n">Person</span><span class="p">{</span><span class="mi">123456</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="s">&#34;abin&#34;</span><span class="p">};</span>
 </span></span><span class="line"><span class="cl">  <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span><span class="p">;</span>          <span class="c1">// set person object
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">Person</span> <span class="n">pp</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key&#34;</span><span class="p">];</span>  <span class="c1">// get person object
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></span><span class="line"><span class="cl">  <span class="n">Person</span> <span class="n">pp</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key&#34;</span><span class="p">];</span>  <span class="c1">// get person object
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>案例2</strong>: 可以嵌套调用<code>INIFILE_TYPE_CONVERTER&lt;T&gt;</code>, 实现STL容器自动转换, 能实现以下直接对容器赋值或取值的效果, 具体实现请<a class="link" href="./examples/inifile_custom2.cpp" >点击查看详情</a></p>
@@ -1224,17 +1227,17 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="c1">// Define vectors of different types
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span>         <span class="n">vec1</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">};</span>
+</span></span></span><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span>         <span class="n">vec1</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">};</span>
 </span></span><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span>      <span class="n">vec2</span> <span class="o">=</span> <span class="p">{</span><span class="mf">1.1111</span><span class="p">,</span> <span class="mf">2.2222</span><span class="p">,</span> <span class="mf">3.3333</span><span class="p">,</span> <span class="mf">4.4444</span><span class="p">,</span> <span class="mf">5.5555</span><span class="p">};</span>
 </span></span><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">vec3</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#34;aaa&#34;</span><span class="p">,</span> <span class="s">&#34;bbb&#34;</span><span class="p">,</span> <span class="s">&#34;ccc&#34;</span><span class="p">,</span> <span class="s">&#34;ddd&#34;</span><span class="p">,</span> <span class="s">&#34;eee&#34;</span><span class="p">};</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1">// Set different types of vectors in the INI file object
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key1&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vec1</span><span class="p">;</span>
+</span></span></span><span class="line"><span class="cl"><span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key1&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vec1</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key2&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vec2</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key3&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vec3</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1">// Get different vectors from INI file object
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span>         <span class="n">v1</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key1&#34;</span><span class="p">];</span>
+</span></span></span><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span>         <span class="n">v1</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key1&#34;</span><span class="p">];</span>
 </span></span><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span>      <span class="n">v2</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key2&#34;</span><span class="p">];</span>
 </span></span><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">v3</span> <span class="o">=</span> <span class="n">inif</span><span class="p">[</span><span class="s">&#34;section&#34;</span><span class="p">][</span><span class="s">&#34;key3&#34;</span><span class="p">];</span>
 </span></span></code></pre></td></tr></table>
@@ -1267,7 +1270,7 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;inifile.h&#34;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span></span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="k">constexpr</span> <span class="kt">char</span> <span class="n">path</span><span class="p">[]</span> <span class="o">=</span> <span class="s">&#34;path/to/ini/file&#34;</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="n">ini</span><span class="o">::</span><span class="n">inifile</span> <span class="n">inif</span><span class="p">;</span>
@@ -1965,7 +1968,7 @@
         
             2024 - 
         
-        2025 Abin
+        2026 Abin
     </section>
     
     <section class="powerby">

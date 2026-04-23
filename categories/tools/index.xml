@@ -5,7 +5,7 @@
         <link>https://abin-z.github.io/categories/tools/</link>
         <description>Recent content in Tools on Abin&#39;s Blog</description>
         <generator>Hugo -- gohugo.io</generator>
-        <language>zh-cn</language>
+        <language>en-us</language>
         <copyright>Abin</copyright>
         <lastBuildDate>Thu, 26 Jun 2025 23:52:29 +0800</lastBuildDate><atom:link href="https://abin-z.github.io/categories/tools/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>一篇文章让你熟练使用Git</title>
@@ -2299,7 +2299,8 @@ nnn.txt：忽略根目录下或者根目录下任意子目录下的nnn.txt文件
 &lt;h3 id=&#34;10-git-stash-暂存&#34;&gt;10. git stash (暂存)
 &lt;/h3&gt;&lt;p&gt;git stash：将本地没提交的内容进行缓存并从当前分支移除。缓存的数据结构为堆栈，先进后出。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;&lt;strong&gt;注意&lt;/strong&gt;：git commit的内容不会被缓存， 但git add的内容会被缓存。&lt;strong&gt;stash 只会操作被git追踪的文件&lt;/strong&gt;，也就是说，如果有新增的文件，需要进行git add [文件名]让git追踪该文件，再进行stash就可以了。&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;/strong&gt;：git commit的内容不会被缓存， 但git add的内容会被缓存。&lt;strong&gt;stash 只会操作被git追踪的文件&lt;/strong&gt;，也就是说，如果有新增的文件，需要进行git add [文件名]让git追踪该文件，再进行stash就可以了。&lt;/p&gt;
+&lt;/blockquote&gt;
 &lt;table&gt;
   &lt;thead&gt;
       &lt;tr&gt;
@@ -2344,7 +2345,8 @@ nnn.txt：忽略根目录下或者根目录下任意子目录下的nnn.txt文件
 &lt;li&gt;我们经常会遇到这样的情况：&lt;/li&gt;
 &lt;/ul&gt;
 &lt;blockquote&gt;
-&lt;p&gt;正在dev分支开发新功能，做到一半时有人过来反馈一个bug，让马上解决，但是新功能做到了一半你又不想提交，这时就可以使用git stash命令先把当前进度保存起来，然后切换到另一个分支去修改bug，修改完提交后，再切回dev分支，使用git stash pop来恢复之前的进度继续开发新功能。&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;正在dev分支开发新功能，做到一半时有人过来反馈一个bug，让马上解决，但是新功能做到了一半你又不想提交，这时就可以使用git stash命令先把当前进度保存起来，然后切换到另一个分支去修改bug，修改完提交后，再切回dev分支，使用git stash pop来恢复之前的进度继续开发新功能。&lt;/p&gt;
+&lt;/blockquote&gt;
 &lt;p&gt;分支有改变时不提交又不能切换分支，如下：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://my-pic-bed.oss-cn-chengdu.aliyuncs.com/typora_picture/image-20240524220548423.png&#34;
 	
@@ -2372,7 +2374,8 @@ nnn.txt：忽略根目录下或者根目录下任意子目录下的nnn.txt文件
 &lt;ol&gt;
 &lt;li&gt;&lt;code&gt;git stash&lt;/code&gt; 是本地的，不会上传到服务器上；&lt;/li&gt;
 &lt;li&gt;可以通过使用&lt;code&gt;git stash save &#39;message...&#39;&lt;/code&gt;可以添加一些注释。&lt;/li&gt;
-&lt;/ol&gt;&lt;/blockquote&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
 &lt;p&gt;下面是使用 &lt;code&gt;git stash&lt;/code&gt; 时要遵循的顺序：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;将修改保存到分支 A。&lt;/li&gt;
@@ -2562,7 +2565,8 @@ nnn.txt：忽略根目录下或者根目录下任意子目录下的nnn.txt文件
 &lt;/ul&gt;
 &lt;p&gt;另外有一些观点是我们应该尽量避免重写提交历史：&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;有一种观点认为，仓库的提交历史即是 记录实际发生过什么。 它是针对历史的文档，本身就有价值，不能乱改。 从这个角度看来，改变提交历史是一种亵渎，你使用 谎言 掩盖了实际发生过的事情。 如果由合并产生的提交历史是一团糟怎么办？ 既然事实就是如此，那么这些痕迹就应该被保留下来，让后人能够查阅。&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;有一种观点认为，仓库的提交历史即是 记录实际发生过什么。 它是针对历史的文档，本身就有价值，不能乱改。 从这个角度看来，改变提交历史是一种亵渎，你使用 谎言 掩盖了实际发生过的事情。 如果由合并产生的提交历史是一团糟怎么办？ 既然事实就是如此，那么这些痕迹就应该被保留下来，让后人能够查阅。&lt;/p&gt;
+&lt;/blockquote&gt;
 &lt;p&gt;以及频繁的使用 &lt;code&gt;rebase&lt;/code&gt; 可能会使从历史提交中定位 bug 变得更加困难，详见 &lt;a class=&#34;link&#34; href=&#34;https://medium.com/@fredrikmorken/why-you-should-stop-using-git-rebase-5552bee4fed1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Why you should stop using Git rebase&lt;/a&gt;。&lt;/p&gt;
 &lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://waynerv.com/posts/git-rebase-intro/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
@@ -3978,7 +3982,8 @@ nnn.txt：忽略根目录下或者根目录下任意子目录下的nnn.txt文件
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;然后再使用&lt;code&gt;git pull&lt;/code&gt;&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;这里需要注意的是，使用&lt;code&gt;git pull&lt;/code&gt;的时候，和第一种方法是一样的，也要加上 &lt;code&gt;--allow-unrelated-histories&lt;/code&gt; 参数&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;这里需要注意的是，使用&lt;code&gt;git pull&lt;/code&gt;的时候，和第一种方法是一样的，也要加上 &lt;code&gt;--allow-unrelated-histories&lt;/code&gt; 参数&lt;/p&gt;
+&lt;/blockquote&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
